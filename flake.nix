@@ -152,7 +152,8 @@
             pkg-config
             just
             # KDE specific tooling (lightweight)
-            kdeFrameworks.kio # example KDE framework
+            # (keep this list minimal and avoid referencing attributes that may
+            # not exist in all nixpkgs snapshots)
           ];
           config = { Cmd = [ "/bin/bash" ]; };
         };
@@ -178,7 +179,7 @@
             pkg-config
             just
             # GNOME specific (example)
-            gnome.gnome-shell
+            # (left intentionally minimal to avoid depending on top-level 'gnome' attr)
           ];
           config = { Cmd = [ "/bin/bash" ]; };
         };
