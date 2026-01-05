@@ -1,0 +1,276 @@
+{
+  description = "Full NixOS COSMIC developer workstation with QoL, Home Manager, and devshells";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+    home-manager.url = "github:nix-community/home-manager";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    devshell.url = "github:numtide/devshell";
+  };
+
+  outputs = { self, nixpkgs, flake-utils, home-manager, devshell }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          config = {
+            allowUnfree = true; # for fonts, VS Code, etc.
+          };
+          overlays = [ devshell.overlays.default ];
+        };
+      in {
+        # A developer shell with common tools similar to Universal Blue QoL
+        devShells.default = pkgs.devshell.mkShell {
+          name = "cosmic-dev";
+          packages = with pkgs; [
+            # shells & core
+            bashInteractive
+            gnupg
+            git
+            gh
+            direnv
+            nix-direnv
+            jq yq
+            ripgrep fd
+            sd
+            eza
+            delta
+            starship
+
+            # networking & ops
+            curl wget
+            httpie
+            iproute2
+
+            # editors
+            neovim
+
+            # language toolchains (lightweight)
+            python3
+            nodejs_22
+            pnpm
+            bun
+            go
+            rustup
+
+            # containers
+            podman
+            podman-compose
+
+            # formatters/linters
+            shfmt shellcheck
+            black ruff
+            prettier
+            eslint_d
+            stylua
+
+            # build tools
+            cmake
+            pkg-config
+            just
+          ];
+          env = [
+            {
+              name = "DEVSHELL_ENABLE_DIRenv";
+              value = "1";
+            }
+          ];
+          commands = [
+            {
+              name = "setup-dev";
+              help = "Initialize direnv + allow, and install rust toolchain";
+              command = ''
+                if [ -f .envrc ]; then echo "Found .envrc"; else echo "use nix" > .envrc; fi
+                direnv allow . || true
+                rustup default stable || true
+              '';
+            }
+          ];
+        };
+
+        packages.default = pkgs.writeShellApplication {
+          name = "cosmic-qol";
+          runtimeInputs = with pkgs; [ eza ripgrep fd starship neovim ];
+          text = ''
+            echo "COSMIC QoL helpers installed via Nix"
+          '';
+        };
+
+        # OCI / Docker image containing a lightweight dev environment
+        packages.cosmicImage = pkgs.dockerTools.buildImage {
+          name = "cosmic-dev";
+          contents = with pkgs; [
+            bashInteractive
+            git
+            gh
+            direnv
+            nix-direnv
+            jq
+            yq
+            ripgrep
+            fd
+            sd
+            eza
+            delta
+            starship
+            neovim
+            python3
+            nodejs_22
+            pnpm
+            go
+            rustup
+            podman
+            podman-compose
+            cmake
+            pkg-config
+            just
+          ];
+          config = {
+            Cmd = [ "/bin/bash" ];
+          };
+        };
+
+        # Home Manager module for common QoL on COSMIC
+        homeManagerModules.default = { config, pkgs, lib, ... }:
+          let cfg = config.cosmicDev;
+          in {
+            options.cosmicDev.enable = lib.mkEnableOption "Enable developer QoL config for COSMIC";
+            config = lib.mkIf cfg.enable {
+              programs.home-manager.enable = true;
+
+              # Shell basics
+              programs.zsh.enable = false;
+              programs.bash = {
+                enable = true;
+                enableCompletion = true;
+                bashrcExtra = ''
+                  eval "$(starship init bash)"
+                '';
+              };
+
+              programs.starship = {
+                enable = true;
+                settings = {
+                  add_newline = false;
+                  command_timeout = 1200;
+                };
+              };
+
+              # Direnv
+              programs.direnv = {
+                enable = true;
+                nix-direnv.enable = true;
+              };
+
+              # Git
+              programs.git = {
+                enable = true;
+                userName = "${config.home.username}";
+                userEmail = "${config.home.username}@local";
+                delta.enable = true;
+                extraConfig = {
+                  init.defaultBranch = "main";
+                  pull.rebase = true;
+                };
+              };
+
+              # Neovim basic setup
+              programs.neovim = {
+                enable = true;
+                defaultEditor = true;
+                viAlias = true;
+                vimAlias = true;
+                plugins = with pkgs.vimPlugins; [
+                  vim-nix
+                  nvim-lspconfig
+                  nvim-treesitter
+                  telescope-nvim
+                ];
+                extraConfig = ''
+                  set number
+                  set relativenumber
+                  set ignorecase smartcase
+                '';
+              };
+
+              # Common packages
+              home.packages = with pkgs; [
+                # fonts & emoji
+                (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" ]; })
+                noto-fonts-emoji
+
+                # tools
+                eza ripgrep fd jq yq delta sd
+                just
+                gnupg
+                gh
+                bat
+                hyperfine
+
+                # language servers
+                nodePackages_latest.typescript-language-server
+                nodePackages_latest.vscode-langservers-extracted
+                marksman
+
+                # cosmic-friendly apps (installed via nix when possible)
+                # Note: COSMIC is Wayland-first; these are Wayland-friendly.
+                foot
+              ];
+
+              fonts.fontconfig.enable = true;
+
+              # VSCode via Home Manager (unfree)
+              programs.vscode = {
+                enable = true;
+                enableExtensionUpdateCheck = false;
+                package = pkgs.vscode;
+                extensions = with pkgs.vscode-extensions; [
+                  ms-vscode.cpptools
+                  ms-python.python
+                  ms-python.vscode-pylance
+                  rust-lang.rust-analyzer
+                  esbenp.prettier-vscode
+                  dbaeumer.vscode-eslint
+                  github.vscode-pull-request-github
+                ];
+                userSettings = {
+                  "editor.fontFamily" = "JetBrainsMono Nerd Font";
+                  "editor.fontLigatures" = true;
+                  "terminal.integrated.fontFamily" = "JetBrainsMono Nerd Font";
+                  "files.trimTrailingWhitespace" = true;
+                  "editor.formatOnSave" = true;
+                };
+              };
+
+              # COSMIC/Wayland quality-of-life
+              xdg.mime.enable = true;
+              xdg.enable = true;
+              xdg.userDirs.enable = true;
+            };
+          };
+
+        # A sample Home Manager configuration exposing the module
+        # Users can link this file or copy content.
+        templates = {
+          homeManager = {
+            path = self + "/templates/home";
+            description = "Example Home Manager config enabling COSMIC developer QoL";
+          };
+        };
+      }) // {
+        nixosConfigurations = {
+          cosmic-dev = let
+            system = "x86_64-linux";
+          in nixpkgs.lib.nixosSystem {
+            inherit system;
+            specialArgs = { inherit inputs; };
+            modules = [
+              ./hosts/cosmic-dev.nix
+            ];
+          };
+        };
+
+        # Out-of-system content like templates
+      };
+}
