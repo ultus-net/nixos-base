@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }:
 {
-  # COSMIC Desktop session
+  # COSMIC Desktop session 
   services.xserver.enable = true;
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.displayManager.gdm.wayland = true;
