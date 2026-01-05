@@ -41,6 +41,12 @@ There's a GitHub Actions workflow at `.github/workflows/flake-check.yml` that
 evaluates the top-level flake and the GNOME flake on push and PRs to `main`.
 It simply installs Nix and runs `nix flake show` to catch evaluation errors early.
 
+Installation
+------------
+
+See `INSTALL.md` for a step-by-step installation and deployment guide (UEFI and
+LUKS examples) describing how to install this flake on a fresh VM or device.
+
 ## Switching desktops & machines (quick start)
 
 The pattern used here is composition: each host file under `hosts/` imports the
