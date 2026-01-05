@@ -37,11 +37,18 @@ jobs:
           for IMG in "${IMAGES[@]}"; do
             echo "Building ${IMG}..."
             nix --extra-experimental-features 'nix-command flakes' build .#packages.x86_64-linux.${IMG}
-            TAR_REL=$(find result -type f -name '*.tar*' -print -quit || true)
-            if [ -z "$TAR_REL" ]; then
-              echo "No tarball found for ${IMG} in build result:"; ls -la result || true; exit 1
+            # Nix often symlinks 'result' directly to the tarball in /nix/store.
+            # Prefer resolving the symlink target first, fall back to searching inside.
+            RES_TARGET=$(readlink -f result || true)
+            if [ -n "$RES_TARGET" ] && [ -f "$RES_TARGET" ] && [[ "$RES_TARGET" == *.tar* ]]; then
+              TAR_PATH="$RES_TARGET"
+            else
+              TAR_REL=$(find result -type f -name '*.tar*' -print -quit || true)
+              if [ -z "$TAR_REL" ]; then
+                echo "No tarball found for ${IMG} in build result:"; ls -la result || true; exit 1
+              fi
+              TAR_PATH=$(readlink -f "$TAR_REL")
             fi
-            TAR_PATH=$(readlink -f "$TAR_REL")
             OUTNAME="$GITHUB_WORKSPACE/images/${IMG}.tar.gz"
             cp "$TAR_PATH" "$OUTNAME"
             echo "Wrote $OUTNAME"
