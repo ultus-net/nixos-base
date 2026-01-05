@@ -131,6 +131,58 @@
           };
         };
 
+        # KDE-specific OCI image (lightweight developer container with KDE tools)
+        packages.kdeImage = pkgs.dockerTools.buildImage {
+          name = "kde-dev";
+          contents = with pkgs; [
+            bashInteractive
+            git
+            gh
+            direnv
+            jq
+            ripgrep
+            eza
+            neovim
+            python3
+            nodejs_22
+            pnpm
+            go
+            rustup
+            cmake
+            pkg-config
+            just
+            # KDE specific tooling (lightweight)
+            kdeFrameworks.kio # example KDE framework
+          ];
+          config = { Cmd = [ "/bin/bash" ]; };
+        };
+
+        # GNOME-specific OCI image
+        packages.gnomeImage = pkgs.dockerTools.buildImage {
+          name = "gnome-dev";
+          contents = with pkgs; [
+            bashInteractive
+            git
+            gh
+            direnv
+            jq
+            ripgrep
+            eza
+            neovim
+            python3
+            nodejs_22
+            pnpm
+            go
+            rustup
+            cmake
+            pkg-config
+            just
+            # GNOME specific (example)
+            gnome.gnome-shell
+          ];
+          config = { Cmd = [ "/bin/bash" ]; };
+        };
+
         # Home Manager module for common QoL on COSMIC
         homeManagerModules.default = { config, pkgs, lib, ... }:
           let cfg = config.cosmicDev;
