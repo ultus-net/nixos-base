@@ -13,6 +13,34 @@ desktop environments and machines.
 - `flake.nix` — exports dev shells, a Home Manager module and an example NixOS
 	configuration called `cosmic-dev`.
 
+Multiple flakes
+----------------
+
+This repo supports both a single top-level flake and additional nested flakes
+for per-desktop workflows. For example, there's a dedicated GNOME flake at
+`flakes/gnome/flake.nix` exposing `gnome-workstation`. You can reference it like
+`flakes/gnome#gnome-workstation` when building or switching.
+
+Helper script
+-------------
+
+Use `scripts/switch-host.sh` to build or switch to a host. Examples:
+
+```bash
+# Build local flake host (non-root)
+./scripts/switch-host.sh .#cosmic-dev
+
+# Build / switch to GNOME host via the nested flake (switch requires root)
+sudo ./scripts/switch-host.sh flakes/gnome#gnome-workstation
+```
+
+CI
+--
+
+There's a GitHub Actions workflow at `.github/workflows/flake-check.yml` that
+evaluates the top-level flake and the GNOME flake on push and PRs to `main`.
+It simply installs Nix and runs `nix flake show` to catch evaluation errors early.
+
 ## Switching desktops & machines (quick start)
 
 The pattern used here is composition: each host file under `hosts/` imports the
