@@ -26,30 +26,12 @@
     spotify
   ];
 
-  programs.bash.enable = true;
-  programs.direnv.enable = true;
-  programs.direnv.nix-direnv.enable = true;
 
-  programs.git.enable = true;
-  programs.git.delta.enable = true;
-  programs.git.extraConfig = {
-    init.defaultBranch = "main";
-    pull.rebase = true;
-  };
+  # Program-specific settings (starship, direnv, git, neovim, etc.) are
+  # managed via Home Manager in `modules/home-manager.nix` so we only
+  # configure system-level packages here.
 
-  # VS Code (unfree) with common extensions
-  programs.vscode = {
-    enable = true;
-    package = pkgs.vscode;
-    enableUpdateCheck = false;
-    extensions = with pkgs.vscode-extensions; [
-      ms-vscode.cpptools
-      ms-python.python
-      ms-python.vscode-pylance
-      rust-lang.rust-analyzer
-      esbenp.prettier-vscode
-      dbaeumer.vscode-eslint
-      github.vscode-pull-request-github
-    ];
-  };
+  # VS Code user-level installation and extensions are handled by Home
+  # Manager in `modules/home-manager.nix` (so we don't declare
+  # `programs.vscode` here at the NixOS module level).
 }

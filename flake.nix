@@ -168,11 +168,15 @@
                 enable = true;
                 userName = "${config.home.username}";
                 userEmail = "${config.home.username}@local";
-                delta.enable = true;
                 extraConfig = {
                   init.defaultBranch = "main";
                   pull.rebase = true;
                 };
+              };
+
+              # Delta (git pager) as a separate program module
+              programs.delta = {
+                enable = true;
               };
 
               # Neovim basic setup
@@ -252,19 +256,13 @@
 
         # A sample Home Manager configuration exposing the module
         # Users can link this file or copy content.
-        templates = {
-          homeManager = {
-            path = self + "/templates/home";
-            description = "Example Home Manager config enabling COSMIC developer QoL";
-          };
-        };
       }) // {
         nixosConfigurations = {
           cosmic-dev = let
             system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
-            inherit system;
-            specialArgs = { inherit inputs; };
+              inherit system;
+              specialArgs = { inputs = self.inputs; };
             modules = [
               ./hosts/cosmic-dev.nix
             ];
@@ -272,5 +270,11 @@
         };
 
         # Out-of-system content like templates
+        templates = {
+          homeManager = {
+            path = ./templates/home;
+            description = "Example Home Manager config enabling COSMIC developer QoL";
+          };
+        };
       };
 }
