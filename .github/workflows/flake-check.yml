@@ -17,9 +17,14 @@ jobs:
         with:
           nix_path: "nixpkgs=github:NixOS/nixpkgs/nixpkgs-unstable"
 
+      - name: Enable experimental features for this run
+        run: |
+          mkdir -p $HOME/.config/nix
+          echo 'extra-experimental-features = nix-command flakes' >> $HOME/.config/nix/nix.conf
+
       - name: Evaluate flakes
         run: |
           nix --version
-          # Evaluate top-level flake and the GNOME flake
-          nix flake show .
-          nix flake show flakes/gnome
+          # Evaluate top-level flake and the GNOME flake (enable features explicitly as a fallback)
+          nix --extra-experimental-features 'nix-command flakes' flake show .
+          nix --extra-experimental-features 'nix-command flakes' flake show flakes/gnome
