@@ -27,4 +27,4 @@ jobs:
           nix --version
           # Evaluate top-level flake and the GNOME flake (enable features explicitly as a fallback)
           nix --extra-experimental-features 'nix-command flakes' flake show .
-          nix --extra-experimental-features 'nix-command flakes' flake show flakes/gnome
+          nix --extra-experimental-features 'nix-command flakes' flake show ./flakes/gnome

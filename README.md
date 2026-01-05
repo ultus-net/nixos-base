@@ -18,8 +18,8 @@ Multiple flakes
 
 This repo supports both a single top-level flake and additional nested flakes
 for per-desktop workflows. For example, there's a dedicated GNOME flake at
-`flakes/gnome/flake.nix` exposing `gnome-workstation`. You can reference it like
-`flakes/gnome#gnome-workstation` when building or switching.
+`./flakes/gnome/flake.nix` exposing `gnome-workstation`. You can reference it like
+`./flakes/gnome#gnome-workstation` when building or switching.
 
 Helper script
 -------------
@@ -31,7 +31,7 @@ Use `scripts/switch-host.sh` to build or switch to a host. Examples:
 ./scripts/switch-host.sh .#cosmic-dev
 
 # Build / switch to GNOME host via the nested flake (switch requires root)
-sudo ./scripts/switch-host.sh flakes/gnome#gnome-workstation
+sudo ./scripts/switch-host.sh ./flakes/gnome#gnome-workstation
 ```
 
 CI

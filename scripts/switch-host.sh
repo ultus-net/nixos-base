@@ -6,10 +6,10 @@ set -euo pipefail
 #   ./scripts/switch-host.sh <flake-ref>
 # Examples:
 #   ./scripts/switch-host.sh .#cosmic-dev
-#   ./scripts/switch-host.sh flakes/gnome#gnome-workstation
+#   ./scripts/switch-host.sh ./flakes/gnome#gnome-workstation
 
 if [ "$#" -ne 1 ]; then
-  echo "Usage: $0 <flake-ref>  (e.g. .#cosmic-dev or flakes/gnome#gnome-workstation)"
+  echo "Usage: $0 <flake-ref>  (e.g. .#cosmic-dev or ./flakes/gnome#gnome-workstation)"
   exit 2
 fi
 
