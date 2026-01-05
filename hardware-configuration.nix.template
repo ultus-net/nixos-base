@@ -1,0 +1,61 @@
+# Hardware configuration template
+# This file should be replaced with your actual hardware configuration
+# Generate it with: nixos-generate-config --show-hardware-config
+
+{ config, lib, pkgs, modulesPath, ... }:
+
+{
+  imports = [ ];
+
+  # Bootloader device (UEFI or BIOS)
+  # boot.loader.grub.device = "/dev/sda"; # For BIOS
+  # boot.loader.efi.efiSysMountPoint = "/boot"; # For UEFI
+
+  # Initial kernel modules
+  boot.initrd.availableKernelModules = [ "ahci" "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-intel" ]; # or "kvm-amd" for AMD
+  boot.extraModulePackages = [ ];
+
+  # File systems configuration
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/REPLACE-WITH-YOUR-UUID";
+    fsType = "ext4";
+  };
+
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/REPLACE-WITH-YOUR-UUID";
+    fsType = "vfat";
+  };
+
+  # Swap configuration
+  # swapDevices = [ 
+  #   { device = "/dev/disk/by-uuid/REPLACE-WITH-YOUR-UUID"; }
+  # ];
+
+  # CPU microcode updates
+  hardware.cpu.intel.updateMicrocode = true; # or hardware.cpu.amd.updateMicrocode for AMD
+
+  # Networking
+  networking.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp0s31f6.useDHCP = lib.mkDefault true;
+
+  # Graphics and video drivers
+  # hardware.opengl = {
+  #   enable = true;
+  #   driSupport = true;
+  #   driSupport32Bit = true;
+  # };
+
+  # NVIDIA specific (if using NVIDIA GPU)
+  # services.xserver.videoDrivers = [ "nvidia" ];
+  # hardware.nvidia = {
+  #   modesetting.enable = true;
+  #   powerManagement.enable = false;
+  #   open = false;
+  #   nvidiaSettings = true;
+  #   package = config.boot.kernelPackages.nvidiaPackages.stable;
+  # };
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+}

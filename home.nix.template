@@ -1,0 +1,63 @@
+# Home Manager configuration template
+# This provides user-specific configurations that don't require root privileges
+{ config, pkgs, ... }:
+
+{
+  # Home Manager needs a bit of information about you and the paths it should manage
+  home.username = "nixos";
+  home.homeDirectory = "/home/nixos";
+
+  # This value determines the Home Manager release that your configuration is compatible with
+  home.stateVersion = "24.05";
+
+  # Let Home Manager install and manage itself
+  programs.home-manager.enable = true;
+
+  # User packages
+  home.packages = with pkgs; [
+    # Add user-specific packages here
+    # firefox
+    # chromium
+    # vscode
+  ];
+
+  # Git configuration
+  programs.git = {
+    enable = true;
+    userName = "Your Name";
+    userEmail = "your.email@example.com";
+    extraConfig = {
+      init.defaultBranch = "main";
+    };
+  };
+
+  # Bash configuration
+  programs.bash = {
+    enable = true;
+    shellAliases = {
+      # Add your aliases here
+    };
+    initExtra = ''
+      # Add custom bash configuration here
+    '';
+  };
+
+  # Vim configuration
+  programs.vim = {
+    enable = true;
+    settings = {
+      number = true;
+      relativenumber = true;
+    };
+    extraConfig = ''
+      set expandtab
+      set tabstop=2
+      set shiftwidth=2
+    '';
+  };
+
+  # Environment variables
+  home.sessionVariables = {
+    # EDITOR = "vim";
+  };
+}
