@@ -1,3 +1,30 @@
+name: Flake validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  flake-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix (single-user)
+        run: |
+          curl -L https://nixos.org/nix/install | sh
+          . $HOME/.nix-profile/etc/profile.d/nix.sh
+
+      - name: Validate top-level flake
+        run: |
+          nix --extra-experimental-features 'nix-command flakes' flake show .
+
+      - name: Validate GNOME nested flake
+        run: |
+          nix --extra-experimental-features 'nix-command flakes' flake show ./flakes/gnome
 name: Flake evaluation
 
 on:

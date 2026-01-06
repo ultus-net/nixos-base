@@ -98,34 +98,38 @@
         };
 
         # OCI / Docker image containing a lightweight dev environment
+        # Use `copyToRoot` with `buildEnv` instead of the deprecated `contents`.
         packages.cosmicImage = pkgs.dockerTools.buildImage {
           name = "cosmic-workstation";
-          contents = with pkgs; [
-            bashInteractive
-            git
-            gh
-            direnv
-            nix-direnv
-            jq
-            yq
-            ripgrep
-            fd
-            sd
-            eza
-            delta
-            starship
-            neovim
-            python3
-            nodejs_22
-            pnpm
-            go
-            rustup
-            podman
-            podman-compose
-            cmake
-            pkg-config
-            just
-          ];
+          copyToRoot = pkgs.buildEnv {
+            name = "cosmic-workstation-root";
+            paths = with pkgs; [
+              bashInteractive
+              git
+              gh
+              direnv
+              nix-direnv
+              jq
+              yq
+              ripgrep
+              fd
+              sd
+              eza
+              delta
+              starship
+              neovim
+              python3
+              nodejs_22
+              pnpm
+              go
+              rustup
+              podman
+              podman-compose
+              cmake
+              pkg-config
+              just
+            ];
+          };
           config = {
             Cmd = [ "/bin/bash" ];
           };
@@ -134,53 +138,59 @@
         # KDE-specific OCI image (lightweight developer container with KDE tools)
         packages.kdeImage = pkgs.dockerTools.buildImage {
           name = "kde-dev";
-          contents = with pkgs; [
-            bashInteractive
-            git
-            gh
-            direnv
-            jq
-            ripgrep
-            eza
-            neovim
-            python3
-            nodejs_22
-            pnpm
-            go
-            rustup
-            cmake
-            pkg-config
-            just
-            # KDE specific tooling (lightweight)
-            # (keep this list minimal and avoid referencing attributes that may
-            # not exist in all nixpkgs snapshots)
-          ];
+          copyToRoot = pkgs.buildEnv {
+            name = "kde-dev-root";
+            paths = with pkgs; [
+              bashInteractive
+              git
+              gh
+              direnv
+              jq
+              ripgrep
+              eza
+              neovim
+              python3
+              nodejs_22
+              pnpm
+              go
+              rustup
+              cmake
+              pkg-config
+              just
+              # KDE specific tooling (lightweight)
+              # (keep this list minimal and avoid referencing attributes that may
+              # not exist in all nixpkgs snapshots)
+            ];
+          };
           config = { Cmd = [ "/bin/bash" ]; };
         };
 
         # GNOME-specific OCI image
         packages.gnomeImage = pkgs.dockerTools.buildImage {
           name = "gnome-dev";
-          contents = with pkgs; [
-            bashInteractive
-            git
-            gh
-            direnv
-            jq
-            ripgrep
-            eza
-            neovim
-            python3
-            nodejs_22
-            pnpm
-            go
-            rustup
-            cmake
-            pkg-config
-            just
-            # GNOME specific (example)
-            # (left intentionally minimal to avoid depending on top-level 'gnome' attr)
-          ];
+          copyToRoot = pkgs.buildEnv {
+            name = "gnome-dev-root";
+            paths = with pkgs; [
+              bashInteractive
+              git
+              gh
+              direnv
+              jq
+              ripgrep
+              eza
+              neovim
+              python3
+              nodejs_22
+              pnpm
+              go
+              rustup
+              cmake
+              pkg-config
+              just
+              # GNOME specific (example)
+              # (left intentionally minimal to avoid depending on top-level 'gnome' attr)
+            ];
+          };
           config = { Cmd = [ "/bin/bash" ]; };
         };
 

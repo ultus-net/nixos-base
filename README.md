@@ -1,10 +1,21 @@
 # nixos-base
+CI
+--
 
-This repository contains a set of reusable NixOS module fragments and example host flakes
-to help you compose desktop-agnostic system configurations and quickly switch between
-desktop environments and machines.
+This repository includes a GitHub Actions workflow at `.github/workflows/flake-check.yml`
+that validates the flakes on push and pull requests to `main`. The workflow installs
+Nix and runs `nix flake show` for the top-level flake and the nested GNOME flake to
+catch evaluation errors and deprecations early.
 
-## Overview
+Run the same checks locally with:
+
+```bash
+# show top-level flake outputs (will fail if flake evaluation errors)
+nix --extra-experimental-features 'nix-command flakes' flake show .
+
+# show the nested GNOME flake outputs
+nix --extra-experimental-features 'nix-command flakes' flake show ./flakes/gnome
+```
 
 - `modules/` — small, focused NixOS module fragments (desktop support, common packages,
 	development, QoL, etc.). These are intended to be imported into host-specific
@@ -24,11 +35,13 @@ for per-desktop workflows. For example, there's a dedicated GNOME flake at
 Helper script
 -------------
 
-Use `scripts/switch-host.sh` to build or switch to a host. Examples:
+Use `scripts/switch-host.sh` to build or switch to a host. The script defaults
+to the top-level `cosmic-workstation` configuration when no argument is
+provided. Examples:
 
 ```bash
-# Build local flake host (non-root)
-./scripts/switch-host.sh .#cosmic-workstation
+# Build the default (cosmic) host locally (non-root)
+./scripts/switch-host.sh
 
 # Build / switch to GNOME host via the nested flake (switch requires root)
 sudo ./scripts/switch-host.sh ./flakes/gnome#gnome-workstation
