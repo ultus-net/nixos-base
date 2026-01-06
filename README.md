@@ -1,21 +1,38 @@
 # nixos-base
-CI
---
+
+![Flake validation](https://github.com/ultus-net/nixos-base/actions/workflows/flake-check.yml/badge.svg)
+
+CI and local validation
+-----------------------
 
 This repository includes a GitHub Actions workflow at `.github/workflows/flake-check.yml`
-that validates the flakes on push and pull requests to `main`. The workflow installs
-Nix and runs `nix flake show` for the top-level flake and the nested GNOME flake to
-catch evaluation errors and deprecations early.
+that validates the top-level flake on push and pull requests to `main`. The workflow
+installs Nix and runs `nix flake show` plus explicit checks for the `cosmic-workstation`
+and `gnome-workstation` outputs.
 
-Run the same checks locally with:
+Run the same checks locally with one of these approaches:
+
+1) Quick human-readable listing:
 
 ```bash
 # show top-level flake outputs (will fail if flake evaluation errors)
 nix --extra-experimental-features 'nix-command flakes' flake show .
-
-# show the nested GNOME flake outputs
-nix --extra-experimental-features 'nix-command flakes' flake show ./flakes/gnome
 ```
+
+2) Machine-checkable JSON (recommended for scripts / CI):
+
+```bash
+# dump flake outputs as JSON and verify expected outputs exist
+nix --extra-experimental-features 'nix-command flakes' flake show --json . > flake.json
+jq '.nixosConfigurations | keys' flake.json
+# exit non-zero if missing
+jq -e '.nixosConfigurations | has("cosmic-workstation")' flake.json
+jq -e '.nixosConfigurations | has("gnome-workstation")' flake.json
+```
+
+Note: some versions of the `nix` CLI don't accept a fragment (the `#name` suffix)
+directly with `nix flake show` (you may see "unexpected fragment" errors). Use
+the JSON approach above or reference the flake via an absolute path if needed.
 
 - `modules/` — small, focused NixOS module fragments (desktop support, common packages,
 	development, QoL, etc.). These are intended to be imported into host-specific
@@ -44,8 +61,8 @@ provided. Examples:
 # Build the default (cosmic) host locally (non-root)
 ./scripts/switch-host.sh
 
-# Build / switch to GNOME host via the nested flake (switch requires root)
-sudo ./scripts/switch-host.sh ./flakes/gnome#gnome-workstation
+# Build / switch to GNOME host via the top-level flake (switch requires root)
+sudo ./scripts/switch-host.sh .#gnome-workstation
 ```
 
 CI

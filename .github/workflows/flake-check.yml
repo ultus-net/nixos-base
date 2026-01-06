@@ -22,10 +22,14 @@ jobs:
         run: |
           nix --extra-experimental-features 'nix-command flakes' flake show .
 
-      - name: Validate GNOME output (top-level)
+      - name: Validate required outputs exist (JSON + jq)
         run: |
-          # Validate the top-level flake exposes the gnome-workstation output
-          nix --extra-experimental-features 'nix-command flakes' flake show .#gnome-workstation || true
+          # Use JSON output and jq to assert expected outputs exist.
+          nix --extra-experimental-features 'nix-command flakes' flake show --json . > flake.json
+          cat flake.json | jq '.nixosConfigurations | keys'
+          # Exit non-zero if an expected output is missing
+          cat flake.json | jq -e '.nixosConfigurations | has("cosmic-workstation")'
+          cat flake.json | jq -e '.nixosConfigurations | has("gnome-workstation")'
 name: Flake evaluation
 
 on:
