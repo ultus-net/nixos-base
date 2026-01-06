@@ -9,7 +9,7 @@ troubleshooting notes relevant to this repo.
 Prerequisites and assumptions
 - You're using UEFI (adjust partitioning for BIOS if necessary).
 - You have a NixOS live ISO and a working network in the installer environment.
-- This repository exposes a NixOS system configuration named `cosmic-dev` in the
+-- This repository exposes a NixOS system configuration named `cosmic-workstation` in the
   top-level flake (replace with the flake output you want if different).
 - Commands that interact with flakes use the `nix --extra-experimental-features
   'nix-command flakes'` prefix where required.
@@ -91,11 +91,11 @@ nix --extra-experimental-features 'nix-command flakes' flake show github:ultus-n
 4) Install NixOS from the flake
 
 Run `nixos-install` using the flake output you want to install. The example
-below installs `cosmic-dev` from the repository clone.
+below installs `cosmic-workstation` from the repository clone.
 
 ```bash
-nix --extra-experimental-features 'nix-command flakes' \
-  nixos-install --root /mnt --flake /mnt/nixos-base#cosmic-dev
+  nix --extra-experimental-features 'nix-command flakes' \
+  nixos-install --root /mnt --flake /mnt/nixos-base#cosmic-workstation
 ```
 
 Notes:
@@ -167,7 +167,7 @@ Examples (run from the repo root):
 
 ```bash
 # Build local flake host (non-root)
-./scripts/switch-host.sh .#cosmic-dev
+./scripts/switch-host.sh .#cosmic-workstation
 
 # Switch to the GNOME nested flake (requires root for switching)
 sudo ./scripts/switch-host.sh ./flakes/gnome#gnome-workstation
@@ -212,8 +212,8 @@ mount ${DISK}1 /mnt/boot
 
 # Clone repo and install
 git clone https://github.com/ultus-net/nixos-base.git /mnt/nixos-base
-nix --extra-experimental-features 'nix-command flakes' \
-  nixos-install --root /mnt --flake /mnt/nixos-base#cosmic-dev
+  nix --extra-experimental-features 'nix-command flakes' \
+  nixos-install --root /mnt --flake /mnt/nixos-base#cosmic-workstation
 reboot
 ```
 

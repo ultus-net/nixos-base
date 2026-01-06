@@ -3,13 +3,13 @@
 
   This is a small wrapper intended to be copied to
   `/mnt/etc/nixos/configuration.nix` during installation. It imports the
-  host-specific `cosmic-dev.nix` sitting alongside it.
+  host-specific `cosmic-workstation.nix` sitting alongside it.
 */
 
 { config, pkgs, lib, ... }:
 {
   # Import the host configuration that composes modules from `../modules/`.
-  imports = [ ./cosmic-dev.nix ];
+  imports = [ ./cosmic-workstation.nix ];
 
   # Minimal installer-friendly defaults; adjust as needed for your hardware.
   time.timeZone = "UTC";

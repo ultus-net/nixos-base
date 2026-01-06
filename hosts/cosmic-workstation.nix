@@ -12,7 +12,7 @@
   ];
 
   # Basic machine identity
-  networking.hostName = "cosmic-dev";
+  networking.hostName = "cosmic-workstation";
   time.timeZone = "UTC";
 
   # Enable common package bundle and add a couple extras for convenience

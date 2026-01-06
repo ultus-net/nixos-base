@@ -22,7 +22,7 @@
       in {
         # A developer shell with common tools similar to Universal Blue QoL
         devShells.default = pkgs.devshell.mkShell {
-          name = "cosmic-dev";
+          name = "cosmic-workstation";
           packages = with pkgs; [
             # shells & core
             bashInteractive
@@ -99,7 +99,7 @@
 
         # OCI / Docker image containing a lightweight dev environment
         packages.cosmicImage = pkgs.dockerTools.buildImage {
-          name = "cosmic-dev";
+          name = "cosmic-workstation";
           contents = with pkgs; [
             bashInteractive
             git
@@ -311,13 +311,13 @@
         # Users can link this file or copy content.
       }) // {
         nixosConfigurations = {
-          cosmic-dev = let
+          cosmic-workstation = let
             system = "x86_64-linux";
           in nixpkgs.lib.nixosSystem {
               inherit system;
               specialArgs = { inputs = self.inputs; };
             modules = [
-              ./hosts/cosmic-dev.nix
+              ./hosts/cosmic-workstation.nix
             ];
           };
         };

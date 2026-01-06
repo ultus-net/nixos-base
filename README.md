@@ -11,7 +11,7 @@ desktop environments and machines.
 	configurations.
 - `hosts/` — example host modules that compose the fragments in `modules/`.
 - `flake.nix` — exports dev shells, a Home Manager module and an example NixOS
-	configuration called `cosmic-dev`.
+	configuration called `cosmic-workstation`.
 
 Multiple flakes
 ----------------
@@ -28,7 +28,7 @@ Use `scripts/switch-host.sh` to build or switch to a host. Examples:
 
 ```bash
 # Build local flake host (non-root)
-./scripts/switch-host.sh .#cosmic-dev
+./scripts/switch-host.sh .#cosmic-workstation
 
 # Build / switch to GNOME host via the nested flake (switch requires root)
 sudo ./scripts/switch-host.sh ./flakes/gnome#gnome-workstation
@@ -56,10 +56,11 @@ the flake you can reference its name from the flake outputs.
 
 Examples:
 
-Build and switch to the `cosmic-dev` configuration defined by this flake:
+
+Build and switch to the `cosmic-workstation` configuration defined by this flake:
 
 ```bash
-sudo nixos-rebuild switch --flake .#cosmic-dev
+sudo nixos-rebuild switch --flake .#cosmic-workstation
 ```
 
 Alternatively, to build or test the KDE example host locally (no switch):
