@@ -53,6 +53,20 @@ outputs so you can reference them like `.#cosmic-workstation`, `.#gnome-workstat
 This keeps the repository surface area to a single flake and avoids nested
 flake duplication.
 
+Refactor & repository layout
+----------------------------
+
+Recent refactors split desktop concerns (profiles) from machine deployments.
+- `profiles/` contains desktop profiles (COSMIC, GNOME, KDE) — reusable across many machines.
+- `machines/` contains machine deployment entries and the master machine defaults in `machines/configuration.nix`.
+- `machines/common-users.nix` centralizes per-machine user creation.
+- `machines/zram.nix` provides a tunable zram module with an automatic sizing heuristic and compression option.
+- Old `hosts/` files were archived to `hosts-deprecated/` during the migration.
+
+The CI validation was updated to ensure `profiles/` and `machines/` exist and
+to run `./scripts/validate-hosts-home-manager.sh` which checks that profiles
+and deployment entries import the Home Manager module appropriately.
+
 Helper script
 -------------
 
@@ -110,10 +124,17 @@ nix build .#nixosConfigurations.kde-workstation.config.system.build.toplevel
 nixos-rebuild build --flake .#kde-workstation
 ```
 
-- Notes:
+Notes
+-----
+
 - Add your own machine by creating a file under `machines/` that `imports`
 	`machines/configuration.nix` and the profile you want from `profiles/`.
-	Use `common-packages.nix` for a desktop-agnostic set of utilities and add
-	`kde.nix`, `cosmic.nix`, or other desktop modules in the profile.
+	Use `modules/common-packages.nix` for a desktop-agnostic set of utilities
+	and add `modules/kde.nix`, `modules/cosmic.nix`, or other desktop modules
+	in the profile.
+- The flake exposes desktop profiles as top-level Nix outputs for convenience
+	(so `.#cosmic-workstation` still works). For real device installs it's
+	recommended to generate and import an installer-produced
+	`hardware-configuration.nix` into a `machines/<name>.nix` entry.
 - The flake already provides `homeManagerModules` and a `templates/home`
 	example you can adapt for user dotfiles.
