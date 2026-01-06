@@ -18,6 +18,10 @@ jobs:
         with:
           nix_path: "nixpkgs=github:NixOS/nixpkgs/nixpkgs-unstable"
 
+      - name: Ensure jq is available
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+
       - name: Enable experimental features for this run
         run: |
           mkdir -p $HOME/.config/nix
@@ -34,65 +38,3 @@ jobs:
           # Exit non-zero if an expected output is missing
           jq -e '.nixosConfigurations | has("cosmic-workstation")' flake.json
           jq -e '.nixosConfigurations | has("gnome-workstation")'  flake.json
-name: Flake validation
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  flake-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Nix (single-user)
-        run: |
-          curl -L https://nixos.org/nix/install | sh
-          . $HOME/.nix-profile/etc/profile.d/nix.sh
-
-      - name: Validate top-level flake
-        run: |
-          nix --extra-experimental-features 'nix-command flakes' flake show .
-
-      - name: Validate required outputs exist (JSON + jq)
-        run: |
-          # Use JSON output and jq to assert expected outputs exist.
-          nix --extra-experimental-features 'nix-command flakes' flake show --json . > flake.json
-          cat flake.json | jq '.nixosConfigurations | keys'
-          # Exit non-zero if an expected output is missing
-          cat flake.json | jq -e '.nixosConfigurations | has("cosmic-workstation")'
-          cat flake.json | jq -e '.nixosConfigurations | has("gnome-workstation")'
-name: Flake evaluation
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  flake-eval:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Nix
-        uses: cachix/install-nix-action@v14
-        with:
-          nix_path: "nixpkgs=github:NixOS/nixpkgs/nixpkgs-unstable"
-
-      - name: Enable experimental features for this run
-        run: |
-          mkdir -p $HOME/.config/nix
-          echo 'extra-experimental-features = nix-command flakes' >> $HOME/.config/nix/nix.conf
-
-      - name: Evaluate flakes
-        run: |
-          nix --version
-          # Evaluate top-level flake and the GNOME flake (enable features explicitly as a fallback)
-          nix --extra-experimental-features 'nix-command flakes' flake show .
-          nix --extra-experimental-features 'nix-command flakes' flake show ./flakes/gnome
