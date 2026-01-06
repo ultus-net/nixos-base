@@ -2,7 +2,9 @@
   description = "Full NixOS COSMIC developer workstation with QoL, Home Manager, and devshells";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  # Pin nixpkgs to a specific commit for reproducibility. The commit hash
+  # is taken from `flake.lock` (pinned to the current nixpkgs-unstable tip).
+  nixpkgs.url = "github:NixOS/nixpkgs/16c7794d0a28b5a37904d55bcca36003b9109aaa";
     flake-utils.url = "github:numtide/flake-utils";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";

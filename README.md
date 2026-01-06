@@ -67,6 +67,22 @@ The CI validation was updated to ensure `profiles/` and `machines/` exist and
 to run `./scripts/validate-hosts-home-manager.sh` which checks that profiles
 and deployment entries import the Home Manager module appropriately.
 
+Using unstable
+--------------
+
+This flake uses the `nixpkgs-unstable` input by default to pick up newer
+packages and desktop features. If you prefer a stable channel for a given
+machine, create a machine entry that pins `nixpkgs` locally or override the
+flake input when building/installing.
+
+Snapshot retention
+------------------
+
+To avoid accumulating old generations and GC roots on devices, the machine
+master sets Nix garbage collection options that delete items older than 14
+days by default. You can override this in a machine file by setting
+`nix.gc.options` or disabling `nix.gc.automatic` if you prefer manual control.
+
 Helper script
 -------------
 
