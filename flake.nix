@@ -326,8 +326,8 @@
           in nixpkgs.lib.nixosSystem {
               inherit system;
               specialArgs = { inputs = self.inputs; };
-            modules = [
-              ./hosts/cosmic-workstation.nix
+              modules = [
+              ./profiles/cosmic.nix
             ];
           };
 
@@ -339,7 +339,7 @@
               inherit system;
               specialArgs = { inputs = self.inputs; };
             modules = [
-              ./hosts/gnome-workstation.nix
+              ./profiles/gnome.nix
             ];
           };
 
@@ -350,7 +350,7 @@
               inherit system;
               specialArgs = { inputs = self.inputs; };
             modules = [
-              ./hosts/kde-workstation.nix
+              ./profiles/kde.nix
             ];
           };
         };

@@ -36,9 +36,11 @@ directly with `nix flake show` (you may see "unexpected fragment" errors). Use
 the JSON approach above or reference the flake via an absolute path if needed.
 
 - `modules/` — small, focused NixOS module fragments (desktop support, common packages,
-	development, QoL, etc.). These are intended to be imported into host-specific
-	configurations.
-- `hosts/` — example host modules that compose the fragments in `modules/`.
+	development, QoL, etc.). These are intended to be imported into profile or
+	machine-specific configurations.
+- `profiles/` — example desktop profiles that compose the fragments in `modules/`.
+- `machines/` — machine deployment entries that import `machines/configuration.nix`
+	and a `profiles/*` file (or `hardware-configuration.nix` produced at install time).
 - `flake.nix` — exports dev shells, a Home Manager module and an example NixOS
 	configuration called `cosmic-workstation`.
 
@@ -84,10 +86,12 @@ LUKS examples) describing how to install this flake on a fresh VM or device.
 
 ## Switching desktops & machines (quick start)
 
-The pattern used here is composition: each host file under `hosts/` imports the
-desktop-agnostic pieces plus a small desktop module (for example, `modules/kde.nix`
-or `modules/cosmic.nix`). To use or build a particular host configuration from
-the flake you can reference its name from the flake outputs.
+The pattern used here is composition: desktop profiles live under `profiles/` and
+contain desktop-agnostic pieces plus a small desktop module (for example,
+`modules/kde.nix` or `modules/cosmic.nix`). To deploy to a physical device,
+create a `machines/<name>.nix` entry that imports `machines/configuration.nix`
+and the chosen `profiles/<profile>.nix` file. The flake still exposes the
+desktop profiles as top-level NixOS outputs for convenience.
 
 Examples:
 
@@ -106,9 +110,10 @@ nix build .#nixosConfigurations.kde-workstation.config.system.build.toplevel
 nixos-rebuild build --flake .#kde-workstation
 ```
 
-Notes:
-- Add your own host by creating a file under `hosts/` that `imports` the
-	fragments you want. Use `common-packages.nix` for a desktop-agnostic set of
-	utilities and add `kde.nix`, `cosmic.nix`, or other desktop modules as needed.
+- Notes:
+- Add your own machine by creating a file under `machines/` that `imports`
+	`machines/configuration.nix` and the profile you want from `profiles/`.
+	Use `common-packages.nix` for a desktop-agnostic set of utilities and add
+	`kde.nix`, `cosmic.nix`, or other desktop modules in the profile.
 - The flake already provides `homeManagerModules` and a `templates/home`
 	example you can adapt for user dotfiles.

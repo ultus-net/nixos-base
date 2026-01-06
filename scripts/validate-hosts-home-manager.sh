@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Validate that each host file under `hosts/` imports the Home Manager module
-# at `../modules/home-manager.nix` (or a path containing "home-manager.nix").
+# Validate that each profile under `profiles/` and each machine under
+# `machines/` imports the Home Manager module at `../modules/home-manager.nix`
+# (or a path containing "home-manager.nix").
 
 fail=0
-for f in hosts/*.nix; do
+for f in profiles/*.nix machines/*.nix; do
   if grep -Eq "home-manager\.nix" "$f"; then
     echo "OK: $f imports home-manager"
     continue

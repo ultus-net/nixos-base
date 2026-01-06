@@ -1,0 +1,43 @@
+/*
+  Master machine configuration for `machines/`.
+
+  This file contains generic, installer-friendly defaults for machine
+  deployments (locale, network manager/DHCP, zram, redistributable firmware,
+  etc.). Machine entries in `machines/` should import this and then add
+  device-specific settings (hostname, users, hardware-configuration.nix).
+*/
+
+{ config, pkgs, lib, ... }:
+{
+  # General, installer-friendly defaults; override in machine files as
+  # needed per-machine.
+  time.timeZone = "UTC";
+
+  # Enable SSH to ease remote installation/testing (can be disabled after
+  # setup).
+  services.openssh.enable = true;
+
+  # Enable redistributable firmware so hardware that requires non-free blobs
+  # works across rebuilds. This is a safe, conservative default for desktops.
+  hardware.enableRedistributableFirmware = true;
+
+  # Locale and keyboard defaults.
+  i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";
+  console.keyMap = lib.mkDefault "us";
+
+  # Networking defaults: prefer NetworkManager and DHCP for desktop-style
+  # machines. Per-machine configs may disable NetworkManager and provide
+  # static settings when required.
+  networking.networkmanager.enable = lib.mkDefault true;
+
+  # Use systemd-resolved by default for consistent DNS resolution across
+  # environments.
+  services.systemd-resolved.enable = lib.mkDefault true;
+
+  # Provide a sensible default hostname that machines should override.
+  networking.hostName = lib.mkDefault "nixos-host";
+
+  # Desktop-friendly default for swap: enable zram-based swap.
+  services.zram.enable = lib.mkDefault true;
+  services.zram.swap.enable = lib.mkDefault true;
+}

@@ -124,7 +124,7 @@ When using LUKS you must ensure your NixOS configuration contains the
 appropriate `boot.initrd.luks.devices` and `fileSystems` entries so the system
 can unlock the root on boot. If you're not comfortable editing the flake
 directly, you can `nixos-generate-config --root /mnt` and adapt the generated
-configuration file (for example `hosts/configuration.nix`) before running
+configuration file (for example `machines/configuration.nix`) before running
 `nixos-install`.
 
 6) Post-install: reboot and verify
@@ -148,8 +148,8 @@ sudo nix-env -q --profile /nix/var/nix/profiles/system
 7) Enabling flakes permanently
 
 To avoid passing experimental flags manually each time, add the following to
-your NixOS configuration (for example the flake's host module or
-`hosts/configuration.nix`):
+your NixOS configuration (for example the flake's machine module or
+`machines/configuration.nix`):
 
 ```nix
 nix.extraOptions = ''

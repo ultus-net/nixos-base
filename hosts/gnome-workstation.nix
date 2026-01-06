@@ -1,24 +1,7 @@
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, lib, ... }:
 {
-  imports = [
-    ./configuration.nix
-    ../modules/common-packages.nix
-    ../modules/gnome.nix
-    ../modules/home-manager.nix
-    ../modules/qol.nix
-  ];
-
-  networking.hostName = "gnome-workstation";
-
-  commonPackages.enable = true;
-  commonPackages.packages = [ pkgs.git pkgs.curl ];
-
-  users.users.csh = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "audio" "video" ];
-    createHome = true;
-    shell = pkgs.bashInteractive;
-  };
-
-  gnome.enable = true;
+  # DEPRECATED: this file has been moved to `profiles/gnome.nix`.
+  #
+  # See `machines/example-machine.nix` for a template showing how to compose
+  # the machine master configuration with a desktop profile.
 }
