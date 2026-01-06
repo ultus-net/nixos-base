@@ -38,12 +38,13 @@
   networking.hostName = lib.mkDefault "nixos-host";
 
   # Desktop-friendly default for swap: enable zram-based swap. The zram
-  # implementation and size are provided by the `machines/zram.nix` module;
+  # implementation and size are provided by the `modules/zram.nix` module;
   # import it here so the option is available and the service is installed.
   services.zram.enable = lib.mkDefault true;
   services.zram.swap.enable = lib.mkDefault true;
 
-  imports = [ ./zram.nix ];
+  # Import shared, reusable modules from `modules/`.
+  imports = [ ../modules/zram.nix ];
 
   # Ensure we keep a small number of system generations while still
   # deleting older store paths. The service below keeps the last 3 system

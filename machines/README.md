@@ -16,7 +16,10 @@ Example `machines/my-pc.nix`:
 ```nix
 { config, pkgs, lib, ... }:
 {
-  imports = [ ./configuration.nix ../profiles/cosmic.nix ./common-users.nix ];
+  # Import the machine master defaults (./configuration.nix), the chosen
+  # desktop profile (../profiles/cosmic.nix), and the shared users module
+  # (../modules/common-users.nix).
+  imports = [ ./configuration.nix ../profiles/cosmic.nix ../modules/common-users.nix ];
   networking.hostName = "my-pc";
   # Import hardware-configuration.nix generated during install:
   # imports = [ ./configuration.nix ../profiles/cosmic.nix ./hardware-configuration.nix ];
@@ -25,13 +28,13 @@ Example `machines/my-pc.nix`:
 
 Zram tuning
 -----------
-The machine master exposes `machines.zram.*` options. By default zram size is
-computed as min(total RAM / 2, `machines.zram.maxSize`). You can override
-explicitly with `machines.zram.size` or disable the heuristic with
-`machines.zram.enableAutoSize = false`.
+The zram module is provided at `modules/zram.nix` and exposes `machines.zram.*`
+options. By default zram size is computed as min(total RAM / 2,
+`machines.zram.maxSize`). You can override explicitly with `machines.zram.size`
+or disable the heuristic with `machines.zram.enableAutoSize = false`.
 
 Users
 -----
-Centralized user creation lives in `machines/common-users.nix`. You can
+Centralized user creation lives in `modules/common-users.nix`. You can
 declare multiple users by setting `machines.users` in a machine file; the
 format matches the NixOS `users.users` attribute set.

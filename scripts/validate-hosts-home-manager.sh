@@ -14,13 +14,13 @@ for f in profiles/*.nix machines/*.nix; do
 
   # Heuristic: only require Home Manager import for profile files or machine
   # entries that look like deployments (they reference a profile or set
-  # a hostname or users). Skip pure module files (for example zram.nix,
-  # common-users.nix) which expose options and don't need to import home-manager.
+  # a hostname or users). Skip pure module files (for example modules/zram.nix,
+  # modules/common-users.nix) which expose options and don't need to import home-manager.
   # Only require Home Manager import for files that reference a profile
   # (../profiles/ or profiles/) or appear to be a deployment (set hostname or
   # define users.users). Pure modules (options, helper modules) are skipped.
-  # Skip pure module files that expose options (for example zram.nix,
-  # common-users.nix) — they don't need to import Home Manager.
+  # Skip pure module files that expose options (for example modules/zram.nix,
+  # modules/common-users.nix) — they don't need to import Home Manager.
   if grep -Eq '^[[:space:]]*options[[:space:]]*=' "$f" || grep -Eq 'options[[:space:]]*=' "$f"; then
     echo "SKIP: $f defines options (module); skipping Home Manager check"
     continue

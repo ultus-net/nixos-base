@@ -59,8 +59,8 @@ Refactor & repository layout
 Recent refactors split desktop concerns (profiles) from machine deployments.
 - `profiles/` contains desktop profiles (COSMIC, GNOME, KDE) — reusable across many machines.
 - `machines/` contains machine deployment entries and the master machine defaults in `machines/configuration.nix`.
-- `machines/common-users.nix` centralizes per-machine user creation.
-- `machines/zram.nix` provides a tunable zram module with an automatic sizing heuristic and compression option.
+- `modules/common-users.nix` centralizes per-machine user creation.
+- `modules/zram.nix` provides a tunable zram module with an automatic sizing heuristic and compression option.
 - Old `hosts/` files were archived to `hosts-deprecated/` during the migration.
 
 The CI validation was updated to ensure `profiles/` and `machines/` exist and
@@ -140,7 +140,7 @@ nix build .#nixosConfigurations.kde-workstation.config.system.build.toplevel
 nixos-rebuild build --flake .#kde-workstation
 ```
 
-Notes
+- Notes
 -----
 
 - Add your own machine by creating a file under `machines/` that `imports`

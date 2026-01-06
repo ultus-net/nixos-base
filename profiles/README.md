@@ -15,7 +15,7 @@ Usage
   entry. For example:
 
   ```nix
-  imports = [ ./machines/configuration.nix ../profiles/cosmic.nix ./machines/common-users.nix ];
+  imports = [ ./configuration.nix ../profiles/cosmic.nix ../modules/common-users.nix ];
   networking.hostName = "my-pc";
   ```
 
