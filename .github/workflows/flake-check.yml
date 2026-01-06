@@ -13,6 +13,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate hosts use Home Manager
+        run: |
+          # Ensure host files import the Home Manager module
+          bash ./scripts/validate-hosts-home-manager.sh
+
       - name: Install Nix
         uses: cachix/install-nix-action@v14
         with:

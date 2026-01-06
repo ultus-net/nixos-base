@@ -1,0 +1,30 @@
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*~
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Node
+node_modules/
+
+# Nix build results
+/result
+/result-
+
+# Environment files
+.env
+.envrc
+
+# Logs and caches
+.cache/
+/*.log
+
+# JetBrains
+*.iml
