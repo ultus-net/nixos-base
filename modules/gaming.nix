@@ -2,9 +2,9 @@
 let
   cfg = config.gaming;
 
-  # A conservative list of package attribute names we want to include when
-  # available on the current nixpkgs. We check for attribute presence so the
-  # module can be evaluated across channels without failing on missing names.
+  # Desired package attribute names to include when present in pkgs. We
+  # filter by presence to make the module evaluation robust across
+  # different nixpkgs snapshots (avoid evaluation-time errors).
   desiredAttrs = [
     "steam" "lutris" "steamcmd" "heroic" "gamescope" "mangohud"
     "vkbasalt" "latencyflex" "gamemode" "libFAudio" "vulkan-tools"
@@ -12,9 +12,11 @@ let
     "obs_vkcapture" "mangohud-profiles"
   ];
 
+  # Map the filtered attribute names to actual package values from pkgs.
   available = builtins.map (n: builtins.getAttr n pkgs)
     (builtins.filter (n: lib.hasAttr n pkgs) desiredAttrs);
 
+  # List of 32-bit compatibility packages we want when available.
   lib32Desired = [ "vulkan-loader" "libFAudio" ];
   lib32Available = if lib.hasAttr "lib32Packages" pkgs
     then builtins.map (n: builtins.getAttr n pkgs.lib32Packages)
@@ -29,9 +31,15 @@ in {
       description = "Extra packages (from pkgs) to include for gaming usage.";
     };
 
+    # Toggle for installing common i386 (lib32) compatibility packages.
     enableI386Compat = lib.mkEnableOption "Add common i386/lib32 compatibility packages when available";
+
+    # Informational toggle: if true, the module may expose instructions
+    # or notes about Flatpaks (it does not install Flatpaks automatically).
     enableFlatpaks = lib.mkEnableOption "Expose convenience notes for installing common Flatpaks (no automatic flatpak installs)";
 
+    # Proton environment helpers: write environment variables to the system
+    # environment when requested (useful for Proton/Game compatibility tuning).
     enableProtonEnv = lib.mkEnableOption "Write recommended Proton-related environment variables to the system environment";
     protonEnv = lib.mkOption {
       type = lib.types.attrs;
@@ -41,9 +49,12 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    # Compose systemPackages from user-specified packages plus the available
+    # gaming packages and optional lib32 compatibility packages.
     environment.systemPackages = (cfg.packages or []) ++ available ++ (if cfg.enableI386Compat then lib32Available else []);
 
-    # If requested, write Proton related environment variables to /etc/environment
+    # Optionally write Proton-related variables into the system environment
+    # so they are available system-wide (use with care).
     environment.variables = lib.mkIf cfg.enableProtonEnv cfg.protonEnv;
   };
 }

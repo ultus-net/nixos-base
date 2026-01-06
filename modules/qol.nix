@@ -1,5 +1,8 @@
 { config, pkgs, lib, ... }:
 {
+  # QoL package bundle: install a curated set of system-level utilities and
+  # applications intended to improve developer ergonomics. Keep program
+  # specific configuration in Home Manager where appropriate.
   environment.systemPackages = with pkgs; [
     # Basics & QoL (inspired by Universal Blue)
     curl wget httpie

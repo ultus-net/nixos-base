@@ -2,6 +2,8 @@
 let
   cfg = config.commonPackages;
 in {
+  # Options for the common-packages module: an enable toggle and a list of
+  # extra package values from `pkgs` to include in the system packages.
   options.commonPackages = {
     enable = lib.mkEnableOption "Enable a small set of desktop-agnostic common packages";
     packages = lib.mkOption {
@@ -11,6 +13,8 @@ in {
     };
   };
 
+  # When enabled, compose the systemPackages list from any user-provided
+  # packages plus a small pre-curated set of useful CLI tools and helpers.
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; (cfg.packages or []) ++ [
       # CLI tools useful regardless of desktop

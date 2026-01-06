@@ -2,11 +2,12 @@
 let
   cfg = config.kde;
 
-  # Conservative list of KDE/Plasma user-facing packages to install when
-  # available in the current nixpkgs. We guard with lib.hasAttr so evaluation
-  # won't fail on older/newer channels.
+  # Conservative list of KDE/Plasma package attribute names we try to include
+  # when present in pkgs. We filter by presence to avoid evaluation errors
+  # across different nixpkgs versions.
   desiredAttrs = [ "dolphin" "konsole" "okular" "kate" "kdeconnect" "breeze-icons" "kwrite" ];
 
+  # Map available attribute names to actual package values.
   available = builtins.map (n: builtins.getAttr n pkgs)
     (builtins.filter (n: lib.hasAttr n pkgs) desiredAttrs);
 in {
@@ -21,12 +22,13 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    # Enable the Plasma desktop and SDDM display manager with optional Wayland.
     services.xserver.enable = true;
     services.xserver.desktopManager.plasma5.enable = true;
     services.xserver.displayManager.sddm.enable = true;
     services.xserver.displayManager.sddm.wayland = cfg.enableWayland;
 
-    # Install user-specified extra packages (safe: user provides package values)
+    # Install extra user-provided packages plus the conservative KDE list.
     environment.systemPackages = (cfg.extraPackages or []) ++ available;
   };
 }
