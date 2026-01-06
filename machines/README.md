@@ -1,0 +1,37 @@
+README — machines/
+===================
+
+Purpose
+-------
+This directory contains machine deployment entries and a master machine
+configuration (`machines/configuration.nix`). Machine files should compose the
+master defaults with a `profiles/<profile>.nix` entry and, when installing,
+an installer-generated `hardware-configuration.nix`.
+
+Quick template
+--------------
+
+Example `machines/my-pc.nix`:
+
+```nix
+{ config, pkgs, lib, ... }:
+{
+  imports = [ ./configuration.nix ../profiles/cosmic.nix ./common-users.nix ];
+  networking.hostName = "my-pc";
+  # Import hardware-configuration.nix generated during install:
+  # imports = [ ./configuration.nix ../profiles/cosmic.nix ./hardware-configuration.nix ];
+}
+```
+
+Zram tuning
+-----------
+The machine master exposes `machines.zram.*` options. By default zram size is
+computed as min(total RAM / 2, `machines.zram.maxSize`). You can override
+explicitly with `machines.zram.size` or disable the heuristic with
+`machines.zram.enableAutoSize = false`.
+
+Users
+-----
+Centralized user creation lives in `machines/common-users.nix`. You can
+declare multiple users by setting `machines.users` in a machine file; the
+format matches the NixOS `users.users` attribute set.

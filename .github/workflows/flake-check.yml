@@ -13,10 +13,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Validate hosts use Home Manager
+      - name: Validate profiles & machines import Home Manager
         run: |
-          # Ensure host files import the Home Manager module
+          # Ensure profile and machine files import the Home Manager module
           bash ./scripts/validate-hosts-home-manager.sh
+
+      - name: Ensure profiles and machines exist
+        run: |
+          # Fail early if the repo has no profiles or machines entries
+          sh -e -c 'test -n "$(ls -A profiles 2>/dev/null || true)"'
+          sh -e -c 'test -n "$(ls -A machines 2>/dev/null || true)"'
 
       - name: Install Nix
         uses: cachix/install-nix-action@v14

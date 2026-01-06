@@ -11,15 +11,15 @@
 {
   # General, installer-friendly defaults; override in machine files as
   # needed per-machine.
-  time.timeZone = "UTC";
+  time.timeZone = lib.mkDefault "UTC";
 
   # Enable SSH to ease remote installation/testing (can be disabled after
   # setup).
-  services.openssh.enable = true;
+  services.openssh.enable = lib.mkDefault true;
 
   # Enable redistributable firmware so hardware that requires non-free blobs
   # works across rebuilds. This is a safe, conservative default for desktops.
-  hardware.enableRedistributableFirmware = true;
+  hardware.enableRedistributableFirmware = lib.mkDefault true;
 
   # Locale and keyboard defaults.
   i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";
@@ -37,7 +37,11 @@
   # Provide a sensible default hostname that machines should override.
   networking.hostName = lib.mkDefault "nixos-host";
 
-  # Desktop-friendly default for swap: enable zram-based swap.
+  # Desktop-friendly default for swap: enable zram-based swap. The zram
+  # implementation and size are provided by the `machines/zram.nix` module;
+  # import it here so the option is available and the service is installed.
   services.zram.enable = lib.mkDefault true;
   services.zram.swap.enable = lib.mkDefault true;
+
+  imports = [ ./zram.nix ];
 }

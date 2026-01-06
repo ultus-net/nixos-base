@@ -1,7 +1,0 @@
-{
-  // Use the built-in credential helpers / manager instead of the system
-  // OpenSSH binary for Git operations in this workspace. This forces VS
-  // Code to avoid using `ssh` for authentication and prefer HTTPS/token
-  // flows provided by the GitHub auth extension or `gh`.
-  "git.useOpenSsh": false
-}
