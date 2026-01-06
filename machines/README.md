@@ -8,6 +8,19 @@ configuration (`machines/configuration.nix`). Machine files should compose the
 master defaults with a `profiles/<profile>.nix` entry and, when installing,
 an installer-generated `hardware-configuration.nix`.
 
+Note about moved modules
+------------------------
+Some helper modules that previously lived under `machines/` have been moved to
+`modules/` to make them reusable across profiles and machines. The removed
+files are:
+
+- `machines/common-users.nix` (now `modules/common-users.nix`)
+- `machines/zram.nix` (now `modules/zram.nix`)
+
+See `modules/` for the canonical, reusable module implementations. Example
+machine files import them via `../modules/common-users.nix` and
+`../modules/zram.nix`.
+
 Quick template
 --------------
 

@@ -62,6 +62,20 @@ Recent refactors split desktop concerns (profiles) from machine deployments.
 - `modules/common-users.nix` centralizes per-machine user creation.
 - `modules/zram.nix` provides a tunable zram module with an automatic sizing heuristic and compression option.
 - Old `hosts/` files were archived to `hosts-deprecated/` during the migration.
+  
+Note about moved files
+----------------------
+During a recent refactor some helper modules were moved out of `machines/`
+and into `modules/` to make them reusable across profiles and machines. The
+following files were moved and the old copies removed:
+
+- `machines/common-users.nix` -> `modules/common-users.nix`
+- `machines/zram.nix` -> `modules/zram.nix`
+
+Machine examples and docs now import these from `../modules/...` (see
+`machines/example-machine.nix` for an example). This change doesn't affect
+the option names exposed by the modules — options still live in the
+`machines.*` namespace (for example `machines.zram.*` and `machines.users`).
 
 The CI validation was updated to ensure `profiles/` and `machines/` exist and
 to run `./scripts/validate-hosts-home-manager.sh` which checks that profiles
