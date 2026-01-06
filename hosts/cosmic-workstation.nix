@@ -1,9 +1,10 @@
 { config, pkgs, lib, inputs, ... }:
 {
-  # Import reusable module fragments from `modules/` so this host is composed
-  # from small, desktop-agnostic pieces. The `inputs` argument is passed in
-  # from the top-level flake via `specialArgs` when building a nixosSystem.
+  # Import the master `configuration.nix` first, then compose the workstation
+  # configuration from small, reusable module fragments located in
+  # `modules/`.
   imports = [
+    ./configuration.nix
     ../modules/common-packages.nix
     ../modules/cosmic.nix
     ../modules/home-manager.nix
@@ -11,9 +12,8 @@
     ../modules/development.nix
   ];
 
-  # Basic machine identity
+  # Basic machine identity — kept per-host so the master file remains generic.
   networking.hostName = "cosmic-workstation";
-  time.timeZone = "UTC";
 
   # Enable common package bundle and add a couple extras for convenience
   commonPackages.enable = true;
@@ -26,9 +26,6 @@
     createHome = true;
     shell = pkgs.bashInteractive;
   };
-
-  # Enable SSH for remote administration during testing
-  services.openssh.enable = true;
 
   # Relax sudo for developer convenience on this example host (optional)
   security.sudo.wheelNeedsPassword = false;

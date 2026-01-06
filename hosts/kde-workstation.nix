@@ -1,6 +1,7 @@
 { config, pkgs, lib, inputs, ... }:
 {
   imports = [
+    ./configuration.nix
     ../modules/common-packages.nix
     ../modules/kde.nix
     ../modules/home-manager.nix
@@ -8,7 +9,6 @@
   ];
 
   networking.hostName = "kde-workstation";
-  time.timeZone = "UTC";
 
   commonPackages.enable = true;
   commonPackages.packages = [ pkgs.git pkgs.htop ];
@@ -23,6 +23,4 @@
   # Prefer Wayland on Plasma where available
   kde.enable = true;
   kde.enableWayland = true;
-
-  services.openssh.enable = true;
 }

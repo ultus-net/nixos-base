@@ -1,6 +1,7 @@
 { config, pkgs, lib, inputs, ... }:
 {
   imports = [
+    ./configuration.nix
     ../modules/common-packages.nix
     ../modules/gnome.nix
     ../modules/home-manager.nix
@@ -8,7 +9,6 @@
   ];
 
   networking.hostName = "gnome-workstation";
-  time.timeZone = "UTC";
 
   commonPackages.enable = true;
   commonPackages.packages = [ pkgs.git pkgs.curl ];
@@ -21,6 +21,4 @@
   };
 
   gnome.enable = true;
-
-  services.openssh.enable = true;
 }
