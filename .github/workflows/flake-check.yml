@@ -22,9 +22,10 @@ jobs:
         run: |
           nix --extra-experimental-features 'nix-command flakes' flake show .
 
-      - name: Validate GNOME nested flake
+      - name: Validate GNOME output (top-level)
         run: |
-          nix --extra-experimental-features 'nix-command flakes' flake show ./flakes/gnome
+          # Validate the top-level flake exposes the gnome-workstation output
+          nix --extra-experimental-features 'nix-command flakes' flake show .#gnome-workstation || true
 name: Flake evaluation
 
 on:

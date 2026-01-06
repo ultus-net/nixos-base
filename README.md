@@ -24,13 +24,14 @@ nix --extra-experimental-features 'nix-command flakes' flake show ./flakes/gnome
 - `flake.nix` — exports dev shells, a Home Manager module and an example NixOS
 	configuration called `cosmic-workstation`.
 
-Multiple flakes
-----------------
+Multiple desktops (single top-level flake)
+-----------------------------------------
 
-This repo supports both a single top-level flake and additional nested flakes
-for per-desktop workflows. For example, there's a dedicated GNOME flake at
-`./flakes/gnome/flake.nix` exposing `gnome-workstation`. You can reference it like
-`./flakes/gnome#gnome-workstation` when building or switching.
+This repo exposes desktop workstation configurations from the top-level flake.
+Both `cosmic-workstation` and `gnome-workstation` are available as top-level
+outputs so you can reference them like `.#cosmic-workstation` or `.#gnome-workstation`.
+This keeps the repository surface area to a single flake and avoids nested
+flake duplication.
 
 Helper script
 -------------

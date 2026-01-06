@@ -330,6 +330,18 @@
               ./hosts/cosmic-workstation.nix
             ];
           };
+
+          # Expose GNOME workstation as a top-level nixosConfiguration so there
+          # is only a single top-level flake providing desktop configurations.
+          gnome-workstation = let
+            system = "x86_64-linux";
+          in nixpkgs.lib.nixosSystem {
+              inherit system;
+              specialArgs = { inputs = self.inputs; };
+            modules = [
+              ./hosts/gnome-workstation.nix
+            ];
+          };
         };
 
         # Out-of-system content like templates
