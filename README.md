@@ -7,8 +7,8 @@ CI and local validation
 
 This repository includes a GitHub Actions workflow at `.github/workflows/flake-check.yml`
 that validates the top-level flake on push and pull requests to `main`. The workflow
-installs Nix and runs `nix flake show` plus explicit checks for the `cosmic-workstation`
-and `gnome-workstation` outputs.
+installs Nix and runs `nix flake show` plus explicit checks for the `cosmic-workstation`,
+`gnome-workstation`, and `kde-workstation` outputs.
 
 Run the same checks locally with one of these approaches:
 
@@ -28,6 +28,7 @@ jq '.nixosConfigurations | keys' flake.json
 # exit non-zero if missing
 jq -e '.nixosConfigurations | has("cosmic-workstation")' flake.json
 jq -e '.nixosConfigurations | has("gnome-workstation")' flake.json
+jq -e '.nixosConfigurations | has("kde-workstation")' flake.json
 ```
 
 Note: some versions of the `nix` CLI don't accept a fragment (the `#name` suffix)
@@ -45,8 +46,8 @@ Multiple desktops (single top-level flake)
 -----------------------------------------
 
 This repo exposes desktop workstation configurations from the top-level flake.
-Both `cosmic-workstation` and `gnome-workstation` are available as top-level
-outputs so you can reference them like `.#cosmic-workstation` or `.#gnome-workstation`.
+`cosmic-workstation`, `gnome-workstation`, and `kde-workstation` are available as top-level
+outputs so you can reference them like `.#cosmic-workstation`, `.#gnome-workstation`, or `.#kde-workstation`.
 This keeps the repository surface area to a single flake and avoids nested
 flake duplication.
 
@@ -63,6 +64,9 @@ provided. Examples:
 
 # Build / switch to GNOME host via the top-level flake (switch requires root)
 sudo ./scripts/switch-host.sh .#gnome-workstation
+
+# Build / switch to KDE host via the top-level flake (switch requires root)
+sudo ./scripts/switch-host.sh .#kde-workstation
 ```
 
 CI

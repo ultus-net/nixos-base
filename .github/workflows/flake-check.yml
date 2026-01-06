@@ -38,3 +38,4 @@ jobs:
           # Exit non-zero if an expected output is missing
           jq -e '.nixosConfigurations | has("cosmic-workstation")' flake.json
           jq -e '.nixosConfigurations | has("gnome-workstation")'  flake.json
+          jq -e '.nixosConfigurations | has("kde-workstation")'  flake.json

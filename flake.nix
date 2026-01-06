@@ -342,6 +342,17 @@
               ./hosts/gnome-workstation.nix
             ];
           };
+
+          # KDE workstation exposed at top-level like the others
+          kde-workstation = let
+            system = "x86_64-linux";
+          in nixpkgs.lib.nixosSystem {
+              inherit system;
+              specialArgs = { inputs = self.inputs; };
+            modules = [
+              ./hosts/kde-workstation.nix
+            ];
+          };
         };
 
         # Out-of-system content like templates
