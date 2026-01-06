@@ -7,6 +7,42 @@ on:
     branches: [ main ]
 
 jobs:
+  validate-flake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v14
+        with:
+          nix_path: "nixpkgs=github:NixOS/nixpkgs/nixpkgs-unstable"
+
+      - name: Enable experimental features for this run
+        run: |
+          mkdir -p $HOME/.config/nix
+          echo 'extra-experimental-features = nix-command flakes' >> $HOME/.config/nix/nix.conf
+
+      - name: Show nix version
+        run: nix --version
+
+      - name: Validate top-level flake (JSON checks)
+        run: |
+          # Dump flake outputs as JSON and assert required outputs exist.
+          nix --extra-experimental-features 'nix-command flakes' flake show --json . > flake.json
+          cat flake.json | jq '.nixosConfigurations | keys'
+          # Exit non-zero if an expected output is missing
+          jq -e '.nixosConfigurations | has("cosmic-workstation")' flake.json
+          jq -e '.nixosConfigurations | has("gnome-workstation")'  flake.json
+name: Flake validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
   flake-check:
     runs-on: ubuntu-latest
     steps:
