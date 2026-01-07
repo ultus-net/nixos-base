@@ -168,8 +168,9 @@
         jnoortheen.nix-ide
       ];
 
+      # Disable chat sessions in VS Code
       userSettings = {
-        "chat.viewSessions.enabled" = false;
+        "chat.experimental.showOnStartup" = false;
       };
     };
   };
@@ -297,7 +298,6 @@
       force = true;
     };
 
-    # VS Code settings - allow Home Manager to manage
-    "Code/User/settings.json".force = true;
+
   };
 }
