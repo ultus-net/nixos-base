@@ -46,6 +46,11 @@ If you just want a working machine quickly, here’s the minimal checklist:
 
 After the first boot:
 
+- [ ] **Set user passwords** (REQUIRED if not using SSH keys):
+  - The flake configuration uses `initialHashedPassword = lib.mkDefault ""` for security
+  - This means no password is set by default
+  - Set passwords manually after deployment: `sudo passwd <username>`
+  - Alternatively, generate a hashed password with `mkpasswd -m sha-512` and add it to your machine config
 - [ ] Add at least one user SSH public key via `machines.users` (recommended)
 - [ ] Confirm SSH hardening defaults match what you want
 - [ ] Run `sudo nixos-rebuild switch --flake /etc/nixos#<your-config>` (optional)
