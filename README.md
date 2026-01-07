@@ -11,12 +11,31 @@ If you're completely new to NixOS, start here:
 
 1) `INSTALL.md` — step-by-step install from the NixOS live ISO
 2) `machines/example-machine.nix` — a template you can copy for your device
-3) `profiles/` — choose COSMIC / GNOME / KDE
+3) `profiles/` — choose your desktop environment (10 options available!)
 
-> **Note about "COSMIC":** The `cosmic-workstation` profile currently uses
-> GNOME/GDM, not the actual System76 COSMIC desktop environment (which is still
-> in early development). It's named "COSMIC" for its developer-focused QoL
-> features. For a pure GNOME experience, use `gnome-workstation` instead.
+## Available Desktop Environments
+
+This flake provides **10 popular desktop environments** out of the box:
+
+| Desktop | Profile | Description |
+|---------|---------|-------------|
+| **COSMIC** | `cosmic-workstation` | System76's next-gen Rust/Wayland desktop (requires nixos-cosmic) |
+| **GNOME** | `gnome-workstation` | Modern GNOME Shell experience |
+| **GNOME Dev** | `gnome-dev-workstation` | GNOME optimized for developers |
+| **KDE Plasma** | `kde-workstation` | Feature-rich Qt desktop (Plasma 6) |
+| **Cinnamon** | `cinnamon-workstation` | Linux Mint's flagship desktop |
+| **XFCE** | `xfce-workstation` | Lightweight, traditional desktop |
+| **MATE** | `mate-workstation` | GNOME 2 fork, classic experience |
+| **Budgie** | `budgie-workstation` | Modern & elegant (Solus Linux) |
+| **Pantheon** | `pantheon-workstation` | elementary OS desktop |
+| **LXQt** | `lxqt-workstation` | Lightweight Qt desktop |
+
+Install any desktop with:
+```bash
+nixos-install --flake /mnt/nixos-base#<desktop>-workstation
+```
+
+Example: `nixos-install --flake /mnt/nixos-base#cosmic-workstation`
 
 ## Quick start (new NixOS install)
 
