@@ -44,14 +44,13 @@
     tmux
   ];
 
-  # Enable security hardening (firewall, fail2ban, sudo hardening)
-  security.enable = true;
+  # Security hardening is applied via modules/security.nix import above
+  # (firewall, SSH agent, avahi, etc.)
 
-  # Enable NetworkManager for easier network configuration
-  networking.enable = true;
-
-  # Enable ZRAM for better memory utilization
-  zram.enable = true;
+  # ZRAM swap configuration (using machines.zram.* options from modules/zram.nix)
+  # The module auto-sizes zram based on available RAM
+  machines.zram.enableAutoSize = true;
+  machines.zram.maxSize = 4294967296; # 4GiB max
 
   # Headless systems typically don't need audio or fonts
   # (These are not imported above, so they won't be available)
