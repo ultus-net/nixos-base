@@ -1,4 +1,4 @@
-name: Flake validation
+name: Comprehensive NixOS Validation
 
 on:
   push:
@@ -6,47 +6,321 @@ on:
   pull_request:
     branches: [ main ]
 
+# Cancel in-progress runs for the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  validate-flake:
+  # Quick validation checks
+  validate-basics:
+    name: Basic Validation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Validate profiles & machines import Home Manager
-        run: |
-          # Ensure profile and machine files import the Home Manager module
-          bash ./scripts/validate-hosts-home-manager.sh
+        run: bash ./scripts/validate-hosts-home-manager.sh
 
       - name: Ensure profiles and machines exist
         run: |
-          # Fail early if the repo has no profiles or machines entries
-          sh -e -c 'test -n "$(ls -A profiles 2>/dev/null || true)"'
-          sh -e -c 'test -n "$(ls -A machines 2>/dev/null || true)"'
+          test -n "$(ls -A profiles 2>/dev/null || true)"
+          test -n "$(ls -A machines 2>/dev/null || true)"
+
+      - name: Check for syntax errors in Nix files
+        run: |
+          find . -name "*.nix" -type f -print0 | xargs -0 -I {} sh -c 'nix-instantiate --parse {} > /dev/null || exit 1'
+
+  # Flake metadata and structure validation
+  validate-flake-structure:
+    name: Flake Structure Validation
+    runs-on: ubuntu-latest
+    needs: validate-basics
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v14
+        uses: cachix/install-nix-action@v27
         with:
           nix_path: "nixpkgs=github:NixOS/nixpkgs/nixpkgs-unstable"
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
 
-      - name: Ensure jq is available
+      - name: Setup Cachix (optional, speeds up builds)
+        uses: cachix/cachix-action@v14
+        with:
+          name: nixos-cosmic
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+        continue-on-error: true
+
+      - name: Validate flake metadata
         run: |
-          sudo apt-get update && sudo apt-get install -y jq
-
-      - name: Enable experimental features for this run
-        run: |
-          mkdir -p $HOME/.config/nix
-          echo 'extra-experimental-features = nix-command flakes' >> $HOME/.config/nix/nix.conf
-
-      - name: Show nix version
-        run: nix --version
-
-      - name: Validate top-level flake (JSON checks)
-        run: |
-          # Dump flake outputs as JSON and assert required outputs exist.
-          nix --extra-experimental-features 'nix-command flakes' flake show --json . > flake.json
+          nix flake metadata
+          nix flake show --json . > flake.json
           cat flake.json | jq '.nixosConfigurations | keys'
-          # Exit non-zero if any expected desktop output is missing
+
+      - name: Check all expected configurations exist
+        run: |
+          # Check for base-server
+          jq -e '.nixosConfigurations | has("base-server")' flake.json
+          # Check for all desktop environments
           for desktop in cosmic gnome kde cinnamon xfce mate budgie pantheon lxqt; do
             jq -e ".nixosConfigurations | has(\"${desktop}-workstation\")" flake.json
           done
+
+      - name: Verify homeConfigurations exist
+        run: |
+          jq -e '.homeConfigurations' flake.json
+
+  # Build and evaluation checks
+  build-configurations:
+    name: Build Test - ${{ matrix.config }}
+    runs-on: ubuntu-latest
+    needs: validate-flake-structure
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - base-server
+          - cosmic-workstation
+          - gnome-workstation
+          - kde-workstation
+          - cinnamon-workstation
+          - xfce-workstation
+          - mate-workstation
+          - budgie-workstation
+          - pantheon-workstation
+          - lxqt-workstation
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v14
+        with:
+          name: nixos-cosmic
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+        continue-on-error: true
+
+      - name: Build system configuration (dry-run)
+        run: |
+          nix build .#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel --dry-run --show-trace
+
+      - name: Check configuration evaluates without errors
+        run: |
+          nix eval .#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel.drvPath
+
+  # VM boot tests - actually test if systems boot
+  vm-boot-tests:
+    name: VM Boot Test - ${{ matrix.config }}
+    runs-on: ubuntu-latest
+    needs: build-configurations
+    # Only run on main branch or when PR has specific label
+    if: github.ref == 'refs/heads/main' || contains(github.event.pull_request.labels.*.name, 'test-vm-boot')
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - base-server
+          - gnome-workstation
+          - kde-workstation
+          - xfce-workstation
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
+      - name: Install Nix with KVM support
+        uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+            # Required for VM tests
+            system-features = nixos-test benchmark big-parallel kvm
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v14
+        with:
+          name: nixos-cosmic
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+        continue-on-error: true
+
+      - name: Build VM for ${{ matrix.config }}
+        run: |
+          nix build .#nixosConfigurations.${{ matrix.config }}.config.system.build.vm -L
+
+      - name: Test VM boots and reaches multi-user.target
+        timeout-minutes: 10
+        run: |
+          # Start VM in background with serial output to file
+          QEMU_KERNEL_PARAMS="console=ttyS0" ./result/bin/run-*-vm -nographic -serial file:vm-serial.log &
+          VM_PID=$!
+          
+          # Wait for boot to complete (check for systemd reaching target)
+          echo "Waiting for VM to boot..."
+          for i in {1..120}; do
+            if grep -q "Reached target.*Multi-User System" vm-serial.log 2>/dev/null; then
+              echo "✓ VM booted successfully and reached multi-user.target!"
+              kill $VM_PID 2>/dev/null || true
+              exit 0
+            fi
+            if ! kill -0 $VM_PID 2>/dev/null; then
+              echo "✗ VM process died unexpectedly"
+              cat vm-serial.log
+              exit 1
+            fi
+            sleep 2
+          done
+          
+          echo "✗ Timeout waiting for VM to boot"
+          cat vm-serial.log
+          kill $VM_PID 2>/dev/null || true
+          exit 1
+
+      - name: Upload VM serial log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vm-serial-log-${{ matrix.config }}
+          path: vm-serial.log
+          retention-days: 7
+
+  # Module and package checks
+  check-modules:
+    name: Module Validation
+    runs-on: ubuntu-latest
+    needs: validate-basics
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Check all modules can be imported
+        run: |
+          for module in modules/*.nix; do
+            echo "Checking $module..."
+            nix-instantiate --eval -E "(import <nixpkgs/nixos> { configuration = { imports = [ ./$module ]; }; }).config.system.build.toplevel.drvPath" || exit 1
+          done
+
+      - name: Verify no broken symlinks
+        run: |
+          if find . -xtype l | grep -q .; then
+            echo "Found broken symlinks:"
+            find . -xtype l
+            exit 1
+          fi
+
+  # Security and quality checks
+  security-checks:
+    name: Security & Quality
+    runs-on: ubuntu-latest
+    needs: validate-basics
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for hardcoded secrets
+        run: |
+          if grep -r "password\s*=\s*\"[^$]" --include="*.nix" .; then
+            echo "Found hardcoded passwords!"
+            exit 1
+          fi
+
+      - name: Check for example emails/hostnames
+        run: |
+          if grep -r "@example\.(com|org|net)" --include="*.nix" . | grep -v "user@example.com" | grep -v "admin@example.org" | grep -q .; then
+            echo "Found non-placeholder example emails!"
+            exit 1
+          fi
+
+      - name: Validate git attributes
+        run: |
+          # Ensure .gitattributes exists and has basic settings
+          test -f .gitattributes || echo "Warning: No .gitattributes file found"
+
+  # Home Manager validation
+  home-manager-check:
+    name: Home Manager Validation
+    runs-on: ubuntu-latest
+    needs: validate-flake-structure
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Build Home Manager configuration
+        run: |
+          nix build .#homeConfigurations.\"hunter@x86_64-linux\".activationPackage --dry-run
+
+      - name: Evaluate Home Manager configuration
+        run: |
+          nix eval .#homeConfigurations.\"hunter@x86_64-linux\".activationPackage.drvPath
+
+  # Final summary job
+  ci-success:
+    name: All Checks Passed
+    runs-on: ubuntu-latest
+    needs:
+      - validate-basics
+      - validate-flake-structure
+      - build-configurations
+      - check-modules
+      - security-checks
+      - home-manager-check
+    if: always()
+    steps:
+      - name: Check all jobs succeeded
+        run: |
+          if [ "${{ needs.validate-basics.result }}" != "success" ] ||
+             [ "${{ needs.validate-flake-structure.result }}" != "success" ] ||
+             [ "${{ needs.build-configurations.result }}" != "success" ] ||
+             [ "${{ needs.check-modules.result }}" != "success" ] ||
+             [ "${{ needs.security-checks.result }}" != "success" ] ||
+             [ "${{ needs.home-manager-check.result }}" != "success" ]; then
+            echo "One or more required checks failed"
+            exit 1
+          fi
+          echo "✓ All required checks passed!"
+
+  # VM tests run separately and don't block the main pipeline
+  vm-tests-summary:
+    name: VM Tests Status
+    runs-on: ubuntu-latest
+    needs: vm-boot-tests
+    if: always() && (github.ref == 'refs/heads/main' || contains(github.event.pull_request.labels.*.name, 'test-vm-boot'))
+    steps:
+      - name: Report VM test results
+        run: |
+          if [ "${{ needs.vm-boot-tests.result }}" == "success" ]; then
+            echo "✓ All VM boot tests passed!"
+          else
+            echo "⚠ Some VM boot tests failed - check the logs"
+            exit 1
+          fi

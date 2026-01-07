@@ -17,8 +17,18 @@ cannot be installed directly without adding:
 
 For a complete example, see `machines/example-machine.nix`.
 
-Available Desktops
+Available Profiles
 ------------------
+
+### Headless/Server Profile
+
+- **base.nix** — Minimal headless base (no desktop environment)
+  - Essential CLI tools and modern replacements
+  - Security hardening (firewall, fail2ban, SSH)
+  - NetworkManager for network configuration
+  - ZRAM compressed swap
+  - Perfect for servers, containers, VMs, and headless systems
+  - Optional modules can be easily enabled (development, containers, sysadmin, virtualization)
 
 ### Wayland-First Desktops
 

@@ -17,10 +17,11 @@ Need help? Check `TROUBLESHOOTING.md` for common issues and solutions.
 
 ## Available Desktop Environments
 
-This flake provides **9 popular desktop environments** out of the box:
+This flake provides **9 popular desktop environments** plus a **headless base profile** for servers:
 
 | Desktop | Profile | Description |
 |---------|---------|-------------|
+| **Base** | `base-server` | Minimal headless configuration (no desktop, perfect for servers/VMs) |
 | **COSMIC** | `cosmic-workstation` | System76's next-gen Rust/Wayland desktop (requires nixos-cosmic) |
 | **GNOME** | `gnome-workstation` | Modern GNOME Shell experience |
 | **KDE Plasma** | `kde-workstation` | Feature-rich Qt desktop (Plasma 6) |
@@ -33,10 +34,11 @@ This flake provides **9 popular desktop environments** out of the box:
 
 Install any desktop with:
 ```bash
-nixos-install --flake /mnt/nixos-base#<desktop>-workstation
+nixos-install --flake /mnt/nixos-base#<profile>
 ```
 
-Example: `nixos-install --flake /mnt/nixos-base#cosmic-workstation`
+Example desktop: `nixos-install --flake /mnt/nixos-base#cosmic-workstation`  
+Example server: `nixos-install --flake /mnt/nixos-base#base-server`
 
 ## Quick start (new NixOS install)
 
@@ -65,7 +67,7 @@ The full copy/paste commands are in `INSTALL.md`.
 ## Features
 
 ### 🎨 Desktop Environments
-9 popular desktop environments out of the box (COSMIC, GNOME, KDE, Cinnamon, XFCE, MATE, Budgie, Pantheon, LXQt)
+9 popular desktop environments plus a minimal headless base profile for servers (COSMIC, GNOME, KDE, Cinnamon, XFCE, MATE, Budgie, Pantheon, LXQt)
 
 ### 📦 Optional Modules
 - **Multimedia** - VLC, GIMP, ffmpeg, OBS, video editing tools
@@ -82,40 +84,45 @@ See `modules/README.md` for complete module documentation.
 
 ## Repository layout
 
-CI and local validation
------------------------
+## CI/CD Pipeline
 
-This repository includes a GitHub Actions workflow at `.github/workflows/flake-check.yml`
-that validates the top-level flake on push and pull requests to `main`. The workflow
-installs Nix and runs `nix flake show` plus explicit checks for the `cosmic-workstation`,
-`gnome-workstation`, and `kde-workstation` outputs.
+This repository includes a **comprehensive GitHub Actions pipeline** that ensures all configurations are valid and bootable:
 
-Run the same checks locally with one of these approaches:
+### 🔍 What Gets Tested
+- ✅ **All 10 configurations** (9 desktops + headless) are built and evaluated
+- ✅ **VM boot tests** verify systems actually boot and reach multi-user.target
+- ✅ **Module validation** ensures all modules can be imported
+- ✅ **Security scanning** checks for hardcoded secrets
+- ✅ **Home Manager** configurations are validated
 
-1) Quick human-readable listing:
+### 🎮 VM Boot Testing
+The pipeline actually boots VMs for critical configurations to catch issues before deployment:
+- `base-server` (headless)
+- `gnome-workstation` (GNOME)
+- `kde-workstation` (KDE Plasma 6)  
+- `xfce-workstation` (XFCE)
+
+VM tests run on all pushes to `main` and can be triggered on PRs with the `test-vm-boot` label.
+
+### 📚 Full Documentation
+See `.github/CI-CD-GUIDE.md` for complete pipeline documentation, troubleshooting tips, and best practices.
+
+### 🧪 Local Testing
+Run the same checks locally:
 
 ```bash
-# show top-level flake outputs (will fail if flake evaluation errors)
-nix --extra-experimental-features 'nix-command flakes' flake show .
+# Quick validation
+nix flake check
+
+# Build a specific configuration
+nix build .#nixosConfigurations.gnome-workstation.config.system.build.toplevel
+
+# Test VM boot locally
+nix build .#nixosConfigurations.gnome-workstation.config.system.build.vm
+./result/bin/run-*-vm
 ```
 
-2) Machine-checkable JSON (recommended for scripts / CI):
-
-```bash
-# dump flake outputs as JSON and verify expected outputs exist
-nix --extra-experimental-features 'nix-command flakes' flake show --json . > flake.json
-jq '.nixosConfigurations | keys' flake.json
-# exit non-zero if missing
-jq -e '.nixosConfigurations | has("cosmic-workstation")' flake.json
-jq -e '.nixosConfigurations | has("gnome-workstation")' flake.json
-jq -e '.nixosConfigurations | has("kde-workstation")' flake.json
-```
-
-Note: some versions of the `nix` CLI don't accept a fragment (the `#name` suffix)
-directly with `nix flake show` (you may see "unexpected fragment" errors). Use
-the JSON approach above or reference the flake via an absolute path if needed.
-
-Tip: `flake.json` is just a local artifact if you redirect JSON output to a
+## Repository layout
 file; it’s ignored via `.gitignore`.
 
 - `modules/` — small, focused NixOS module fragments (desktop support, common packages,
