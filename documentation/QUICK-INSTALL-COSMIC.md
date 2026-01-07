@@ -3,6 +3,38 @@
 This is a copy-paste friendly guide for installing NixOS with the COSMIC desktop
 using the tower.nix configuration.
 
+## TL;DR - The Fast Track
+
+If you know what you're doing and just want the commands:
+
+```bash
+# 1. Boot NixOS live ISO, connect to internet, partition disk
+DISK=/dev/sda  # CHANGE THIS!
+sudo parted --script "$DISK" mklabel gpt
+sudo parted --script "$DISK" mkpart primary 1MiB 513MiB
+sudo parted --script "$DISK" set 1 boot on
+sudo parted --script "$DISK" mkpart primary 513MiB 100%
+sudo mkfs.fat -F32 ${DISK}1
+sudo mkfs.ext4 -L nixos-root ${DISK}2
+sudo mount ${DISK}2 /mnt
+sudo mkdir -p /mnt/boot
+sudo mount ${DISK}1 /mnt/boot
+
+# 2. Generate hardware config
+sudo nixos-generate-config --root /mnt
+
+# 3. Install directly from GitHub
+sudo nixos-install --root /mnt --flake github:ultus-net/nixos-base#tower
+
+# 4. Set root password when prompted, then reboot
+sudo reboot
+
+# 5. After boot: login as root, set user password
+passwd hunter
+```
+
+---
+
 ## What You'll Get
 - COSMIC Desktop (System76's new Rust-based desktop)
 - Full gaming setup (Steam, Lutris, Heroic, MangoHud)
@@ -68,13 +100,37 @@ sudo mount ${DISK}1 /mnt/boot
 
 ---
 
-## Step 4: Clone the Repository
+## Step 4: Choose Installation Method
+
+You have two options: install directly from GitHub (faster, simpler) or clone the repo (allows customization).
+
+### Option A: Install Directly from GitHub (Recommended for first-time)
+
+Skip to Step 5. You'll use this command in Step 7 instead:
+
+```bash
+sudo nixos-install --root /mnt --flake github:ultus-net/nixos-base#tower
+```
+
+**Pros:** Faster, no manual cloning needed
+**Cons:** Can't customize config before install
+
+### Option B: Clone and Customize (If you want to edit configs first)
 
 ```bash
 cd /mnt
 sudo git clone https://github.com/ultus-net/nixos-base.git
 cd nixos-base
 ```
+
+Then use this command in Step 7:
+
+```bash
+sudo nixos-install --root /mnt --flake /mnt/nixos-base#tower
+```
+
+**Pros:** Can edit configs before install
+**Cons:** Takes slightly longer
 
 ---
 
@@ -92,21 +148,39 @@ sudo cp /mnt/etc/nixos/hardware-configuration.nix /mnt/nixos-base/machines/hardw
 
 ---
 
-## Step 6: Verify tower.nix Configuration
+## Step 6: Copy Hardware Configuration
 
-The tower.nix file should already be configured, but let's check it exists:
+### If you chose Option A (GitHub install):
+
+The hardware config needs to be added after first boot. For now, the install will use the repo's default. You'll customize it later if needed.
+
+### If you chose Option B (Cloned repo):
+
+Copy the generated hardware config:
+
+```bash
+sudo cp /mnt/etc/nixos/hardware-configuration.nix /mnt/nixos-base/machines/hardware-configuration.nix
+```
+
+You can also verify the tower.nix configuration:
 
 ```bash
 cat /mnt/nixos-base/machines/tower.nix
 ```
-
-You should see the tower configuration. It's already set up!
 
 ---
 
 ## Step 7: Install NixOS
 
 Now run the installer. This will take a while (30+ minutes depending on your connection):
+
+### If you chose Option A (GitHub install):
+
+```bash
+sudo nixos-install --root /mnt --flake github:ultus-net/nixos-base#tower
+```
+
+### If you chose Option B (Cloned repo):
 
 ```bash
 sudo nixos-install --root /mnt --flake /mnt/nixos-base#tower
@@ -116,6 +190,7 @@ sudo nixos-install --root /mnt --flake /mnt/nixos-base#tower
 - You'll see lots of packages being downloaded and built
 - The Steam package has a custom patch applied (that's normal)
 - Near the end, it will ask you to set a root password - **SET ONE!**
+- If you see "experimental Nix feature" warnings, ignore them or add the flags shown in the Troubleshooting section
 
 ---
 
@@ -173,9 +248,26 @@ sudo nixos-rebuild switch --flake /etc/nixos#tower
 
 ---
 
-## Step 10: Update the Config Path (Optional but Recommended)
+## Step 10: Set Up Config Management
 
-The system is installed, but the config is in `/mnt/nixos-base`. Let's move it:
+### If you installed from GitHub (Option A):
+
+Clone the repo to your system so you can make changes:
+
+```bash
+cd /home/hunter
+git clone https://github.com/ultus-net/nixos-base.git
+sudo ln -s /home/hunter/nixos-base /etc/nixos
+```
+
+Now you can rebuild with:
+```bash
+sudo nixos-rebuild switch --flake /etc/nixos#tower
+```
+
+### If you cloned before install (Option B):
+
+Move the config to a standard location:
 
 ```bash
 sudo mv /mnt/nixos-base /etc/nixos
