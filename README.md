@@ -2,6 +2,31 @@
 
 ![Flake validation](https://github.com/ultus-net/nixos-base/actions/workflows/flake-check.yml/badge.svg)
 
+This repository is a **starter NixOS flake** you can use to install a working
+desktop machine with minimal effort. It’s designed to be **desktop-agnostic**:
+desktop-specific bits live under `profiles/`, while machine defaults live under
+`machines/`.
+
+If you're completely new to NixOS, start here:
+
+1) `INSTALL.md` — step-by-step install from the NixOS live ISO
+2) `machines/example-machine.nix` — a template you can copy for your device
+3) `profiles/` — choose COSMIC / GNOME / KDE
+
+## Quick start (new NixOS install)
+
+Most installs follow this flow:
+
+1) Boot the NixOS live ISO
+2) Partition + mount to `/mnt`
+3) Clone this repo into `/mnt/nixos-base`
+4) Generate hardware config with `nixos-generate-config --root /mnt`
+5) Run `nixos-install --flake /mnt/nixos-base#<desktop>`
+
+The full copy/paste commands are in `INSTALL.md`.
+
+## Repository layout
+
 CI and local validation
 -----------------------
 
@@ -34,6 +59,9 @@ jq -e '.nixosConfigurations | has("kde-workstation")' flake.json
 Note: some versions of the `nix` CLI don't accept a fragment (the `#name` suffix)
 directly with `nix flake show` (you may see "unexpected fragment" errors). Use
 the JSON approach above or reference the flake via an absolute path if needed.
+
+Tip: `flake.json` is just a local artifact if you redirect JSON output to a
+file; it’s ignored via `.gitignore`.
 
 - `modules/` — small, focused NixOS module fragments (desktop support, common packages,
 	development, QoL, etc.). These are intended to be imported into profile or
@@ -143,7 +171,7 @@ Installation
 See `INSTALL.md` for a step-by-step installation and deployment guide (UEFI and
 LUKS examples) describing how to install this flake on a fresh VM or device.
 
-## Switching desktops & machines (quick start)
+## Switching desktops (after install)
 
 The pattern used here is composition: desktop profiles live under `profiles/` and
 contain desktop-agnostic pieces plus a small desktop module (for example,
@@ -169,17 +197,17 @@ nix build .#nixosConfigurations.kde-workstation.config.system.build.toplevel
 nixos-rebuild build --flake .#kde-workstation
 ```
 
-- Notes
+Notes
 -----
 
 - Add your own machine by creating a file under `machines/` that `imports`
-	`machines/configuration.nix` and the profile you want from `profiles/`.
-	Use `modules/common-packages.nix` for a desktop-agnostic set of utilities
-	and add `modules/kde.nix`, `modules/cosmic.nix`, or other desktop modules
-	in the profile.
+  `machines/configuration.nix` and the profile you want from `profiles/`.
+  Use `modules/common-packages.nix` for a desktop-agnostic set of utilities
+  and add `modules/kde.nix`, `modules/cosmic.nix`, or other desktop modules
+  in the profile.
 - The flake exposes desktop profiles as top-level Nix outputs for convenience
 	(so `.#cosmic-workstation` still works). For real device installs it's
 	recommended to generate and import an installer-produced
 	`hardware-configuration.nix` into a `machines/<name>.nix` entry.
 - The flake already provides `homeManagerModules` and a `templates/home`
-	example you can adapt for user dotfiles.
+  example you can adapt for user dotfiles.

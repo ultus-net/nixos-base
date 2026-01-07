@@ -9,8 +9,8 @@ troubleshooting notes relevant to this repo.
 Prerequisites and assumptions
 - You're using UEFI (adjust partitioning for BIOS if necessary).
 - You have a NixOS live ISO and a working network in the installer environment.
--- This repository exposes a NixOS system configuration named `cosmic-workstation` in the
-  top-level flake (replace with the flake output you want if different).
+- This repository exposes multiple top-level NixOS system configurations:
+  `cosmic-workstation`, `gnome-workstation`, and `kde-workstation`.
 - Commands that interact with flakes use the `nix --extra-experimental-features
   'nix-command flakes'` prefix where required.
 
@@ -20,6 +20,35 @@ Quick overview
 - Clone the repo into `/mnt` so the flake path is local to the target root.
 - Run `nixos-install --flake` to install from the flake.
 
+First install checklist (copy/paste)
+-----------------------------------
+
+If you just want a working machine quickly, here’s the minimal checklist:
+
+- [ ] Boot the NixOS live ISO
+- [ ] Connect networking (wired or Wi‑Fi)
+- [ ] Partition + mount your target disk at `/mnt`
+- [ ] Clone this repo into `/mnt/nixos-base`
+- [ ] Generate hardware config: `nixos-generate-config --root /mnt`
+- [ ] Create a machine file by copying `machines/example-machine.nix` to
+  `machines/<your-hostname>.nix`
+- [ ] In your new machine file:
+  - set `networking.hostName`
+  - import the generated `hardware-configuration.nix`
+  - pick a profile by importing one of:
+    - `../profiles/cosmic.nix`
+    - `../profiles/gnome.nix`
+    - `../profiles/kde.nix`
+- [ ] Install:
+  - `nixos-install --root /mnt --flake /mnt/nixos-base#<desktop>`
+- [ ] Reboot
+
+After the first boot:
+
+- [ ] Add at least one user SSH public key via `machines.users` (recommended)
+- [ ] Confirm SSH hardening defaults match what you want
+- [ ] Run `sudo nixos-rebuild switch --flake /etc/nixos#<your-config>` (optional)
+
 Contents
 - 1) Boot & network
 - 2) Partitioning & mounting (UEFI)
@@ -28,7 +57,7 @@ Contents
 - 5) Optional: LUKS-encrypted root
 - 6) Post-install verification
 - 7) Enabling flakes permanently
-- 8) Using helper scripts & nested flakes
+- 8) Using helper scripts
 - 9) Troubleshooting
 
 1) Boot the NixOS installer and confirm network
@@ -100,10 +129,8 @@ below installs `cosmic-workstation` from the repository clone.
 
 Notes:
 - `--root /mnt` points the installer at the mounted target filesystem.
-- If your flake defines other host outputs (for example a nested GNOME flake),
-  refer to them appropriately. For nested flakes within the repo the easiest
-  approach is to use top-level outputs exposed by `flake.nix` — otherwise use
-  an explicit local path such as `/mnt/nixos-base/./flakes/gnome#gnome-workstation`.
+- If you want a different desktop, install a different top-level output (for example
+  `/mnt/nixos-base#gnome-workstation` or `/mnt/nixos-base#kde-workstation`).
 
 5) Optional: LUKS-encrypted root (brief)
 
@@ -160,7 +187,7 @@ nix.extraOptions = ''
 If the flake's host configuration already sets `nix.extraOptions`, you don't
 need to change anything.
 
-8) Using the included helper script and nested flakes
+8) Using the included helper script
 
 This repo provides `scripts/switch-host.sh` to build or switch to a host.
 Examples (run from the repo root):
@@ -169,12 +196,12 @@ Examples (run from the repo root):
 # Build local flake host (non-root)
 ./scripts/switch-host.sh .#cosmic-workstation
 
-# Switch to the GNOME nested flake (requires root for switching)
-sudo ./scripts/switch-host.sh ./flakes/gnome#gnome-workstation
+# Switch to GNOME (requires root for switching)
+sudo ./scripts/switch-host.sh .#gnome-workstation
 ```
 
-Note: use `./flakes/gnome#...` (with `./`) to reference nested flakes on disk and
-avoid registry lookups.
+Note: this repo no longer uses nested desktop flakes; all desktops are exposed
+as top-level `nixosConfigurations` outputs.
 
 9) Troubleshooting
 
@@ -183,8 +210,8 @@ avoid registry lookups.
     add `nix.extraOptions` to your NixOS configuration as shown above.
 
 - "cannot find flake 'flake:flakes/gnome' in the flake registries":
-  * Use a local path for nested flakes (`./flakes/gnome`) or point to the
-    repository path on disk (e.g., `/mnt/nixos-base`).
+  * This repo no longer uses nested desktop flakes. Use a top-level output like
+    `/mnt/nixos-base#gnome-workstation`.
 
 - Flake evaluation errors during install:
   * Run `nix --extra-experimental-features 'nix-command flakes' flake show
