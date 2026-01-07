@@ -10,6 +10,12 @@
     ../modules/home-manager.nix
     ../modules/qol.nix
     ../modules/development.nix
+
+    # Include the example machine so the top-level flake output evaluates
+    # with a user + Home Manager config. For real installs, replace this by
+    # using a `machines/<name>.nix` that imports hardware-configuration.nix.
+    # Removed example machine import to avoid recursive import chain
+    # ../machines/example-machine.nix
   ];
 
   # Desktop-focused package selection

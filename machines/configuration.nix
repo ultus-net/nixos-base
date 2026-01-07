@@ -55,45 +55,18 @@
   # Import shared, reusable modules from `modules/`.
   imports = [ ../modules/zram.nix ];
 
-  # Ensure we keep a small number of system generations while still
-  # deleting older store paths. The service below keeps the last 3 system
-  # generations and then runs `nix-collect-garbage --delete-older-than 14d`.
-  # This guarantees at least 3 generations are always available even if they
-  # are older than 14 days.
-  systemd.services.nixos-gc-keep-generations = {
-    description = "Prune old system generations but keep last 3; run nix-collect-garbage";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = "no";
-      ExecStart = ''/bin/sh -e -c '\
-        PROFILE=/nix/var/nix/profiles/system; \
-        KEEP=3; \
-        # get numeric generation IDs (strip any leading '*')\
-        GENS=$(nix-env --list-generations --profile "$PROFILE" | awk '\''/^[[:space:]]*[0-9]+/{gsub("\\*","",$1); print $1}'\'' | sort -n || true); \
-        if [ -n "$GENS" ]; then \
-          MAX=$(echo "$GENS" | tail -n1); \
-          if [ "$MAX" -gt "$KEEP" ]; then \
-            THRESH=$((MAX - KEEP)); \
-            echo "Deleting system generations 1..$THRESH"; \
-            nix-env --profile "$PROFILE" --delete-generations "1-$THRESH" || true; \
-          fi; \
-        fi; \
-        # Now run garbage collection to delete store paths older than 14 days
-        nix-collect-garbage --delete-older-than 14d || true' '';
-    };
+  # Snapshot + GC retention:
+  # - Keep 3 system generations (rollback points)
+  # - Garbage collect store paths older than 14 days
+  #
+  # NixOS already provides nix-gc.service/timer; we configure it and avoid
+  # defining custom units (systemd.services.* doesn't support hyphens in
+  # attribute names via dot notation).
+  nix.gc = {
+    automatic = lib.mkDefault true;
+    dates = lib.mkDefault "weekly";
+    options = lib.mkDefault "--delete-older-than 14d";
   };
 
-  systemd.timers.nixos-gc-keep-generations = {
-    description = "Timer for nixos-gc-keep-generations";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "weekly";
-      Persistent = "true";
-    };
-  };
-
-  # GC scheduling is handled by the nixos-gc-keep-generations systemd timer.
-  # Disable the built-in automatic GC to avoid double-scheduling.
-  nix.gc.automatic = lib.mkDefault false;
+  boot.loader.systemd-boot.configurationLimit = lib.mkDefault 3;
 }
