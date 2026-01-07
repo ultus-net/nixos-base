@@ -18,7 +18,8 @@ The CI/CD pipeline is designed to catch issues before they reach your production
 These lightweight checks fail fast if there are basic issues:
 
 1. **Basic Validation** (~1 min)
-   - Validates Nix syntax
+   - Installs Nix (required for syntax checking)
+   - Validates Nix file syntax using `nix-instantiate`
    - Checks profile/machine structure
    - Validates Home Manager imports
 
@@ -143,6 +144,9 @@ The workflow cancels in-progress runs for the same branch, preventing wasted res
 ⏭️ = Not tested in VM (evaluated only)
 
 ## Troubleshooting
+
+### "nix-instantiate: not found"
+The workflow tried to use Nix before it was installed. This has been fixed in the current workflow by installing Nix before running syntax checks in the `validate-basics` job.
 
 ### "VM boot timeout"
 The VM didn't reach multi-user.target within 10 minutes. Check the serial log artifact:

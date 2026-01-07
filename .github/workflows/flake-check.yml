@@ -28,6 +28,13 @@ jobs:
           test -n "$(ls -A profiles 2>/dev/null || true)"
           test -n "$(ls -A machines 2>/dev/null || true)"
 
+      - name: Install Nix (for syntax checking)
+        uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            accept-flake-config = true
+
       - name: Check for syntax errors in Nix files
         run: |
           find . -name "*.nix" -type f -print0 | xargs -0 -I {} sh -c 'nix-instantiate --parse {} > /dev/null || exit 1'
