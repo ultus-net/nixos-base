@@ -23,9 +23,11 @@ sudo mount ${DISK}1 /mnt/boot
 # 2. Generate hardware config
 sudo nixos-generate-config --root /mnt
 
-# 3. CRITICAL: Bind mount to prevent "no space left" errors!
-sudo mkdir -p /mnt/nix
-sudo mount --bind /mnt/nix /nix
+# 3. CRITICAL: Add swap to prevent "no space left" errors!
+sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=16384 status=progress
+sudo chmod 600 /mnt/swapfile
+sudo mkswap /mnt/swapfile
+sudo swapon /mnt/swapfile
 
 # 4. Install directly from GitHub
 sudo nixos-install --root /mnt --flake github:ultus-net/nixos-base#tower
@@ -156,35 +158,44 @@ sudo cp /mnt/etc/nixos/hardware-configuration.nix /mnt/nixos-base/machines/hardw
 
 **The live ISO can run out of space during installation!** The COSMIC desktop with gaming packages is large (~40-50GB). Fix this before installing:
 
-### Option 1: Use the Target Disk for Nix Store (Recommended)
+### Option 1: Use a Larger ISO or Add Swap (Recommended)
 
-Tell the installer to use your target disk's Nix store instead of RAM:
-
-```bash
-sudo mkdir -p /mnt/nix
-sudo mount --bind /mnt/nix /nix
-```
-
-This makes the installer download packages directly to your target disk instead of RAM.
-
-### Option 2: Increase Swap (If you have limited RAM)
-
-If you have less than 16GB RAM, create a swap file on your target disk:
+Create a swap file on your target disk to give the installer more memory:
 
 ```bash
-sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=8192
+# Create 16GB swap file (adjust size based on your RAM)
+sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=16384 status=progress
 sudo chmod 600 /mnt/swapfile
 sudo mkswap /mnt/swapfile
 sudo swapon /mnt/swapfile
+
+# Verify swap is active
+free -h
 ```
 
-### Verify You Have Enough Space
+### Option 2: Use Minimal ISO + Binary Cache
 
+Make sure you're using the **minimal ISO** (not the graphical one) which uses less RAM. The installer will download pre-built binaries instead of building from source.
+
+### Option 3: Install in Stages (If still running out of space)
+
+Install without gaming packages first, then add them after:
+
+1. **First:** Comment out gaming packages temporarily in your fork
+2. **Install:** Run the basic installation
+3. **After boot:** Enable gaming and rebuild
+
+### Verify Available Space
+
+Before installing, check:
 ```bash
-df -h /nix
+free -h          # Check RAM and swap
+df -h            # Check disk space
 ```
 
-You should see your target disk's space (not tmpfs), and it should have at least 50GB free.
+You should have at least:
+- 8GB free RAM + swap combined
+- 50GB free disk space on `/mnt`
 
 ---
 
@@ -322,22 +333,38 @@ sudo nixos-rebuild switch --flake /etc/nixos#tower
 
 ## Troubleshooting
 
+### "sudo: cannot run" or "command not found" errors
+
+**If you accidentally broke your live ISO with incorrect bind mount commands, you need to reboot!**
+
+The system cannot be recovered once `/nix` is hidden. Simply:
+1. Reboot the live ISO (remove and reinsert USB if needed)
+2. Start over from Step 1
+3. Follow the corrected swap instructions in Step 5.5
+
 ### "No space left on device" during installation
 
-**This is the #1 issue with large installations!** The live ISO uses RAM for the Nix store, which fills up quickly.
+**This is the #1 issue with large installations!** The live ISO uses RAM for downloads, which fills up quickly.
 
-**Solution:** Before running `nixos-install`, bind mount your target disk:
+**Solutions:**
+
+1. **Add swap space** (do this BEFORE installing):
 ```bash
-sudo mkdir -p /mnt/nix
-sudo mount --bind /mnt/nix /nix
-df -h /nix  # Verify you see your disk, not tmpfs
+sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=16384 status=progress
+sudo chmod 600 /mnt/swapfile
+sudo mkswap /mnt/swapfile
+sudo swapon /mnt/swapfile
+free -h  # Verify swap is active
 ```
 
-Then retry the installation. If you already started, you can:
-1. Abort the install (Ctrl+C)
-2. Run the mount commands above
-3. Clean up: `sudo nix-collect-garbage -d`
-4. Retry: `sudo nixos-install --root /mnt --flake github:ultus-net/nixos-base#tower`
+2. **Use the minimal ISO** (not the graphical one) - downloads less to RAM
+
+3. **Install in stages**:
+   - Fork the repo and temporarily disable gaming packages
+   - Install the base system
+   - After first boot, enable gaming and rebuild
+
+If installation already failed, you need to **reboot the live ISO** (the system is broken after the bind mount). Then follow the steps above.
 
 ### "some substitutes failed" or "Cannot build" errors
 

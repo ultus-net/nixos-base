@@ -6,6 +6,11 @@ A **modular NixOS flake** for building desktop workstations with 9 popular deskt
 
 ## ⚡ Quick Start
 
+**🎯 EASIEST METHOD: Use Calamares GUI installer first, then apply your config!**
+
+See **[QUICK-INSTALL-CALAMARES.md](documentation/QUICK-INSTALL-CALAMARES.md)** for the simplest installation.
+
+**Manual method:**
 ```bash
 # Clone during NixOS installation
 cd /mnt && git clone https://github.com/ultus-net/nixos-base
@@ -20,6 +25,8 @@ nixos-install --flake /mnt/nixos-base#gnome-workstation
 
 | Document | Description |
 |----------|-------------|
+| **[QUICK-INSTALL-CALAMARES.md](documentation/QUICK-INSTALL-CALAMARES.md)** | ⭐ EASIEST: GUI install first, apply config after |
+| **[QUICK-INSTALL-COSMIC.md](documentation/QUICK-INSTALL-COSMIC.md)** | Quick tower.nix COSMIC installation |
 | **[INSTALL.md](INSTALL.md)** | Complete installation guide from scratch |
 | **[USAGE.md](USAGE.md)** | Day-to-day usage, switching desktops, creating machines |
 | **[FEATURES.md](FEATURES.md)** | Available desktop environments and optional modules |
