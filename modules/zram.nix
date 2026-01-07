@@ -50,26 +50,27 @@
           "ZRAM_EXPLICIT=${toString explicit}"
           "ZRAM_COMP=${comp}"
         ];
-        ExecStart = ''/bin/sh -c '\
-          set -e; \
-          modprobe zram num_devices=1 || true; \
-          # Compute size (bytes): if explicit > 0 and auto is false use explicit; \
-          # if auto is true compute min(total_mem/2, max). total_mem from /proc/meminfo (kB). \
-          if [ "$ZRAM_AUTO" = "true" ]; then \
-            MEM_KB=$(awk '\''/MemTotal:/{print $2}'\'' /proc/meminfo || echo 0); \
-            MEM_BYTES=$((MEM_KB * 1024)); \
-            HALF=$((MEM_BYTES / 2)); \
-            if [ $HALF -lt $ZRAM_MAX ]; then SIZE=$HALF; else SIZE=$ZRAM_MAX; fi; \
-          else \
-            if [ "$ZRAM_EXPLICIT" -gt 0 ]; then SIZE=$ZRAM_EXPLICIT; else SIZE=$ZRAM_MAX; fi; \
-          fi; \
-          # Try to set compression algorithm if supported \
-          if [ -w /sys/block/zram0/comp_algorithm ]; then echo "$ZRAM_COMP" > /sys/block/zram0/comp_algorithm || true; fi; \
-          # Write disksize if writable \
-          if [ -w /sys/block/zram0/disksize ]; then echo "$SIZE" > /sys/block/zram0/disksize || true; fi; \
-          # Setup swap \
-          mkswap /dev/zram0 || true; \
-          swapon /dev/zram0 || true' '';
+        ExecStart = pkgs.writeShellScript "zram-swap-start" ''
+          set -e
+          modprobe zram num_devices=1 || true
+          # Compute size (bytes): if explicit > 0 and auto is false use explicit;
+          # if auto is true compute min(total_mem/2, max). total_mem from /proc/meminfo (kB).
+          if [ "$ZRAM_AUTO" = "true" ]; then
+            MEM_KB=$(awk '/MemTotal:/{print $2}' /proc/meminfo || echo 0)
+            MEM_BYTES=$((MEM_KB * 1024))
+            HALF=$((MEM_BYTES / 2))
+            if [ $HALF -lt $ZRAM_MAX ]; then SIZE=$HALF; else SIZE=$ZRAM_MAX; fi
+          else
+            if [ "$ZRAM_EXPLICIT" -gt 0 ]; then SIZE=$ZRAM_EXPLICIT; else SIZE=$ZRAM_MAX; fi
+          fi
+          # Try to set compression algorithm if supported
+          if [ -w /sys/block/zram0/comp_algorithm ]; then echo "$ZRAM_COMP" > /sys/block/zram0/comp_algorithm || true; fi
+          # Write disksize if writable
+          if [ -w /sys/block/zram0/disksize ]; then echo "$SIZE" > /sys/block/zram0/disksize || true; fi
+          # Setup swap
+          mkswap /dev/zram0 || true
+          swapon /dev/zram0 || true
+        '';
       };
     };
   };
