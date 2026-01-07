@@ -45,7 +45,7 @@ Most installs follow this flow:
 2) Partition + mount to `/mnt`
 3) Clone this repo into `/mnt/nixos-base`
 4) Generate hardware config with `nixos-generate-config --root /mnt`
-5) Run `nixos-install --flake /mnt/nixos-base#<desktop>`
+5) Run `nixos-install --flake /mnt/nixos-base#<desktop>-workstation`
 
 The full copy/paste commands are in `INSTALL.md`.
 

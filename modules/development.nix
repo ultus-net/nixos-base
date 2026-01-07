@@ -10,8 +10,6 @@
     bun
     go
     rustup
-    cargo
-    rustc
     cmake
     pkg-config
     shellcheck shfmt

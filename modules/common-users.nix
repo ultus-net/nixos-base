@@ -9,17 +9,7 @@
   options = {
     machines.users = lib.mkOption {
       type = lib.types.attrsOf lib.types.anything;
-      default = {
-        csh = {
-          isNormalUser = true;
-          extraGroups = [ "wheel" "networkmanager" "audio" "video" ];
-          createHome = true;
-          shell = pkgs.bashInteractive;
-          # authorizedKeys example (empty by default). Provide as a list of
-          # SSH public keys if you want them pre-installed.
-          openssh = { authorizedKeys = { keys = []; }; };
-        };
-      };
+      default = {};
       description = "Attribute set of users to create on machines. Keys are usernames.";
     };
   };

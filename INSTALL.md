@@ -39,8 +39,9 @@ If you just want a working machine quickly, here’s the minimal checklist:
     - `../profiles/cosmic.nix`
     - `../profiles/gnome.nix`
     - `../profiles/kde.nix`
+    - etc. (see profiles/ folder for all options)
 - [ ] Install:
-  - `nixos-install --root /mnt --flake /mnt/nixos-base#<desktop>`
+  - `nixos-install --root /mnt --flake /mnt/nixos-base#<desktop>-workstation`
 - [ ] Reboot
 
 After the first boot:
@@ -129,8 +130,9 @@ below installs `cosmic-workstation` from the repository clone.
 
 Notes:
 - `--root /mnt` points the installer at the mounted target filesystem.
-- If you want a different desktop, install a different top-level output (for example
-  `/mnt/nixos-base#gnome-workstation` or `/mnt/nixos-base#kde-workstation`).
+- If you want a different desktop, install a different top-level output (e.g.
+  `/mnt/nixos-base#gnome-workstation`, `/mnt/nixos-base#kde-workstation`, etc).
+  Check `flake.nix` or `README.md` for the full list of available workstation profiles.
 
 5) Optional: LUKS-encrypted root (brief)
 
