@@ -22,6 +22,9 @@
   # Machine identity
   networking.hostName = "tower";
 
+  # Set timezone to New Zealand
+  time.timeZone = "Pacific/Auckland";
+
   # Primary user configuration
   machines.users = {
     hunter = {

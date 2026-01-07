@@ -138,40 +138,41 @@
 
   # VS Code managed by Home Manager (unfree). Swap to pkgs.vscodium if you
   # prefer the FOSS build.
-  programs.vscode = {
-    enable = true;
-    package = pkgs.vscode;
-
-    # Allow VSCode to manage its own extensions and settings
-    mutableExtensionsDir = true;
-
-    profiles.default = {
-      enableExtensionUpdateCheck = false;
-
-      extensions = with pkgs.vscode-extensions; [
-        # Language support
-        ms-python.python
-        ms-python.vscode-pylance
-        rust-lang.rust-analyzer
-        golang.go
-
-        # Formatters & Linters
-        esbenp.prettier-vscode
-        dbaeumer.vscode-eslint
-
-        # Git
-        github.vscode-pull-request-github
-        eamodio.gitlens
-
-        # Nix
-        bbenoist.nix
-        jnoortheen.nix-ide
-      ];
-
-      # Removed userSettings to allow VS Code to manage its own settings
-      # userSettings = {};
-    };
-  };
+  # Temporarily disabled to allow manual configuration
+  # programs.vscode = {
+  #   enable = true;
+  #   package = pkgs.vscode;
+  #
+  #   # Allow VSCode to manage its own extensions and settings
+  #   mutableExtensionsDir = true;
+  #
+  #   profiles.default = {
+  #     enableExtensionUpdateCheck = false;
+  #
+  #     extensions = with pkgs.vscode-extensions; [
+  #       # Language support
+  #       ms-python.python
+  #       ms-python.vscode-pylance
+  #       rust-lang.rust-analyzer
+  #       golang.go
+  #
+  #       # Formatters & Linters
+  #       esbenp.prettier-vscode
+  #       dbaeumer.vscode-eslint
+  #
+  #       # Git
+  #       github.vscode-pull-request-github
+  #       eamodio.gitlens
+  #
+  #       # Nix
+  #       bbenoist.nix
+  #       jnoortheen.nix-ide
+  #     ];
+  #
+  #     # Removed userSettings to allow VS Code to manage its own settings
+  #     # userSettings = {};
+  #   };
+  # };
 
   # fzf configuration
   programs.fzf = {
@@ -239,5 +240,62 @@
 
   xdg.mime.enable = true;
   xdg.mimeApps.enable = true;
+
+  # COSMIC Desktop Environment Configuration
+  # These settings match your customized COSMIC configuration
+  xdg.configFile = {
+    # Compositor settings
+    "cosmic/com.system76.CosmicComp/v1/xkb_config" = {
+      text = ''
+        (
+            rules: "",
+            model: "pc104",
+            layout: "us",
+            variant: "",
+            options: Some("terminate:ctrl_alt_bksp"),
+            repeat_delay: 600,
+            repeat_rate: 25,
+        )
+      '';
+      force = true;
+    };
+
+    "cosmic/com.system76.CosmicComp/v1/autotile" = {
+      text = "true";
+      force = true;
+    };
+
+    "cosmic/com.system76.CosmicComp/v1/autotile_behavior" = {
+      text = "PerWorkspace";
+      force = true;
+    };
+
+    "cosmic/com.system76.CosmicComp/v1/focus_follows_cursor" = {
+      text = "true";
+      force = true;
+    };
+
+    "cosmic/com.system76.CosmicComp/v1/active_hint" = {
+      text = "false";
+      force = true;
+    };
+
+    # Theme settings - Dark mode
+    "cosmic/com.system76.CosmicTheme.Mode/v1/is_dark" = {
+      text = "true";
+      force = true;
+    };
+
+    # Panel configuration
+    "cosmic/com.system76.CosmicPanel/v1/entries" = {
+      text = ''
+        [
+            "Panel",
+            "Dock",
+        ]
+      '';
+      force = true;
+    };
+  };
 }
 
