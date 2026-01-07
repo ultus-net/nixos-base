@@ -93,9 +93,24 @@ Snapshot retention
 ------------------
 
 To avoid accumulating old generations and GC roots on devices, the machine
-master sets Nix garbage collection options that delete items older than 14
-days by default. You can override this in a machine file by setting
-`nix.gc.options` or disabling `nix.gc.automatic` if you prefer manual control.
+master uses a systemd timer that keeps the last **3** system generations and
+garbage-collects store paths older than **14 days**. This gives you a small
+rollback window while preventing long-term growth.
+
+If you want different behavior per-machine, override the unit/timer or adjust
+your machine configuration accordingly.
+
+Security defaults
+-----------------
+
+`machines/configuration.nix` enables OpenSSH by default for install/bring-up,
+but sets hardened defaults:
+
+- Password authentication disabled
+- Keyboard-interactive authentication disabled
+- Root login disallowed
+
+Override any of these per-machine if needed.
 
 Helper script
 -------------

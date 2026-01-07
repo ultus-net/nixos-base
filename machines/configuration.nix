@@ -17,6 +17,15 @@
   # setup).
   services.openssh.enable = lib.mkDefault true;
 
+  # Harden SSH defaults when enabled.
+  # - Disable password authentication (keys only)
+  # - Disallow direct root login
+  services.openssh.settings = {
+    PasswordAuthentication = lib.mkDefault false;
+    KbdInteractiveAuthentication = lib.mkDefault false;
+    PermitRootLogin = lib.mkDefault "no";
+  };
+
   # Enable redistributable firmware so hardware that requires non-free blobs
   # works across rebuilds. This is a safe, conservative default for desktops.
   hardware.enableRedistributableFirmware = lib.mkDefault true;
@@ -84,10 +93,7 @@
     };
   };
 
-  # Use Nix garbage collection settings to keep device snapshots (profiles,
-  # old generations, and unused GC roots) from accumulating indefinitely.
-  # Enable automatic GC and default options to delete items older than 14 days.
-  nix.gc.automatic = lib.mkDefault true;
-  nix.gc.dates = lib.mkDefault [ "weekly" ];
-  nix.gc.options = lib.mkDefault [ "--delete-older-than" "14d" ];
+  # GC scheduling is handled by the nixos-gc-keep-generations systemd timer.
+  # Disable the built-in automatic GC to avoid double-scheduling.
+  nix.gc.automatic = lib.mkDefault false;
 }

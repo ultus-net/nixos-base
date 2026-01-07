@@ -5,9 +5,9 @@
   # as required. This file is intended as a template for real machine
   # entries which can import an installer-generated `hardware-configuration.nix`.
   imports = [
-  ./configuration.nix
-  ../profiles/cosmic.nix
-  ../modules/common-users.nix
+    ./configuration.nix
+    ../profiles/cosmic.nix
+    ../modules/common-users.nix
   ];
 
   # Machine-specific identity
