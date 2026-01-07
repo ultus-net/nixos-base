@@ -42,6 +42,16 @@ id_rsa.pub
 # Environment files
 .env
 .envrc
+*.env
+
+# Secrets (unencrypted - encrypted .age files are OK)
+secrets/*.yaml
+secrets/*.yml
+secrets/*.json
+secrets/*.key
+secrets/*.txt
+!secrets/secrets.nix
+!secrets/.gitkeep
 
 # Logs and caches
 .cache/

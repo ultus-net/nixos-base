@@ -47,6 +47,6 @@ jobs:
           nix --extra-experimental-features 'nix-command flakes' flake show --json . > flake.json
           cat flake.json | jq '.nixosConfigurations | keys'
           # Exit non-zero if any expected desktop output is missing
-          for desktop in cosmic gnome gnome-dev kde cinnamon xfce mate budgie pantheon lxqt; do
+          for desktop in cosmic gnome kde cinnamon xfce mate budgie pantheon lxqt; do
             jq -e ".nixosConfigurations | has(\"${desktop}-workstation\")" flake.json
           done

@@ -11,17 +11,18 @@ If you're completely new to NixOS, start here:
 
 1) `INSTALL.md` — step-by-step install from the NixOS live ISO
 2) `machines/example-machine.nix` — a template you can copy for your device
-3) `profiles/` — choose your desktop environment (10 options available!)
+3) `profiles/` — choose your desktop environment (9 options available!)
+
+Need help? Check `TROUBLESHOOTING.md` for common issues and solutions.
 
 ## Available Desktop Environments
 
-This flake provides **10 popular desktop environments** out of the box:
+This flake provides **9 popular desktop environments** out of the box:
 
 | Desktop | Profile | Description |
 |---------|---------|-------------|
 | **COSMIC** | `cosmic-workstation` | System76's next-gen Rust/Wayland desktop (requires nixos-cosmic) |
 | **GNOME** | `gnome-workstation` | Modern GNOME Shell experience |
-| **GNOME Dev** | `gnome-dev-workstation` | GNOME optimized for developers |
 | **KDE Plasma** | `kde-workstation` | Feature-rich Qt desktop (Plasma 6) |
 | **Cinnamon** | `cinnamon-workstation` | Linux Mint's flagship desktop |
 | **XFCE** | `xfce-workstation` | Lightweight, traditional desktop |
@@ -48,6 +49,17 @@ Most installs follow this flow:
 5) Run `nixos-install --flake /mnt/nixos-base#<desktop>-workstation`
 
 The full copy/paste commands are in `INSTALL.md`.
+
+## Documentation
+
+- **`INSTALL.md`** — Complete installation guide from scratch
+- **`TROUBLESHOOTING.md`** — Common issues and solutions
+- **`SECRETS.md`** — Secrets management guide (sops-nix, agenix, etc.)
+- **`CONTRIBUTING.md`** — How to contribute new features or desktop environments
+- **`profiles/README.md`** — Desktop environment profiles documentation
+- **`machines/README.md`** — Machine configuration guide
+- **`home/README.md`** — Home Manager setup
+- **`scripts/README.md`** — Helper scripts documentation
 
 ## Repository layout
 

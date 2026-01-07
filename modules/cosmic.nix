@@ -12,6 +12,18 @@ in {
 
   options.cosmic = {
     enable = lib.mkEnableOption "Enable COSMIC desktop environment (System76)";
+    
+    enableClipboardManager = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable COSMIC clipboard manager (requires zwlr_data_control_manager_v1 protocol)";
+    };
+    
+    enableObservatory = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Enable COSMIC Observatory system monitor (requires monitord)";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -24,6 +36,17 @@ in {
 
     # Recommended: Flatpak for COSMIC Store
     services.flatpak.enable = lib.mkDefault true;
+    
+    # Enable clipboard manager protocol if requested
+    environment.sessionVariables = lib.mkIf cfg.enableClipboardManager {
+      COSMIC_DATA_CONTROL_ENABLED = "1";
+    };
+    
+    # Enable Observatory system monitor if requested
+    systemd.packages = lib.mkIf cfg.enableObservatory [ pkgs.observatory ];
+    systemd.services.monitord = lib.mkIf cfg.enableObservatory {
+      wantedBy = [ "multi-user.target" ];
+    };
 
     # Small set of COSMIC-friendly utilities
     environment.systemPackages = with pkgs; [

@@ -171,35 +171,6 @@
           config = { Cmd = [ "/bin/bash" ]; };
         };
 
-        # GNOME-specific OCI image
-        packages.gnomeImage = pkgs.dockerTools.buildImage {
-          name = "gnome-dev";
-          copyToRoot = pkgs.buildEnv {
-            name = "gnome-dev-root";
-            paths = with pkgs; [
-              bashInteractive
-              git
-              gh
-              direnv
-              jq
-              ripgrep
-              eza
-              neovim
-              python3
-              nodejs_22
-              pnpm
-              go
-              rustup
-              cmake
-              pkg-config
-              just
-              # GNOME specific (example)
-              # (left intentionally minimal to avoid depending on top-level 'gnome' attr)
-            ];
-          };
-          config = { Cmd = [ "/bin/bash" ]; };
-        };
-
         # Home Manager module for common QoL on COSMIC
         homeManagerModules.default = { config, pkgs, lib, ... }:
           let cfg = config.cosmicDev;
@@ -336,9 +307,6 @@
         in {
           # Real COSMIC desktop (System76) - Wayland, Rust-based
           cosmic-workstation = mkSystem ./profiles/cosmic.nix;
-          
-          # GNOME-based developer workstation (formerly called cosmic)
-          gnome-dev-workstation = mkSystem ./profiles/gnome-dev.nix;
           
           # GNOME - Modern GNOME Shell desktop
           gnome-workstation = mkSystem ./profiles/gnome.nix;

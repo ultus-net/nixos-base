@@ -31,10 +31,6 @@ Available Desktops
   - GTK-based, excellent Wayland support
   - Great for laptops with touchpad gestures
   
-- **gnome-dev.nix** — GNOME optimized for developers
-  - Same as GNOME but with developer-focused QoL
-  - Includes development tools and packages
-
 - **kde.nix** — KDE Plasma 6 (feature-rich, Qt-based)
   - Highly customizable
   - Excellent Wayland support
