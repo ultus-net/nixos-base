@@ -2,13 +2,13 @@
 {
   # Home Manager manages user-level configuration files and packages.
   # This is a template configuration - copy and modify for your own user.
-  
+
   # IMPORTANT: When using with NixOS, set this in your machine config instead:
   # home-manager.users.yourusername = import ./home/yourusername.nix;
-  
+
   # For standalone (non-NixOS) usage:
   # home-manager switch --flake .#yourusername@x86_64-linux
-  
+
   home.stateVersion = "24.11";
 
   # Home Manager should manage itself.
@@ -18,7 +18,7 @@
   programs.bash = {
     enable = true;
     enableCompletion = true;
-    
+
     shellAliases = {
       ls = "eza";
       ll = "eza -la";
@@ -26,7 +26,7 @@
       grep = "rg";
       find = "fd";
     };
-    
+
     initExtra = ''
       # Custom bash configuration
       export EDITOR="nvim"
@@ -40,7 +40,7 @@
     settings = {
       add_newline = false;
       command_timeout = 1200;
-      
+
       # Custom prompt elements
       character = {
         success_symbol = "[➜](bold green)";
@@ -52,7 +52,7 @@
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
-    
+
     config = {
       global = {
         hide_env_diff = true;
@@ -62,25 +62,24 @@
 
   programs.git = {
     enable = true;
-    userName = "Hunter";
-    # IMPORTANT: Change this to your actual email before committing code!
-    userEmail = "user@example.com";  # TODO: Update this
-    
-    delta.enable = true;
-    
-    extraConfig = {
+
+    settings = {
+      user.name = "Hunter";
+      # IMPORTANT: Change this to your actual email before committing code!
+      user.email = "user@example.com";  # TODO: Update this
+
       init.defaultBranch = "main";
-      pull.rebase = true;
       push.autoSetupRemote = true;
+      pull.rebase = true;
       core.editor = "nvim";
-      
+
       # Better diffs
       diff.algorithm = "histogram";
-      
+
       # Reuse recorded resolutions
       rerere.enabled = true;
     };
-    
+
     ignores = [
       "*~"
       "*.swp"
@@ -91,12 +90,30 @@
     ];
   };
 
+  programs.delta = {
+    enable = true;
+    enableGitIntegration = true;
+  };
+
+  # COSMIC-specific environment variables
+  home.sessionVariables = {
+    # Use Wayland for applications that support it
+    MOZ_ENABLE_WAYLAND = "1";
+    NIXOS_OZONE_WL = "1";  # Chromium/Electron apps
+    QT_QPA_PLATFORM = "wayland";
+    SDL_VIDEODRIVER = "wayland";
+    _JAVA_AWT_WM_NONREPARENTING = "1";  # Java app tiling fix
+
+    # COSMIC-specific
+    XDG_CURRENT_DESKTOP = "COSMIC";
+  };
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
-    
+
     plugins = with pkgs.vimPlugins; [
       vim-nix
       nvim-lspconfig
@@ -105,7 +122,7 @@
       vim-surround
       vim-commentary
     ];
-    
+
     extraConfig = ''
       set number
       set relativenumber
@@ -121,37 +138,43 @@
   # prefer the FOSS build.
   programs.vscode = {
     enable = true;
-    enableExtensionUpdateCheck = false;
     package = pkgs.vscode;
-    
-    extensions = with pkgs.vscode-extensions; [
-      # Language support
-      ms-python.python
-      ms-python.vscode-pylance
-      rust-lang.rust-analyzer
-      golang.go
-      
-      # Formatters & Linters
-      esbenp.prettier-vscode
-      dbaeumer.vscode-eslint
-      
-      # Git
-      github.vscode-pull-request-github
-      eamodio.gitlens
-      
-      # Nix
-      bbenoist.nix
-      jnoortheen.nix-ide
-    ];
-    
-    userSettings = {
-      "files.trimTrailingWhitespace" = true;
-      "editor.formatOnSave" = true;
-      "editor.fontFamily" = "'JetBrainsMono Nerd Font', monospace";
-      "editor.fontLigatures" = true;
-      "editor.fontSize" = 13;
-      "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
-      "workbench.colorTheme" = "Default Dark Modern";
+
+    # Allow VSCode to manage its own extensions and settings
+    mutableExtensionsDir = true;
+
+    profiles.default = {
+      enableExtensionUpdateCheck = false;
+
+      extensions = with pkgs.vscode-extensions; [
+        # Language support
+        ms-python.python
+        ms-python.vscode-pylance
+        rust-lang.rust-analyzer
+        golang.go
+
+        # Formatters & Linters
+        esbenp.prettier-vscode
+        dbaeumer.vscode-eslint
+
+        # Git
+        github.vscode-pull-request-github
+        eamodio.gitlens
+
+        # Nix
+        bbenoist.nix
+        jnoortheen.nix-ide
+      ];
+
+      userSettings = {
+        "files.trimTrailingWhitespace" = true;
+        "editor.formatOnSave" = true;
+        "editor.fontFamily" = "'JetBrainsMono Nerd Font', monospace";
+        "editor.fontLigatures" = true;
+        "editor.fontSize" = 13;
+        "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
+        "workbench.colorTheme" = "Default Dark Modern";
+      };
     };
   };
 
@@ -159,7 +182,7 @@
   programs.fzf = {
     enable = true;
     enableBashIntegration = true;
-    
+
     defaultCommand = "fd --type f --hidden --follow --exclude .git";
     fileWidgetCommand = "fd --type f --hidden --follow --exclude .git";
     changeDirWidgetCommand = "fd --type d --hidden --follow --exclude .git";
@@ -186,17 +209,18 @@
   home.packages = with pkgs; [
     # CLI utilities (beyond what's in common-packages)
     # Add user-specific tools here
-    
+
     # Terminal emulators
-    foot           # Wayland terminal
+    foot           # Wayland terminal (default for COSMIC)
     kitty          # Alternative terminal
-    
-    # Language servers for development
+
+    # COSMIC-friendly GUI apps
+    firefox        # Firefox (Wayland by default on COSMIC)
     nodePackages_latest.typescript-language-server
     nodePackages_latest.vscode-langservers-extracted
     marksman       # Markdown LSP
     nil            # Nix LSP
-    
+
     # Additional development tools
     lazydocker     # Docker TUI
     k9s            # Kubernetes TUI (if you use k8s)
@@ -207,7 +231,7 @@
   xdg.userDirs = {
     enable = true;
     createDirectories = true;
-    
+
     desktop = "${config.home.homeDirectory}/Desktop";
     documents = "${config.home.homeDirectory}/Documents";
     download = "${config.home.homeDirectory}/Downloads";
@@ -217,7 +241,7 @@
     templates = "${config.home.homeDirectory}/Templates";
     publicShare = "${config.home.homeDirectory}/Public";
   };
-  
+
   xdg.mime.enable = true;
   xdg.mimeApps.enable = true;
 }

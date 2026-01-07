@@ -12,17 +12,26 @@ in {
 
   options.cosmic = {
     enable = lib.mkEnableOption "Enable COSMIC desktop environment (System76)";
-    
+
     enableClipboardManager = lib.mkOption {
       type = lib.types.bool;
       default = false;
       description = "Enable COSMIC clipboard manager (requires zwlr_data_control_manager_v1 protocol)";
     };
-    
-    enableObservatory = lib.mkOption {
+
+
+
+    extraPackages = lib.mkOption {
+      type = lib.types.listOf lib.types.package;
+      default = [];
+      description = "Additional packages to install for COSMIC desktop";
+      example = lib.literalExpression "[ pkgs.cosmic-files pkgs.cosmic-edit ]";
+    };
+
+    enableWaylandApps = lib.mkOption {
       type = lib.types.bool;
-      default = false;
-      description = "Enable COSMIC Observatory system monitor (requires monitord)";
+      default = true;
+      description = "Install recommended Wayland-native applications";
     };
   };
 
@@ -36,22 +45,43 @@ in {
 
     # Recommended: Flatpak for COSMIC Store
     services.flatpak.enable = lib.mkDefault true;
-    
+
     # Enable clipboard manager protocol if requested
     environment.sessionVariables = lib.mkIf cfg.enableClipboardManager {
       COSMIC_DATA_CONTROL_ENABLED = "1";
     };
-    
-    # Enable Observatory system monitor if requested
-    systemd.packages = lib.mkIf cfg.enableObservatory [ pkgs.observatory ];
-    systemd.services.monitord = lib.mkIf cfg.enableObservatory {
-      wantedBy = [ "multi-user.target" ];
-    };
+
+
 
     # Small set of COSMIC-friendly utilities
     environment.systemPackages = with pkgs; [
-      wl-clipboard
-      foot  # Wayland terminal
-    ];
+      wl-clipboard      # Wayland clipboard utilities
+      wl-clip-persist   # Keep clipboard after app closes
+      wtype             # Wayland keyboard input emulator
+      grim              # Screenshot tool
+      slurp             # Region selector for screenshots
+      swappy            # Screenshot editor
+
+      # Additional Wayland apps if enabled
+    ] ++ lib.optionals cfg.enableWaylandApps [
+      foot              # Wayland terminal
+      nautilus          # File manager (works great on Wayland)
+      loupe             # Image viewer
+      papers            # PDF viewer
+      gnome-calculator
+      gnome-calendar
+      gnome-contacts
+      gnome-weather
+      gnome-clocks
+    ] ++ cfg.extraPackages;
+
+    # Font configuration for better rendering
+    fonts.fontconfig = {
+      enable = lib.mkDefault true;
+      antialias = lib.mkDefault true;
+      hinting.enable = lib.mkDefault true;
+      hinting.style = lib.mkDefault "slight";
+      subpixel.rgba = lib.mkDefault "rgb";
+    };
   };
 }
