@@ -354,12 +354,15 @@ jobs:
     name: VM Tests Status
     runs-on: ubuntu-latest
     needs: vm-boot-tests
-    if: always() && (github.ref == 'refs/heads/main' || contains(github.event.pull_request.labels.*.name, 'test-vm-boot'))
+    # Only run this summary if VM tests actually ran
+    if: always() && contains(github.event.pull_request.labels.*.name, 'test-vm-boot')
     steps:
       - name: Report VM test results
         run: |
           if [ "${{ needs.vm-boot-tests.result }}" == "success" ]; then
             echo "✓ All VM boot tests passed!"
+          elif [ "${{ needs.vm-boot-tests.result }}" == "skipped" ]; then
+            echo "ℹ️  VM boot tests were skipped (no 'test-vm-boot' label)"
           else
             echo "⚠ Some VM boot tests failed - check the logs"
             exit 1
