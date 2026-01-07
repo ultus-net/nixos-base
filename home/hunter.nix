@@ -168,8 +168,9 @@
         jnoortheen.nix-ide
       ];
 
-      # Removed userSettings to allow VS Code to manage its own settings
-      # userSettings = {};
+      userSettings = {
+        "chat.viewSessions.enabled" = false;
+      };
     };
   };
 
@@ -295,6 +296,8 @@
       '';
       force = true;
     };
+
+    # VS Code settings - allow Home Manager to manage
+    "Code/User/settings.json".force = true;
   };
 }
-
