@@ -138,41 +138,40 @@
 
   # VS Code managed by Home Manager (unfree). Swap to pkgs.vscodium if you
   # prefer the FOSS build.
-  # Temporarily disabled to allow manual configuration
-  # programs.vscode = {
-  #   enable = true;
-  #   package = pkgs.vscode;
-  #
-  #   # Allow VSCode to manage its own extensions and settings
-  #   mutableExtensionsDir = true;
-  #
-  #   profiles.default = {
-  #     enableExtensionUpdateCheck = false;
-  #
-  #     extensions = with pkgs.vscode-extensions; [
-  #       # Language support
-  #       ms-python.python
-  #       ms-python.vscode-pylance
-  #       rust-lang.rust-analyzer
-  #       golang.go
-  #
-  #       # Formatters & Linters
-  #       esbenp.prettier-vscode
-  #       dbaeumer.vscode-eslint
-  #
-  #       # Git
-  #       github.vscode-pull-request-github
-  #       eamodio.gitlens
-  #
-  #       # Nix
-  #       bbenoist.nix
-  #       jnoortheen.nix-ide
-  #     ];
-  #
-  #     # Removed userSettings to allow VS Code to manage its own settings
-  #     # userSettings = {};
-  #   };
-  # };
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscode;
+
+    # Allow VSCode to manage its own extensions and settings
+    mutableExtensionsDir = true;
+
+    profiles.default = {
+      enableExtensionUpdateCheck = false;
+
+      extensions = with pkgs.vscode-extensions; [
+        # Language support
+        ms-python.python
+        ms-python.vscode-pylance
+        rust-lang.rust-analyzer
+        golang.go
+
+        # Formatters & Linters
+        esbenp.prettier-vscode
+        dbaeumer.vscode-eslint
+
+        # Git
+        github.vscode-pull-request-github
+        eamodio.gitlens
+
+        # Nix
+        bbenoist.nix
+        jnoortheen.nix-ide
+      ];
+
+      # Removed userSettings to allow VS Code to manage its own settings
+      # userSettings = {};
+    };
+  };
 
   # fzf configuration
   programs.fzf = {
