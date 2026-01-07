@@ -96,17 +96,19 @@
   };
 
   # COSMIC-specific environment variables
-  home.sessionVariables = {
-    # Use Wayland for applications that support it
-    MOZ_ENABLE_WAYLAND = "1";
-    NIXOS_OZONE_WL = "1";  # Chromium/Electron apps
-    QT_QPA_PLATFORM = "wayland";
-    SDL_VIDEODRIVER = "wayland";
-    _JAVA_AWT_WM_NONREPARENTING = "1";  # Java app tiling fix
-
-    # COSMIC-specific
-    XDG_CURRENT_DESKTOP = "COSMIC";
-  };
+  # Temporarily disabled to allow manual COSMIC configuration
+  # These will be re-enabled after extracting your custom settings
+  # home.sessionVariables = {
+  #   # Use Wayland for applications that support it
+  #   MOZ_ENABLE_WAYLAND = "1";
+  #   NIXOS_OZONE_WL = "1";  # Chromium/Electron apps
+  #   QT_QPA_PLATFORM = "wayland";
+  #   SDL_VIDEODRIVER = "wayland";
+  #   _JAVA_AWT_WM_NONREPARENTING = "1";  # Java app tiling fix
+  #
+  #   # COSMIC-specific
+  #   XDG_CURRENT_DESKTOP = "COSMIC";
+  # };
 
   programs.neovim = {
     enable = true;
@@ -166,15 +168,8 @@
         jnoortheen.nix-ide
       ];
 
-      userSettings = {
-        "files.trimTrailingWhitespace" = true;
-        "editor.formatOnSave" = true;
-        "editor.fontFamily" = "'JetBrainsMono Nerd Font', monospace";
-        "editor.fontLigatures" = true;
-        "editor.fontSize" = 13;
-        "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
-        "workbench.colorTheme" = "Default Dark Modern";
-      };
+      # Removed userSettings to allow VS Code to manage its own settings
+      # userSettings = {};
     };
   };
 
