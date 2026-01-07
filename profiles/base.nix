@@ -61,7 +61,7 @@
 
   # For containerized workloads, uncomment:
   # imports = [ ../modules/containers.nix ];
-  # containers.enable = true;
+  # machines.containers.enable = true;
 
   # For virtualization host, uncomment:
   # imports = [ ../modules/virtualization.nix ];

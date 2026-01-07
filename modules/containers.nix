@@ -1,8 +1,8 @@
 { config, pkgs, lib, ... }:
 let
-  cfg = config.containers;
+  cfg = config.machines.containers;
 in {
-  options.containers = {
+  options.machines.containers = {
     enable = lib.mkEnableOption "Enable container and virtualization tools (opt-in)";
     
     enableDistrobox = lib.mkOption {

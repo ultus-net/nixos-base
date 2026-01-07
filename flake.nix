@@ -329,6 +329,9 @@
           # Headless/Server base configuration (no desktop environment)
           base-server = mkSystem ./profiles/base.nix;
           
+          # Real machine configurations
+          tower = mkSystem ./machines/tower.nix;
+          
           # Real COSMIC desktop (System76) - Wayland, Rust-based
           cosmic-workstation = mkSystem ./profiles/cosmic.nix;
           

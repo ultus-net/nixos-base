@@ -1,13 +1,38 @@
 { config, pkgs, lib, ... }:
-{
-  # Virtualization helpers: enable Podman (with Docker compatibility) and
-  # libvirt for full virtualization. Brief comments describe each setting.
-  virtualisation = {
-    podman.enable = true;         # enable podman container runtime
-    podman.dockerCompat = true;   # provide docker-compatible CLI shims
-    libvirtd.enable = true;       # enable libvirt daemon for VMs
+let
+  cfg = config.virtualization;
+in {
+  options.virtualization = {
+    enable = lib.mkEnableOption "Enable virtualization tools (KVM/libvirt)";
   };
 
-  # Add the example user to the libvirtd group so they can manage VMs.
-  users.groups.libvirtd.members = [ "csh" ];
+  config = lib.mkIf cfg.enable {
+    # Enable libvirt for KVM/QEMU virtualization
+    virtualisation.libvirtd = {
+      enable = true;
+      qemu = {
+        package = pkgs.qemu_kvm;
+        runAsRoot = false;
+        swtpm.enable = true;  # TPM emulation
+      };
+    };
+
+    # Enable virt-manager GUI
+    programs.virt-manager.enable = true;
+
+    # Useful virtualization packages
+    environment.systemPackages = with pkgs; [
+      virt-manager
+      virt-viewer
+      qemu
+      OVMF
+      libguestfs  # VM disk image tools
+      libvirt
+    ];
+
+    # Enable dnsmasq for VM networking
+    virtualisation.libvirtd.allowedBridges = [
+      "virbr0"
+    ];
+  };
 }
