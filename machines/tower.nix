@@ -57,6 +57,7 @@
 
   # Enable all optional feature modules
   gaming.enable = true;
+  gaming.enableSteam = true;  # Use programs.steam for proper Steam integration
   multimedia.enable = true;
   virtualization.enable = true;
   machines.containers.enable = true;

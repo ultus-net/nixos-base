@@ -1,4 +1,4 @@
-{ config, pkgs, lib, inputs, ... }:
+{ config, pkgs, lib, ... }:
 {
   # COSMIC desktop profile (System76 actual COSMIC desktop environment)
   #
@@ -14,9 +14,6 @@
     ../modules/cosmic.nix
     ../modules/home-manager.nix
     ../modules/development.nix
-    
-    # Import the nixos-cosmic module
-    inputs.nixos-cosmic.nixosModules.default
   ];
 
   # CRITICAL: Placeholder filesystem configuration for flake evaluation.
@@ -32,7 +29,11 @@
     fsType = "vfat";
   };
 
-  # Enable COSMIC binary cache for faster builds
+  # Enable COSMIC desktop & greeter using built-in NixOS options
+  services.displayManager.cosmic-greeter.enable = true;
+  services.desktopManager.cosmic.enable = true;
+
+  # Optional: keep COSMIC binary cache for faster builds (matches wiki recommendation)
   nix.settings = {
     substituters = [ "https://cosmic.cachix.org/" ];
     trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];

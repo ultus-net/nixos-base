@@ -5,8 +5,9 @@ let
   # Desired package attribute names to include when present in pkgs. We
   # filter by presence to make the module evaluation robust across
   # different nixpkgs snapshots (avoid evaluation-time errors).
+  # NOTE: "steam" is excluded here; use gaming.enableSteam to enable it via programs.steam
   desiredAttrs = [
-    "steam" "lutris" "steamcmd" "heroic" "gamescope" "mangohud"
+    "lutris" "steamcmd" "heroic" "gamescope" "mangohud"
     "vkbasalt" "latencyflex" "gamemode" "libFAudio" "vulkan-tools"
     "vulkan-loader" "wine" "protonup-qt" "protontricks" "winetricks"
     "obs_vkcapture" "mangohud-profiles"
@@ -25,6 +26,9 @@ let
 in {
   options.gaming = {
     enable = lib.mkEnableOption "Enable gaming QoL packages and helpers (opt-in)";
+    
+    enableSteam = lib.mkEnableOption "Enable Steam via the NixOS programs.steam module";
+    
     packages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = [];
@@ -52,6 +56,16 @@ in {
     # Compose systemPackages from user-specified packages plus the available
     # gaming packages and optional lib32 compatibility packages.
     environment.systemPackages = (cfg.packages or []) ++ available ++ (if cfg.enableI386Compat then lib32Available else []);
+
+    # Enable Steam via the proper NixOS module (avoids steam-unwrapped build issues)
+    programs.steam = lib.mkIf cfg.enableSteam {
+      enable = true;
+      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    };
+    
+    # Enable 32-bit graphics drivers for Steam/Proton compatibility
+    hardware.opengl.driSupport32Bit = lib.mkIf cfg.enableSteam true;
 
     # Optionally write Proton-related variables into the system environment
     # so they are available system-wide (use with care).

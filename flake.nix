@@ -2,20 +2,15 @@
   description = "Full NixOS COSMIC developer workstation with QoL, Home Manager, and devshells";
 
   inputs = {
-  # Pin nixpkgs to a specific commit for reproducibility. The commit hash
-  # is taken from `flake.lock` (pinned to the current nixpkgs-unstable tip).
-  nixpkgs.url = "github:NixOS/nixpkgs/16c7794d0a28b5a37904d55bcca36003b9109aaa";
+  # Pin nixpkgs to nixpkgs-unstable for the latest packages and fixes
+  nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     devshell.url = "github:numtide/devshell";
-    
-    # COSMIC desktop environment (System76)
-    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
-    nixos-cosmic.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, home-manager, devshell, nixos-cosmic }:
+  outputs = { self, nixpkgs, flake-utils, home-manager, devshell }:
     let
       # Standalone home-manager configurations (not tied to NixOS)
       mkHomeConfiguration = system: username: homeDirectory: home-manager.lib.homeManagerConfiguration {
@@ -42,7 +37,18 @@
           config = {
             allowUnfree = true; # for fonts, VS Code, etc.
           };
-          overlays = [ devshell.overlays.default ];
+          overlays = [ 
+            devshell.overlays.default 
+            # Fix for Steam apt installation bug in nixpkgs commit 16c7794d
+            (final: prev: {
+              steam-unwrapped = prev.steam-unwrapped.overrideAttrs (oldAttrs: {
+                postPatch = (oldAttrs.postPatch or "") + ''
+                  # Skip the apt source installation that fails in Nix sandbox
+                  sed -i '/if \[ -d \/etc\/apt \]; then/,/fi/d' Makefile
+                '';
+              });
+            })
+          ];
         };
       in {
         # A developer shell with common tools similar to Universal Blue QoL
