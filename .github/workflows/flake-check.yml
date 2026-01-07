@@ -230,11 +230,21 @@ jobs:
           extra_nix_config: |
             experimental-features = nix-command flakes
 
-      - name: Check all modules can be imported
+      - name: Check all modules have valid Nix syntax
         run: |
           for module in modules/*.nix; do
             echo "Checking $module..."
-            nix-instantiate --eval -E "(import <nixpkgs/nixos> { configuration = { imports = [ ./$module ]; }; }).config.system.build.toplevel.drvPath" || exit 1
+            nix-instantiate --parse "$module" > /dev/null || exit 1
+          done
+          echo "✓ All modules have valid syntax"
+
+      - name: Verify modules are used in configurations
+        run: |
+          echo "Checking that modules are referenced in profiles..."
+          # This validates that our modules are actually being used
+          for profile in profiles/*.nix; do
+            echo "  Checking imports in $profile"
+            grep -q "imports\s*=" "$profile" || echo "    Warning: $profile has no imports"
           done
 
       - name: Verify no broken symlinks

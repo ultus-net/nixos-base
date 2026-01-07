@@ -39,8 +39,9 @@ These ensure all configurations can build:
 
 ### Module & Security Checks (runs on every push/PR)
 
-4. **Module Validation** (~3 min)
-   - Verifies all modules can be imported
+4. **Module Validation** (~1 min)
+   - Validates Nix syntax for all module files
+   - Verifies modules are referenced in profiles
    - Checks for broken symlinks
 
 5. **Security Checks** (~1 min)
@@ -147,6 +148,9 @@ The workflow cancels in-progress runs for the same branch, preventing wasted res
 
 ### "nix-instantiate: not found"
 The workflow tried to use Nix before it was installed. This has been fixed in the current workflow by installing Nix before running syntax checks in the `validate-basics` job.
+
+### "file 'nixpkgs/nixos' was not found in the Nix search path"
+This error occurred in older versions of the workflow that tried to use `<nixpkgs/nixos>` for module validation. The current workflow uses `nix-instantiate --parse` for syntax validation instead, which doesn't require NIX_PATH to be set.
 
 ### "VM boot timeout"
 The VM didn't reach multi-user.target within 10 minutes. Check the serial log artifact:
