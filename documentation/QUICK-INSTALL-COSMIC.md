@@ -23,13 +23,17 @@ sudo mount ${DISK}1 /mnt/boot
 # 2. Generate hardware config
 sudo nixos-generate-config --root /mnt
 
-# 3. Install directly from GitHub
+# 3. CRITICAL: Bind mount to prevent "no space left" errors!
+sudo mkdir -p /mnt/nix
+sudo mount --bind /mnt/nix /nix
+
+# 4. Install directly from GitHub
 sudo nixos-install --root /mnt --flake github:ultus-net/nixos-base#tower
 
-# 4. Set root password when prompted, then reboot
+# 5. Set root password when prompted, then reboot
 sudo reboot
 
-# 5. After boot: login as root, set user password
+# 6. After boot: login as root, set user password
 passwd hunter
 ```
 
@@ -145,6 +149,42 @@ This creates `/mnt/etc/nixos/hardware-configuration.nix`. We need to copy it:
 ```bash
 sudo cp /mnt/etc/nixos/hardware-configuration.nix /mnt/nixos-base/machines/hardware-configuration.nix
 ```
+
+---
+
+## Step 5.5: IMPORTANT - Prevent "No Space Left" Errors
+
+**The live ISO can run out of space during installation!** The COSMIC desktop with gaming packages is large (~40-50GB). Fix this before installing:
+
+### Option 1: Use the Target Disk for Nix Store (Recommended)
+
+Tell the installer to use your target disk's Nix store instead of RAM:
+
+```bash
+sudo mkdir -p /mnt/nix
+sudo mount --bind /mnt/nix /nix
+```
+
+This makes the installer download packages directly to your target disk instead of RAM.
+
+### Option 2: Increase Swap (If you have limited RAM)
+
+If you have less than 16GB RAM, create a swap file on your target disk:
+
+```bash
+sudo dd if=/dev/zero of=/mnt/swapfile bs=1M count=8192
+sudo chmod 600 /mnt/swapfile
+sudo mkswap /mnt/swapfile
+sudo swapon /mnt/swapfile
+```
+
+### Verify You Have Enough Space
+
+```bash
+df -h /nix
+```
+
+You should see your target disk's space (not tmpfs), and it should have at least 50GB free.
 
 ---
 
@@ -281,6 +321,35 @@ sudo nixos-rebuild switch --flake /etc/nixos#tower
 ---
 
 ## Troubleshooting
+
+### "No space left on device" during installation
+
+**This is the #1 issue with large installations!** The live ISO uses RAM for the Nix store, which fills up quickly.
+
+**Solution:** Before running `nixos-install`, bind mount your target disk:
+```bash
+sudo mkdir -p /mnt/nix
+sudo mount --bind /mnt/nix /nix
+df -h /nix  # Verify you see your disk, not tmpfs
+```
+
+Then retry the installation. If you already started, you can:
+1. Abort the install (Ctrl+C)
+2. Run the mount commands above
+3. Clean up: `sudo nix-collect-garbage -d`
+4. Retry: `sudo nixos-install --root /mnt --flake github:ultus-net/nixos-base#tower`
+
+### "some substitutes failed" or "Cannot build" errors
+
+Usually caused by running out of space. See solution above. You can also:
+```bash
+# Check what's using space
+du -sh /nix/store
+df -h /nix
+
+# Clean up if needed
+sudo nix-collect-garbage -d
+```
 
 ### "experimental Nix feature 'nix-command' is disabled"
 The flake already enables this, but if you see this during install, use:

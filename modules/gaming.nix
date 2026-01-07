@@ -65,7 +65,7 @@ in {
     };
     
     # Enable 32-bit graphics drivers for Steam/Proton compatibility
-    hardware.opengl.driSupport32Bit = lib.mkIf cfg.enableSteam true;
+    hardware.graphics.enable32Bit = lib.mkIf cfg.enableSteam true;
 
     # Optionally write Proton-related variables into the system environment
     # so they are available system-wide (use with care).
