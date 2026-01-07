@@ -1,31 +1,34 @@
-{ config, pkgs, lib, ... }:
-{
-  # COSMIC desktop fragment: enable the common session and desktop helpers.
-  # This module focuses on enabling display/login services and small QoL
-  # pieces that make the desktop usable out of the box.
+{ config, pkgs, lib, inputs, ... }:
+let
+  cfg = config.cosmic;
+in {
+  # Real COSMIC desktop environment module (System76)
+  #
+  # This module enables the actual COSMIC desktop environment using the
+  # nixos-cosmic flake from https://github.com/lilyinstarlight/nixos-cosmic
+  #
+  # COSMIC is the next-generation desktop environment from System76, built
+  # in Rust with a focus on performance, customization, and Wayland support.
 
-  # X server and GDM: ensure the display manager and Wayland session are on.
-  services.xserver.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.displayManager.gdm.wayland = true;
+  options.cosmic = {
+    enable = lib.mkEnableOption "Enable COSMIC desktop environment (System76)";
+  };
 
-  # Note: `services.xserver.desktopManager.cosmic` may be provided by a
-  # downstream/custom module; if so, you can enable the cosmic desktop there.
-  # services.xserver.desktopManager.cosmic.enable = true;
+  config = lib.mkIf cfg.enable {
+    # Enable the COSMIC desktop environment
+    services.desktopManager.cosmic.enable = true;
+    services.displayManager.cosmic-greeter.enable = true;
 
-  # Wayland compatibility and desktop helpers
-  programs.xwayland.enable = true; # provide X11 support under Wayland
-  security.polkit.enable = true;   # polkit for privilege elevation dialogs
-  programs.dconf.enable = true;    # manage dconf settings if needed
+    # XWayland support for legacy X11 apps
+    programs.xwayland.enable = true;
 
-  # Small set of desktop applications and clipboard helper
-  environment.systemPackages = with pkgs; [
-    wl-clipboard
-    gnome.gnome-calculator
-    gnome.file-roller
-    simple-scan
-  ];
+    # Recommended: Flatpak for COSMIC Store
+    services.flatpak.enable = lib.mkDefault true;
 
-  # Note: prompt and user-level settings (starship, shell config) should be
-  # configured via Home Manager (user-level) instead of system-level here.
+    # Small set of COSMIC-friendly utilities
+    environment.systemPackages = with pkgs; [
+      wl-clipboard
+      foot  # Wayland terminal
+    ];
+  };
 }

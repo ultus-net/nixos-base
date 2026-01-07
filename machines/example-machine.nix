@@ -13,8 +13,13 @@
   # Machine-specific identity
   networking.hostName = "example-machine";
 
-  # Example: a single “primary” user managed by both NixOS (account) and
+  # Example: a single "primary" user managed by both NixOS (account) and
   # Home Manager (dotfiles, packages, user services).
+  #
+  # IMPORTANT: This is a TEMPLATE. You should:
+  # 1. Change "hunter" to your actual username
+  # 2. Update the description, email, and SSH keys in ../home/hunter.nix
+  # 3. Set a real password hash (see comment below)
   machines.users = {
     hunter = {
       isNormalUser = true;

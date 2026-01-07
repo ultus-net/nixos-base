@@ -22,11 +22,11 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    # Enable the Plasma desktop and SDDM display manager with optional Wayland.
+    # Enable the Plasma 6 desktop and SDDM display manager with optional Wayland.
     services.xserver.enable = true;
-    services.xserver.desktopManager.plasma5.enable = true;
-    services.xserver.displayManager.sddm.enable = true;
-    services.xserver.displayManager.sddm.wayland = cfg.enableWayland;
+    services.desktopManager.plasma6.enable = true;
+    services.displayManager.sddm.enable = true;
+    services.displayManager.sddm.wayland.enable = cfg.enableWayland;
 
     # Install extra user-provided packages plus the conservative KDE list.
     environment.systemPackages = (cfg.extraPackages or []) ++ available;

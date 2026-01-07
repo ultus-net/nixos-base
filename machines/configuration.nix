@@ -9,6 +9,23 @@
 
 { config, pkgs, lib, ... }:
 {
+  # NixOS release compatibility marker. Set this to the version you first
+  # installed with to ensure stateful data migrations work correctly.
+  # See: https://nixos.org/manual/nixos/stable/options.html#opt-system.stateVersion
+  system.stateVersion = "24.11";
+
+  # Allow unfree packages (VS Code, proprietary drivers, etc.)
+  nixpkgs.config.allowUnfree = true;
+
+  # Enable flakes and new nix commands by default so users can run
+  # `nix flake update` and other modern nix commands without extra flags.
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  # Boot loader defaults for UEFI systems. Override for BIOS or other
+  # boot configurations as needed per-machine.
+  boot.loader.systemd-boot.enable = lib.mkDefault true;
+  boot.loader.efi.canTouchEfiVariables = lib.mkDefault true;
+
   # General, installer-friendly defaults; override in machine files as
   # needed per-machine.
   time.timeZone = lib.mkDefault "UTC";
@@ -39,18 +56,13 @@
   # static settings when required.
   networking.networkmanager.enable = lib.mkDefault true;
 
-  # Use systemd-resolved by default for consistent DNS resolution across
-  # environments.
-  services.systemd-resolved.enable = lib.mkDefault true;
-
   # Provide a sensible default hostname that machines should override.
   networking.hostName = lib.mkDefault "nixos-host";
 
   # Desktop-friendly default for swap: enable zram-based swap. The zram
   # implementation and size are provided by the `modules/zram.nix` module;
   # import it here so the option is available and the service is installed.
-  services.zram.enable = lib.mkDefault true;
-  services.zram.swap.enable = lib.mkDefault true;
+  # The zram module uses machines.zram.* options (see modules/zram.nix).
 
   # Import shared, reusable modules from `modules/`.
   imports = [ ../modules/zram.nix ];

@@ -16,19 +16,19 @@ in {
   config = lib.mkIf cfg.enable {
     # Enable X server and the GDM display manager with Wayland support.
     services.xserver.enable = true;
-    services.xserver.displayManager.gdm.enable = true;
-    services.xserver.displayManager.gdm.wayland = true;
-    services.xserver.desktopManager.gnome.enable = true;
+    services.displayManager.gdm.enable = true;
+    services.displayManager.gdm.wayland = true;
+    services.desktopManager.gnome.enable = true;
 
     # Enable XWayland compatibility for X11 apps under Wayland.
     programs.xwayland.enable = true;
 
     # Compose GNOME-specific packages from user-supplied extras and a few
     # standard GNOME utilities provided by nixpkgs.
-    environment.systemPackages = (cfg.extraPackages or []) ++ with pkgs; [
-      gnome.gnome-calculator
-      gnome.gnome-system-monitor
-      gnome.gnome-terminal
-    ];
+    environment.systemPackages = (cfg.extraPackages or []) ++ (with pkgs; [
+      gnome-calculator
+      gnome-system-monitor
+      gnome-terminal
+    ]);
   };
 }

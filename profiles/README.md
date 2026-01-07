@@ -9,6 +9,14 @@ profile-level features (QoL, developer packages, desktop services). Profiles
 do NOT include machine-specific settings like `networking.hostName`,
 `fileSystems`, or `boot.loader` configurations.
 
+**IMPORTANT:** These profiles are **incomplete system configurations**. They
+cannot be installed directly without adding:
+1. `fileSystems` configuration (usually from `hardware-configuration.nix`)
+2. At least one user account
+3. A hostname
+
+For a complete example, see `machines/example-machine.nix`.
+
 Usage
 -----
 - To use a profile when deploying to hardware, import it from a `machines/`

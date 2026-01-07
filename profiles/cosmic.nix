@@ -1,26 +1,46 @@
 { config, pkgs, lib, inputs, ... }:
 {
-  # Desktop/profile for COSMIC — contains desktop-specific modules and
-  # package bundles. This file intentionally avoids machine-specific
-  # details (hostname, users, disks). Machine files should import this
-  # profile and then add hardware-specific settings.
+  # COSMIC desktop profile (System76 actual COSMIC desktop environment)
+  #
+  # This profile enables the real COSMIC desktop environment built by System76.
+  # COSMIC is written in Rust and designed for modern Wayland compositing.
+  #
+  # NOTE: This requires the nixos-cosmic flake input to be configured.
+  # Binary cache: https://cosmic.cachix.org/
+  
   imports = [
+    ../machines/configuration.nix
     ../modules/common-packages.nix
     ../modules/cosmic.nix
     ../modules/home-manager.nix
     ../modules/qol.nix
     ../modules/development.nix
-
-    # Include the example machine so the top-level flake output evaluates
-    # with a user + Home Manager config. For real installs, replace this by
-    # using a `machines/<name>.nix` that imports hardware-configuration.nix.
-    # Removed example machine import to avoid recursive import chain
-    # ../machines/example-machine.nix
+    
+    # Import the nixos-cosmic module
+    inputs.nixos-cosmic.nixosModules.default
   ];
 
-  # Desktop-focused package selection
+  # CRITICAL: Placeholder filesystem configuration for flake evaluation.
+  # For real installations, you MUST replace these with your actual disk
+  # configuration from `nixos-generate-config --root /mnt`. See INSTALL.md.
+  fileSystems."/" = lib.mkDefault {
+    device = "/dev/disk/by-label/nixos-root";
+    fsType = "ext4";
+  };
+
+  fileSystems."/boot" = lib.mkDefault {
+    device = "/dev/disk/by-label/EFI";
+    fsType = "vfat";
+  };
+
+  # Enable COSMIC binary cache for faster builds
+  nix.settings = {
+    substituters = [ "https://cosmic.cachix.org/" ];
+    trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
+  };
+
   commonPackages.enable = true;
   commonPackages.packages = [ pkgs.git pkgs.curl ];
 
-  # COSMIC-specific module (provided by ../modules/cosmic.nix)
+  cosmic.enable = true;
 }

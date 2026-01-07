@@ -9,9 +9,13 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     devshell.url = "github:numtide/devshell";
+    
+    # COSMIC desktop environment (System76)
+    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+    nixos-cosmic.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, home-manager, devshell }:
+  outputs = { self, nixpkgs, flake-utils, home-manager, devshell, nixos-cosmic }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -322,39 +326,43 @@
         # A sample Home Manager configuration exposing the module
         # Users can link this file or copy content.
       }) // {
-        nixosConfigurations = {
-          cosmic-workstation = let
-            system = "x86_64-linux";
-          in nixpkgs.lib.nixosSystem {
-              inherit system;
-              specialArgs = { inputs = self.inputs; };
-              modules = [
-              ./profiles/cosmic.nix
-            ];
+        nixosConfigurations = let
+          system = "x86_64-linux";
+          mkSystem = profile: nixpkgs.lib.nixosSystem {
+            inherit system;
+            specialArgs = { inputs = self.inputs; };
+            modules = [ profile ];
           };
-
-          # Expose GNOME workstation as a top-level nixosConfiguration so there
-          # is only a single top-level flake providing desktop configurations.
-          gnome-workstation = let
-            system = "x86_64-linux";
-          in nixpkgs.lib.nixosSystem {
-              inherit system;
-              specialArgs = { inputs = self.inputs; };
-            modules = [
-              ./profiles/gnome.nix
-            ];
-          };
-
-          # KDE workstation exposed at top-level like the others
-          kde-workstation = let
-            system = "x86_64-linux";
-          in nixpkgs.lib.nixosSystem {
-              inherit system;
-              specialArgs = { inputs = self.inputs; };
-            modules = [
-              ./profiles/kde.nix
-            ];
-          };
+        in {
+          # Real COSMIC desktop (System76) - Wayland, Rust-based
+          cosmic-workstation = mkSystem ./profiles/cosmic.nix;
+          
+          # GNOME-based developer workstation (formerly called cosmic)
+          gnome-dev-workstation = mkSystem ./profiles/gnome-dev.nix;
+          
+          # GNOME - Modern GNOME Shell desktop
+          gnome-workstation = mkSystem ./profiles/gnome.nix;
+          
+          # KDE Plasma 6 - Feature-rich Qt desktop
+          kde-workstation = mkSystem ./profiles/kde.nix;
+          
+          # Cinnamon - Linux Mint's flagship desktop
+          cinnamon-workstation = mkSystem ./profiles/cinnamon.nix;
+          
+          # XFCE - Lightweight, traditional desktop
+          xfce-workstation = mkSystem ./profiles/xfce.nix;
+          
+          # MATE - GNOME 2 fork, classic desktop
+          mate-workstation = mkSystem ./profiles/mate.nix;
+          
+          # Budgie - Solus Linux desktop, modern & elegant
+          budgie-workstation = mkSystem ./profiles/budgie.nix;
+          
+          # Pantheon - elementary OS desktop
+          pantheon-workstation = mkSystem ./profiles/pantheon.nix;
+          
+          # LXQt - Lightweight Qt desktop
+          lxqt-workstation = mkSystem ./profiles/lxqt.nix;
         };
 
         # Out-of-system content like templates

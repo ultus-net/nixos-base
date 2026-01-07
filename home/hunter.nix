@@ -27,7 +27,8 @@
   programs.git = {
     enable = true;
     userName = "Cameron Hunter";
-    userEmail = "admin@ultus.net";
+    # IMPORTANT: Change this to your actual email before committing code!
+    userEmail = "admin@ultus.net";  # TODO: Update this
     delta.enable = true;
     extraConfig = {
       init.defaultBranch = "main";
