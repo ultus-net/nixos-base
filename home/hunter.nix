@@ -245,11 +245,6 @@
   # COSMIC Desktop Environment Configuration
   # These settings match your customized COSMIC configuration
   xdg.configFile = {
-    # Force overwrite of VS Code settings file to resolve conflict
-    "Code/User/settings.json" = {
-      force = true;
-    };
-
     # Compositor settings
     "cosmic/com.system76.CosmicComp/v1/xkb_config" = {
       text = ''
