@@ -53,21 +53,21 @@ These ensure all configurations can build:
    - Builds Home Manager configurations
    - Validates they evaluate correctly
 
-### VM Boot Tests (runs conditionally)
-The most comprehensive checks - actually boots VMs to verify systems work:
+### VM Boot Tests (manual only - opt-in)
+Optional VM boot tests that verify systems actually boot:
 
-7. **VM Boot Tests** (~3-8 min per config)
-   - **Only runs on:**
-     - Pushes to `main` branch
-     - PRs with the `test-vm-boot` label
+7. **VM Boot Tests** (~3-8 min per config) - **MANUAL TRIGGER ONLY**
+   - **Only runs when:**
+     - You add the `test-vm-boot` label to a PR
+     - **Does NOT run automatically on main or PRs**
    - Tests 2 representative configurations:
      - `base-server` (headless, minimal)
      - `xfce-workstation` (lightweight desktop)
-   - **Why only these two?**
-     - Validates core system boots properly
-     - Tests both headless and graphical environments
-     - Fast and resource-efficient for CI
-     - Heavier desktops (GNOME, KDE) are validated via build tests
+   - **Why manual-only?**
+     - Very resource-intensive (10+ minutes even for lightweight configs)
+     - Build/evaluation tests catch 95%+ of issues
+     - Can be run locally when needed
+     - Saves CI resources and time for routine checks
    - Verifies each VM:
      - Boots successfully with 2GB RAM
      - Reaches `multi-user.target` or `graphical.target`
@@ -75,6 +75,8 @@ The most comprehensive checks - actually boots VMs to verify systems work:
      - Progress updates every minute during boot
    - Uploads serial logs on failure
    - Enhanced logging for troubleshooting
+   
+   **When to use:** Major boot-related changes, kernel updates, or systemd configuration changes.
 
 ## Understanding the Results
 
@@ -96,15 +98,13 @@ Found hardcoded secrets or sensitive data. Review and fix before merging.
 
 ## Running VM Tests Manually
 
-VM tests are expensive (time and resources), so they're conditional:
+VM tests are expensive (time and resources), so they only run when explicitly requested:
 
-### Option 1: On Pull Requests
-Add the label `test-vm-boot` to your PR to trigger VM tests.
+### Trigger VM Tests in CI
+Add the label `test-vm-boot` to your PR. The VM boot tests will run for base-server and xfce-workstation.
 
-### Option 2: After Merge
-VM tests run automatically on all pushes to `main`.
-
-### Option 3: Local Testing
+### Local Testing (Recommended)
+Instead of running expensive CI VM tests, test locally:
 You can run VM tests locally before pushing:
 
 ```bash

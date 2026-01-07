@@ -134,12 +134,14 @@ jobs:
           nix eval .#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel.drvPath
 
   # VM boot tests - actually test if systems boot
+  # MANUAL ONLY: These tests only run when you add the 'test-vm-boot' label to a PR
+  # They are resource-intensive and slow, but validate actual boot functionality
   vm-boot-tests:
     name: VM Boot Test - ${{ matrix.config }}
     runs-on: ubuntu-latest
     needs: build-configurations
-    # Only run on main branch or when PR has specific label
-    if: github.ref == 'refs/heads/main' || contains(github.event.pull_request.labels.*.name, 'test-vm-boot')
+    # Only run when PR has the 'test-vm-boot' label (manual trigger)
+    if: contains(github.event.pull_request.labels.*.name, 'test-vm-boot')
     strategy:
       fail-fast: false
       matrix:

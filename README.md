@@ -123,12 +123,10 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for design details.
 Comprehensive testing ensures configurations work before deployment:
 
 - ✅ All 10 configurations build and evaluate
-- ✅ VM boot tests verify base-server and xfce-workstation actually boot
 - ✅ Module syntax validation
 - ✅ Security scanning for secrets
 - ✅ Home Manager validation
-
-VM tests run on `main` branch or with `test-vm-boot` PR label.
+- 🏷️ VM boot tests (manual only - add `test-vm-boot` label to PR)
 
 See [.github/CI-CD-GUIDE.md](.github/CI-CD-GUIDE.md) for pipeline documentation.
 
