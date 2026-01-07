@@ -123,7 +123,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for design details.
 Comprehensive testing ensures configurations work before deployment:
 
 - ✅ All 10 configurations build and evaluate
-- ✅ VM boot tests verify systems actually boot
+- ✅ VM boot tests verify base-server and xfce-workstation actually boot
 - ✅ Module syntax validation
 - ✅ Security scanning for secrets
 - ✅ Home Manager validation

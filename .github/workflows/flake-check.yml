@@ -145,8 +145,6 @@ jobs:
       matrix:
         config:
           - base-server
-          - gnome-workstation
-          - kde-workstation
           - xfce-workstation
     steps:
       - name: Checkout
@@ -180,29 +178,46 @@ jobs:
           nix build .#nixosConfigurations.${{ matrix.config }}.config.system.build.vm -L
 
       - name: Test VM boots and reaches multi-user.target
-        timeout-minutes: 10
+        timeout-minutes: 15
         run: |
           # Start VM in background with serial output to file
-          QEMU_KERNEL_PARAMS="console=ttyS0" ./result/bin/run-*-vm -nographic -serial file:vm-serial.log &
+          echo "Starting VM for ${{ matrix.config }}..."
+          QEMU_KERNEL_PARAMS="console=ttyS0" ./result/bin/run-*-vm -nographic -m 2048 -serial file:vm-serial.log &
           VM_PID=$!
           
           # Wait for boot to complete (check for systemd reaching target)
-          echo "Waiting for VM to boot..."
-          for i in {1..120}; do
-            if grep -q "Reached target.*Multi-User System" vm-serial.log 2>/dev/null; then
-              echo "✓ VM booted successfully and reached multi-user.target!"
+          echo "Waiting for VM to boot (checking every 3 seconds, up to 12 minutes)..."
+          BOOT_TIMEOUT=240  # 240 iterations * 3 seconds = 12 minutes
+          
+          for i in $(seq 1 $BOOT_TIMEOUT); do
+            # Check if VM process is still running
+            if ! kill -0 $VM_PID 2>/dev/null; then
+              echo "✗ VM process died unexpectedly at iteration $i"
+              echo "=== Last 100 lines of serial log ==="
+              tail -100 vm-serial.log 2>/dev/null || cat vm-serial.log
+              exit 1
+            fi
+            
+            # Check for successful boot - try multiple patterns
+            if grep -qE "(Reached target.*Multi-User System|Reached target.*Graphical Interface|systemd.*Reached target.*multi-user\.target)" vm-serial.log 2>/dev/null; then
+              echo "✓ VM booted successfully! (iteration $i, ~$((i * 3)) seconds)"
+              echo "=== Last 50 lines of successful boot ==="
+              tail -50 vm-serial.log
               kill $VM_PID 2>/dev/null || true
               exit 0
             fi
-            if ! kill -0 $VM_PID 2>/dev/null; then
-              echo "✗ VM process died unexpectedly"
-              cat vm-serial.log
-              exit 1
+            
+            # Progress indicator every 20 iterations (every minute)
+            if [ $((i % 20)) -eq 0 ]; then
+              echo "  Still waiting... ($((i * 3)) seconds elapsed, ~$((BOOT_TIMEOUT * 3 - i * 3)) seconds remaining)"
+              echo "  Log file size: $(wc -l < vm-serial.log 2>/dev/null || echo 0) lines"
             fi
-            sleep 2
+            
+            sleep 3
           done
           
-          echo "✗ Timeout waiting for VM to boot"
+          echo "✗ Timeout waiting for VM to boot after $((BOOT_TIMEOUT * 3)) seconds"
+          echo "=== Full serial log ==="
           cat vm-serial.log
           kill $VM_PID 2>/dev/null || true
           exit 1

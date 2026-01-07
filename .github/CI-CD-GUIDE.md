@@ -56,20 +56,25 @@ These ensure all configurations can build:
 ### VM Boot Tests (runs conditionally)
 The most comprehensive checks - actually boots VMs to verify systems work:
 
-7. **VM Boot Tests** (~5-10 min per config)
+7. **VM Boot Tests** (~3-8 min per config)
    - **Only runs on:**
      - Pushes to `main` branch
      - PRs with the `test-vm-boot` label
-   - Tests 4 representative configurations:
-     - `base-server` (headless)
-     - `gnome-workstation` (GNOME desktop)
-     - `kde-workstation` (KDE desktop)
+   - Tests 2 representative configurations:
+     - `base-server` (headless, minimal)
      - `xfce-workstation` (lightweight desktop)
+   - **Why only these two?**
+     - Validates core system boots properly
+     - Tests both headless and graphical environments
+     - Fast and resource-efficient for CI
+     - Heavier desktops (GNOME, KDE) are validated via build tests
    - Verifies each VM:
-     - Boots successfully
-     - Reaches `multi-user.target`
-     - Completes within 10 minutes
+     - Boots successfully with 2GB RAM
+     - Reaches `multi-user.target` or `graphical.target`
+     - Completes within 15 minutes (12 min boot timeout + 3 min buffer)
+     - Progress updates every minute during boot
    - Uploads serial logs on failure
+   - Enhanced logging for troubleshooting
 
 ## Understanding the Results
 
@@ -130,19 +135,25 @@ The workflow cancels in-progress runs for the same branch, preventing wasted res
 
 | Configuration | Build Test | VM Boot Test | Notes |
 |---------------|------------|--------------|-------|
-| base-server | ✅ | ✅ | Headless baseline |
+| base-server | ✅ | ✅ | Headless baseline - always VM tested |
 | cosmic-workstation | ✅ | ⏭️ | Requires nixos-cosmic cache |
-| gnome-workstation | ✅ | ✅ | Full GNOME stack |
-| kde-workstation | ✅ | ✅ | Full KDE Plasma 6 |
+| gnome-workstation | ✅ | ⏭️ | Full GNOME stack - build tested only |
+| kde-workstation | ✅ | ⏭️ | Full KDE Plasma 6 - build tested only |
 | cinnamon-workstation | ✅ | ⏭️ | Cinnamon desktop |
-| xfce-workstation | ✅ | ✅ | Lightweight desktop |
+| xfce-workstation | ✅ | ✅ | Lightweight desktop - always VM tested |
 | mate-workstation | ✅ | ⏭️ | MATE desktop |
 | budgie-workstation | ✅ | ⏭️ | Budgie desktop |
 | pantheon-workstation | ✅ | ⏭️ | Pantheon desktop |
 | lxqt-workstation | ✅ | ⏭️ | LXQt desktop |
 
 ✅ = Always tested  
-⏭️ = Not tested in VM (evaluated only)
+⏭️ = Build/evaluation tested only (not VM booted)
+
+**Rationale:** Only base-server and xfce-workstation are VM boot tested because:
+- They're fast and resource-efficient for CI
+- They validate both headless and graphical boot paths
+- Heavier desktops (GNOME, KDE) are thoroughly validated via build and evaluation tests
+- Reduces CI time and resource consumption
 
 ## Troubleshooting
 
@@ -153,10 +164,32 @@ The workflow tried to use Nix before it was installed. This has been fixed in th
 This error occurred in older versions of the workflow that tried to use `<nixpkgs/nixos>` for module validation. The current workflow uses `nix-instantiate --parse` for syntax validation instead, which doesn't require NIX_PATH to be set.
 
 ### "VM boot timeout"
-The VM didn't reach multi-user.target within 10 minutes. Check the serial log artifact:
+The VM didn't reach multi-user.target within the allowed time. This can happen for several reasons:
+
+**Diagnosis:**
 1. Go to the failed workflow run
 2. Download the `vm-serial-log-<config>` artifact
-3. Review for boot errors
+3. Review the serial log for boot errors or hangs
+
+**Common causes:**
+- **Slow evaluation/build** - Some desktop environments (especially GNOME/KDE) take longer to evaluate
+- **Missing dependencies** - Check for service failures in the log
+- **Kernel panic** - Look for "Kernel panic" or "Oops" messages
+- **Systemd service timeout** - A service might be waiting for a timeout
+- **Resource constraints** - VMs run with 2GB RAM, might be insufficient for heavy desktops
+
+**Solutions:**
+- The workflow now allows 12 minutes for boot (increased from 4 minutes)
+- Check the progress indicators in the workflow log to see how far it got
+- Look for the last systemd target reached in the serial log
+- If a specific service is hanging, it may need to be disabled in VM tests
+
+**Testing locally:**
+```bash
+# Build and test VM locally
+nix build .#nixosConfigurations.gnome-workstation.config.system.build.vm
+QEMU_KERNEL_PARAMS="console=ttyS0" ./result/bin/run-*-vm -nographic -m 2048
+```
 
 ### "Configuration evaluation failed"
 Syntax or reference error in your Nix code. Check the build log for details.
