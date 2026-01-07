@@ -136,44 +136,9 @@
     '';
   };
 
-  # VS Code managed by Home Manager (unfree). Swap to pkgs.vscodium if you
+  # VS Code installation (unfree). Swap to pkgs.vscodium if you
   # prefer the FOSS build.
-  programs.vscode = {
-    enable = true;
-    package = pkgs.vscode;
-
-    # Allow VSCode to manage its own extensions and settings
-    mutableExtensionsDir = true;
-
-    profiles.default = {
-      enableExtensionUpdateCheck = false;
-
-      extensions = with pkgs.vscode-extensions; [
-        # Language support
-        ms-python.python
-        ms-python.vscode-pylance
-        rust-lang.rust-analyzer
-        golang.go
-
-        # Formatters & Linters
-        esbenp.prettier-vscode
-        dbaeumer.vscode-eslint
-
-        # Git
-        github.vscode-pull-request-github
-        eamodio.gitlens
-
-        # Nix
-        bbenoist.nix
-        jnoortheen.nix-ide
-      ];
-
-      # Disable chat sessions in VS Code
-      userSettings = {
-        "chat.experimental.showOnStartup" = false;
-      };
-    };
-  };
+  # VS Code will manage its own extensions and settings.
 
   # fzf configuration
   programs.fzf = {
@@ -213,6 +178,7 @@
 
     # COSMIC-friendly GUI apps
     firefox        # Firefox (Wayland by default on COSMIC)
+    vscode         # VS Code editor (manages own extensions/settings)
     nodePackages_latest.typescript-language-server
     nodePackages_latest.vscode-langservers-extracted
     marksman       # Markdown LSP
