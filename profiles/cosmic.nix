@@ -13,7 +13,6 @@
     ../modules/common-packages.nix
     ../modules/cosmic.nix
     ../modules/home-manager.nix
-    ../modules/qol.nix
     ../modules/development.nix
     
     # Import the nixos-cosmic module

@@ -17,20 +17,78 @@ in {
   # packages plus a small pre-curated set of useful CLI tools and helpers.
   config = lib.mkIf cfg.enable {
     environment.systemPackages = with pkgs; (cfg.packages or []) ++ [
-      # CLI tools useful regardless of desktop
+      # System monitoring
       htop
+      btop
+      bottom       # Alternative system monitor
+      fastfetch    # System information
+      
+      # Terminal multiplexer & utilities
       tmux
-      ncdu
-      unzip
+      
+      # Disk tools
+      ncdu         # NCurses disk usage analyzer
+      
+      # Archive & compression (basic formats)
+      unzip zip
+      gzip bzip2 xz
       p7zip
+      
+      # Network & system tools
       rsync
       openssh
+      curl wget
+      httpie       # Better curl for APIs
+      
+      # Debugging & inspection
       lsof
       strace
-
-      # Nice-to-have inspectors / UX helpers
-      btop
-      neofetch
+      file
+      
+      # Version control
+      git gh
+      git-lfs      # Large file support (moved from development.nix for consistency)
+      
+      # Modern CLI replacements
+      ripgrep      # Better grep
+      fd           # Better find
+      sd           # Better sed
+      eza          # Better ls
+      bat          # Better cat
+      delta        # Better diff
+      
+      # Data processing
+      jq yq        # JSON/YAML processors
+      
+      # Task runner
+      just
+      
+      # Editor & shell
+      neovim
+      starship
+      
+      # Development helpers
+      direnv nix-direnv
+      hyperfine    # Benchmarking
+      
+      # Security
+      age
+      gnupg
+      
+      # Clipboard (Wayland)
+      wl-clipboard
+      
+      # Enhanced CLI Tools
+      fzf          # Fuzzy finder (essential for productivity)
+      zoxide       # Smarter cd command
+      tree         # Directory tree viewer
+      tealdeer     # tldr pages (quick command help)
+      trash-cli    # Safe rm alternative (moves to trash)
+      glow         # Markdown renderer for terminal
+      
+      # Apps
+      google-chrome
+      spotify
     ];
   };
 }

@@ -56,10 +56,29 @@ The full copy/paste commands are in `INSTALL.md`.
 - **`TROUBLESHOOTING.md`** — Common issues and solutions
 - **`SECRETS.md`** — Secrets management guide (sops-nix, agenix, etc.)
 - **`CONTRIBUTING.md`** — How to contribute new features or desktop environments
+- **`modules/README.md`** — Complete module documentation and usage examples
 - **`profiles/README.md`** — Desktop environment profiles documentation
 - **`machines/README.md`** — Machine configuration guide
 - **`home/README.md`** — Home Manager setup
 - **`scripts/README.md`** — Helper scripts documentation
+
+## Features
+
+### 🎨 Desktop Environments
+9 popular desktop environments out of the box (COSMIC, GNOME, KDE, Cinnamon, XFCE, MATE, Budgie, Pantheon, LXQt)
+
+### 📦 Optional Modules
+- **Multimedia** - VLC, GIMP, ffmpeg, OBS, video editing tools
+- **Containers** - Podman, distrobox, Kubernetes tools
+- **Sysadmin** - Backup tools (restic, rclone), network diagnostics, hardware monitoring
+- **Gaming** - Steam, Lutris, MangoHUD, Proton optimization
+- **Virtualization** - QEMU, libvirt, virt-manager
+- **Development** - Multiple language runtimes, build tools, formatters
+
+### 🛠️ Quality of Life
+Modern CLI tools: fzf, zoxide, eza, bat, ripgrep, lazygit, and more
+
+See `modules/README.md` for complete module documentation.
 
 ## Repository layout
 

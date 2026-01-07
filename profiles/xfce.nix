@@ -6,7 +6,6 @@
     ../modules/common-packages.nix
     ../modules/xfce.nix
     ../modules/home-manager.nix
-    ../modules/qol.nix
   ];
 
   # CRITICAL: Placeholder filesystem configuration for flake evaluation.

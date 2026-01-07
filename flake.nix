@@ -16,7 +16,26 @@
   };
 
   outputs = { self, nixpkgs, flake-utils, home-manager, devshell, nixos-cosmic }:
-    flake-utils.lib.eachDefaultSystem (system:
+    let
+      # Standalone home-manager configurations (not tied to NixOS)
+      mkHomeConfiguration = system: username: homeDirectory: home-manager.lib.homeManagerConfiguration {
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
+        
+        modules = [
+          ./home/${username}.nix
+          {
+            home = {
+              inherit username homeDirectory;
+              stateVersion = "24.11";
+            };
+          }
+        ];
+      };
+    in
+    (flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -296,8 +315,10 @@
 
         # A sample Home Manager configuration exposing the module
         # Users can link this file or copy content.
-      }) // {
-        nixosConfigurations = let
+      })
+    ) // {
+      # NixOS system configurations
+      nixosConfigurations = let
           system = "x86_64-linux";
           mkSystem = profile: nixpkgs.lib.nixosSystem {
             inherit system;
@@ -339,6 +360,17 @@
             path = ./templates/home;
             description = "Example Home Manager config enabling COSMIC developer QoL";
           };
+        };
+        
+        # Standalone Home Manager configurations (for non-NixOS systems)
+        homeConfigurations = {
+          # Example: hunter@x86_64-linux
+          "hunter@x86_64-linux" = mkHomeConfiguration "x86_64-linux" "hunter" "/home/hunter";
+          
+          # Add more users as needed:
+          # "youruser@x86_64-linux" = mkHomeConfiguration "x86_64-linux" "youruser" "/home/youruser";
+          # "youruser@aarch64-linux" = mkHomeConfiguration "aarch64-linux" "youruser" "/home/youruser";
+          # "youruser@x86_64-darwin" = mkHomeConfiguration "x86_64-darwin" "youruser" "/Users/youruser";
         };
       };
 }

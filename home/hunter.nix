@@ -1,14 +1,38 @@
 { config, pkgs, lib, ... }:
 {
+  # Home Manager manages user-level configuration files and packages.
+  # This is a template configuration - copy and modify for your own user.
+  
+  # IMPORTANT: When using with NixOS, set this in your machine config instead:
+  # home-manager.users.yourusername = import ./home/yourusername.nix;
+  
+  # For standalone (non-NixOS) usage:
+  # home-manager switch --flake .#yourusername@x86_64-linux
+  
   home.stateVersion = "24.11";
 
   # Home Manager should manage itself.
   programs.home-manager.enable = true;
 
-  # A practical default shell experience.
+  # Shell configuration
   programs.bash = {
     enable = true;
     enableCompletion = true;
+    
+    shellAliases = {
+      ls = "eza";
+      ll = "eza -la";
+      cat = "bat";
+      grep = "rg";
+      find = "fd";
+    };
+    
+    initExtra = ''
+      # Custom bash configuration
+      export EDITOR="nvim"
+      eval "$(starship init bash)"
+      eval "$(zoxide init bash)"
+    '';
   };
 
   programs.starship = {
@@ -16,12 +40,24 @@
     settings = {
       add_newline = false;
       command_timeout = 1200;
+      
+      # Custom prompt elements
+      character = {
+        success_symbol = "[➜](bold green)";
+        error_symbol = "[➜](bold red)";
+      };
     };
   };
 
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+    
+    config = {
+      global = {
+        hide_env_diff = true;
+      };
+    };
   };
 
   programs.git = {
@@ -29,11 +65,30 @@
     userName = "Hunter";
     # IMPORTANT: Change this to your actual email before committing code!
     userEmail = "user@example.com";  # TODO: Update this
+    
     delta.enable = true;
+    
     extraConfig = {
       init.defaultBranch = "main";
       pull.rebase = true;
+      push.autoSetupRemote = true;
+      core.editor = "nvim";
+      
+      # Better diffs
+      diff.algorithm = "histogram";
+      
+      # Reuse recorded resolutions
+      rerere.enabled = true;
     };
+    
+    ignores = [
+      "*~"
+      "*.swp"
+      ".DS_Store"
+      ".direnv/"
+      "result"
+      "result-*"
+    ];
   };
 
   programs.neovim = {
@@ -41,16 +96,24 @@
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
+    
     plugins = with pkgs.vimPlugins; [
       vim-nix
       nvim-lspconfig
       nvim-treesitter
       telescope-nvim
+      vim-surround
+      vim-commentary
     ];
+    
     extraConfig = ''
       set number
       set relativenumber
       set ignorecase smartcase
+      set expandtab
+      set tabstop=2
+      set shiftwidth=2
+      set clipboard=unnamedplus
     '';
   };
 
@@ -60,38 +123,102 @@
     enable = true;
     enableExtensionUpdateCheck = false;
     package = pkgs.vscode;
+    
     extensions = with pkgs.vscode-extensions; [
-      github.vscode-pull-request-github
+      # Language support
       ms-python.python
       ms-python.vscode-pylance
       rust-lang.rust-analyzer
+      golang.go
+      
+      # Formatters & Linters
       esbenp.prettier-vscode
       dbaeumer.vscode-eslint
+      
+      # Git
+      github.vscode-pull-request-github
+      eamodio.gitlens
+      
+      # Nix
+      bbenoist.nix
+      jnoortheen.nix-ide
     ];
+    
     userSettings = {
       "files.trimTrailingWhitespace" = true;
       "editor.formatOnSave" = true;
+      "editor.fontFamily" = "'JetBrainsMono Nerd Font', monospace";
+      "editor.fontLigatures" = true;
+      "editor.fontSize" = 13;
+      "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
+      "workbench.colorTheme" = "Default Dark Modern";
     };
   };
+
+  # fzf configuration
+  programs.fzf = {
+    enable = true;
+    enableBashIntegration = true;
+    
+    defaultCommand = "fd --type f --hidden --follow --exclude .git";
+    fileWidgetCommand = "fd --type f --hidden --follow --exclude .git";
+    changeDirWidgetCommand = "fd --type d --hidden --follow --exclude .git";
+  };
+
+  # zoxide (smarter cd)
+  programs.zoxide = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
+  # bat (better cat)
+  programs.bat = {
+    enable = true;
+    config = {
+      theme = "TwoDark";
+    };
+  };
+
+  # eza (better ls) - configured via aliases above
 
   fonts.fontconfig.enable = true;
 
   home.packages = with pkgs; [
-    # everyday CLI
-    eza ripgrep fd jq yq bat delta sd
-    just
-    gh
-    hyperfine
-
-    # editors/terminal
-    foot
-
-    # language servers
+    # CLI utilities (beyond what's in common-packages)
+    # Add user-specific tools here
+    
+    # Terminal emulators
+    foot           # Wayland terminal
+    kitty          # Alternative terminal
+    
+    # Language servers for development
     nodePackages_latest.typescript-language-server
     nodePackages_latest.vscode-langservers-extracted
-    marksman
+    marksman       # Markdown LSP
+    nil            # Nix LSP
+    
+    # Additional development tools
+    lazydocker     # Docker TUI
+    k9s            # Kubernetes TUI (if you use k8s)
   ];
 
+  # XDG configuration
   xdg.enable = true;
-  xdg.userDirs.enable = true;
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+    
+    desktop = "${config.home.homeDirectory}/Desktop";
+    documents = "${config.home.homeDirectory}/Documents";
+    download = "${config.home.homeDirectory}/Downloads";
+    music = "${config.home.homeDirectory}/Music";
+    pictures = "${config.home.homeDirectory}/Pictures";
+    videos = "${config.home.homeDirectory}/Videos";
+    templates = "${config.home.homeDirectory}/Templates";
+    publicShare = "${config.home.homeDirectory}/Public";
+  };
+  
+  xdg.mime.enable = true;
+  xdg.mimeApps.enable = true;
 }
+
