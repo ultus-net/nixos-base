@@ -88,4 +88,10 @@ generate_wallpaper "solarized-dark" "#002b36" "#073642" "#2aa198" 24 5
 # 7. Gruvbox Dark
 generate_wallpaper "gruvbox-dark" "#282828" "#af3a03" "#fbf1c7" 24 5
 
+# 8. NixOS Brand (brand blue hues)
+# Using brand-like darker -> lighter blue pair and a dark navy background
+# Use official NixOS logo gradient colors from the Branding site
+# dark tone -> light tone derived from the SVG gradients
+generate_wallpaper "nixos-brand" "#07263b" "#3e5993" "#77b6e1" 24 5
+
 echo "Done!"
