@@ -59,15 +59,15 @@
 
   # Activation script: ensure existing users get the AccountsService icon
   system.activationScripts.set-account-icons.text = ''
-  mkdir -p /var/lib/AccountsService/icons
-  mkdir -p /var/lib/AccountsService/users
+  /run/current-system/sw/bin/mkdir -p /var/lib/AccountsService/icons
+  /run/current-system/sw/bin/mkdir -p /var/lib/AccountsService/users
   while IFS=: read -r uname _ uid _; do
     if [ "$uid" -ge 1000 ]; then
-      ln -sf /etc/nixos-logo.png /var/lib/AccountsService/icons/$uname
+      /run/current-system/sw/bin/ln -sf /etc/nixos-logo.png /var/lib/AccountsService/icons/$uname
       userfile="/var/lib/AccountsService/users/$uname"
       if [ -f "$userfile" ]; then
-        if grep -q '^Icon=' "$userfile"; then
-          sed -i 's|^Icon=.*|Icon=/etc/nixos-logo.png|' "$userfile"
+        if /run/current-system/sw/bin/grep -q '^Icon=' "$userfile"; then
+          /run/current-system/sw/bin/sed -i 's|^Icon=.*|Icon=/etc/nixos-logo.png|' "$userfile"
         else
           echo "Icon=/etc/nixos-logo.png" >> "$userfile"
         fi
