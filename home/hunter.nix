@@ -27,7 +27,7 @@
       find = "fd";
     };
 
-    initExtra = ''
+    initContent = ''
       # Custom bash configuration
       export EDITOR="nvim"
       eval "$(zoxide init bash)"
@@ -43,6 +43,9 @@
     enable = true;
     enableCompletion = true;
 
+    # Preserve legacy dotdir behavior to avoid stateVersion warnings
+    dotDir = config.home.homeDirectory;
+
     shellAliases = {
       ls = "eza";
       ll = "eza -la";
@@ -51,7 +54,7 @@
       find = "fd";
     };
 
-    initExtra = ''
+    initContent = ''
       export EDITOR="nvim"
       eval "$(zoxide init zsh)"
 
@@ -244,8 +247,8 @@
       text = ''
         (
             rules: "",
-            model: "pc104",
-            layout: "us",
+            model: "pc105",
+            layout: "nz",
             variant: "",
             options: Some("terminate:ctrl_alt_bksp"),
             repeat_delay: 600,
@@ -338,6 +341,65 @@
       force = true;
     };
 
+    "cosmic/com.system76.CosmicBackground/v1/output.HDMI-A-4" = {
+      text = ''
+(
+    output: "HDMI-A-4",
+    source: Path("${config.home.homeDirectory}/.wallpapers/nix-d-nord-1080p.png"),
+    filter_by_theme: false,
+    rotation_frequency: 300,
+    filter_method: Lanczos,
+    scaling_mode: Zoom,
+    sampling_method: Alphanumeric,
+)
+      '';
+      force = true;
+    };
+
+    # Panel dock specifics (sourced from current desktop)
+    "cosmic/com.system76.CosmicPanel.Dock/v1/size" = {
+      text = "M";
+      force = true;
+    };
+
+    "cosmic/com.system76.CosmicPanel.Dock/v1/anchor" = {
+      text = "Bottom";
+      force = true;
+    };
+
+    "cosmic/com.system76.CosmicPanel.Dock/v1/autohide" = {
+      text = ''
+Some((
+    wait_time: 1000,
+    transition_time: 200,
+    handle_size: 4,
+    unhide_delay: 200,
+))
+      '';
+      force = true;
+    };
+
+    "cosmic/com.system76.CosmicPanel.Dock/v1/opacity" = {
+      text = "0.5";
+      force = true;
+    };
+
+    # Interface density and applet time settings
+    "cosmic/com.system76.CosmicTk/v1/interface_density" = {
+      text = "Compact";
+      force = true;
+    };
+
+    "cosmic/com.system76.CosmicAppletTime/v1/show_date_in_top_panel" = {
+      text = "false";
+      force = true;
+    };
+
+    "cosmic/com.system76.CosmicAppletTime/v1/military_time" = {
+      text = "false";
+      force = true;
+    };
+
   };
 
   # Symlink official NixOS wallpapers for desktop environment rotation
@@ -388,6 +450,52 @@
 
   # Custom repo wallpaper (zoomed-out tiled variant)
   home.file.".wallpapers/nix-d-nord-1080p.png".source = "${./../wallpapers/nix-d-nord-1080p.png}";
+
+  # Preserve monitor layout from current setup
+  home.file.".config/monitors.xml".text = ''
+<monitors version="2">
+  <configuration>
+    <layoutmode>physical</layoutmode>
+    <logicalmonitor>
+      <x>1920</x>
+      <y>0</y>
+      <scale>1</scale>
+      <monitor>
+        <monitorspec>
+          <connector>HDMI-3</connector>
+          <vendor>AUS</vendor>
+          <product>VG279QR</product>
+          <serial>LBLMQS157992</serial>
+        </monitorspec>
+        <mode>
+          <width>1920</width>
+          <height>1080</height>
+          <rate>60.000</rate>
+        </mode>
+      </monitor>
+    </logicalmonitor>
+    <logicalmonitor>
+      <x>0</x>
+      <y>0</y>
+      <scale>1</scale>
+      <primary>yes</primary>
+      <monitor>
+        <monitorspec>
+          <connector>HDMI-4</connector>
+          <vendor>AUS</vendor>
+          <product>VG279QR</product>
+          <serial>LALMQS240240</serial>
+        </monitorspec>
+        <mode>
+          <width>1920</width>
+          <height>1080</height>
+          <rate>60.000</rate>
+        </mode>
+      </monitor>
+    </logicalmonitor>
+  </configuration>
+</monitors>
+'';
 
   # Activation script to ensure COSMIC picks up configuration changes
   home.activation.cosmicReload = lib.hm.dag.entryAfter ["writeBoundary"] ''
