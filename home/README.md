@@ -219,3 +219,37 @@ Home Manager version, prefer `initContent` for newer versions and
 `initContent`/`initExtra`, align the attribute in your `home/*.nix` to the
 Home Manager release you're using.
 
+## Keys added from COSMIC export (what was mapped into `home/hunter.nix`)
+
+When exporting COSMIC settings and mapping them into `home/hunter.nix`, the
+following per-component keys were added so the desktop state is reproducible
+from Home Manager. These are stored under `xdg.configFile` in the example
+`home/hunter.nix` and as managed `home.file` entries for `monitors.xml` and
+the custom wallpaper.
+
+- `cosmic/com.system76.CosmicComp/v1/xkb_config` — XKB layout (`nz`) and model
+- `cosmic/com.system76.CosmicComp/v1/autotile` and `autotile_behavior`
+- `cosmic/com.system76.CosmicComp/v1/focus_follows_cursor`
+- `cosmic/com.system76.CosmicComp/v1/active_hint`
+- `cosmic/com.system76.CosmicTheme.Mode/v1/is_dark` — enable dark theme
+- `cosmic/com.system76.CosmicPanel/v1/entries` — panel applet ordering
+- `cosmic/com.system76.CosmicPanel.Panel/v1/plugins_center` — center plugins
+- `cosmic/com.system76.CosmicPanel.Panel/v1/plugins_wings` — left/right wings
+- `cosmic/com.system76.CosmicPanel.Dock/v1/size` — dock size (`M`)
+- `cosmic/com.system76.CosmicPanel.Dock/v1/anchor` — dock anchor (`Bottom`)
+- `cosmic/com.system76.CosmicPanel.Dock/v1/autohide` — autohide timings
+- `cosmic/com.system76.CosmicPanel.Dock/v1/opacity` — dock opacity (0.5)
+- `cosmic/com.system76.CosmicTk/v1/interface_density` — `Compact`
+- `cosmic/com.system76.CosmicAppletTime/v1/show_date_in_top_panel`
+- `cosmic/com.system76.CosmicAppletTime/v1/military_time`
+- `cosmic/com.system76.CosmicBackground/v1/default` — global wallpaper rotation
+- `cosmic/com.system76.CosmicBackground/v1/output.HDMI-A-4` — per-output wallpaper
+- `home.file.".config/monitors.xml"` — saved monitor layout (two displays)
+- `home.file.".wallpapers/nix-d-nord-1080p.png"` — repo-provided wallpaper file
+
+Keep in mind:
+- `xdg.configFile` entries write JSON-like/text files for COSMIC components;
+  if you prefer strictly declarative options instead of file writes, translate
+  these values into a custom Nix module or `home-manager` options where
+  available.
+
