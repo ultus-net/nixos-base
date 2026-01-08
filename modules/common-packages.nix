@@ -64,7 +64,7 @@ in {
       just
       
       # Editor & shell
-      neovim
+      thunar
       starship
       
       # Development helpers
@@ -87,7 +87,7 @@ in {
       glow         # Markdown renderer for terminal
       
       # Apps
-      google-chrome
+      chromium
       spotify
       
       # Official NixOS wallpapers from nixos-artwork

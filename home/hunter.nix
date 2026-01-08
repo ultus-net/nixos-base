@@ -285,12 +285,42 @@
     "cosmic/com.system76.CosmicPanel/v1/entries" = {
       text = ''
         [
-            "Panel",
+          "Panel",
+          "com.system76.CosmicAppletMedia"
         ]
       '';
       force = true;
     };
 
+    # Ensure the panel plugins place the media controls in the center
+    "cosmic/com.system76.CosmicPanel.Panel/v1/plugins_center" = {
+      text = ''
+        Some([
+            "com.system76.CosmicAppletTime",
+            "com.system76.CosmicAppletMedia",
+        ])
+      '';
+      force = true;
+    };
+
+    # Remove the StatusArea (system tray) to hide legacy tray icons like Spotify,
+    # but keep other individual applets (network, battery, notifications, etc.).
+    "cosmic/com.system76.CosmicPanel.Panel/v1/plugins_wings" = {
+      text = ''
+        Some(([
+            "com.system76.CosmicAppletWorkspaces",
+        ], [
+            "com.system76.CosmicAppletTiling",
+            "com.system76.CosmicAppletAudio",
+            "com.system76.CosmicAppletBluetooth",
+            "com.system76.CosmicAppletNetwork",
+            "com.system76.CosmicAppletBattery",
+            "com.system76.CosmicAppletNotifications",
+            "com.system76.CosmicAppletPower",
+        ]))
+      '';
+      force = true;
+    };
     # Wallpaper configuration for all outputs (global default)
     # Rotates through official NixOS wallpapers from nixos-artwork collection
     "cosmic/com.system76.CosmicBackground/v1/default" = {
@@ -320,10 +350,6 @@
   home.file.".wallpapers/binary-white.png".source = "${pkgs.nixos-artwork.wallpapers.binary-white}/share/backgrounds/nixos/nix-wallpaper-binary-white.png";
   
   # Catppuccin series
-  home.file.".wallpapers/catppuccin-frappe.png".source = "${pkgs.nixos-artwork.wallpapers.catppuccin-frappe}/share/backgrounds/nixos/nix-wallpaper-catppuccin-frappe.png";
-  home.file.".wallpapers/catppuccin-latte.png".source = "${pkgs.nixos-artwork.wallpapers.catppuccin-latte}/share/backgrounds/nixos/nix-wallpaper-catppuccin-latte.png";
-  home.file.".wallpapers/catppuccin-macchiato.png".source = "${pkgs.nixos-artwork.wallpapers.catppuccin-macchiato}/share/backgrounds/nixos/nix-wallpaper-catppuccin-macchiato.png";
-  home.file.".wallpapers/catppuccin-mocha.png".source = "${pkgs.nixos-artwork.wallpapers.catppuccin-mocha}/share/backgrounds/nixos/nix-wallpaper-catppuccin-mocha.png";
   
   # Nineish series (retro style)
   home.file.".wallpapers/nineish.png".source = "${pkgs.nixos-artwork.wallpapers.nineish}/share/backgrounds/nixos/nix-wallpaper-nineish.png";
@@ -360,8 +386,13 @@
   home.file.".wallpapers/gnome-dark.png".source = "${pkgs.nixos-artwork.wallpapers.gnome-dark}/share/backgrounds/nixos/nix-wallpaper-simple-dark-gray.png";
   home.file.".wallpapers/gradient-grey.png".source = "${pkgs.nixos-artwork.wallpapers.gradient-grey}/share/backgrounds/nixos/nix-wallpaper-gradient-grey.png";
 
-  # Activation script to ensure COSMIC picks up the wallpaper
-  home.activation.cosmicWallpaper = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  # Activation script to ensure COSMIC picks up configuration changes
+  home.activation.cosmicReload = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    # Restart COSMIC compositor to pick up super key and other compositor settings
+    if pgrep -x cosmic-comp > /dev/null; then
+      $DRY_RUN_CMD pkill -x cosmic-comp || true
+    fi
+    
     # Restart COSMIC background process to pick up new wallpaper
     if pgrep -x cosmic-bg > /dev/null; then
       $DRY_RUN_CMD pkill -x cosmic-bg || true

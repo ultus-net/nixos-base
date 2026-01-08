@@ -43,9 +43,6 @@ in {
     # XWayland support for legacy X11 apps
     programs.xwayland.enable = true;
 
-    # Recommended: Flatpak for COSMIC Store
-    services.flatpak.enable = lib.mkDefault true;
-
     # Enable clipboard manager protocol if requested
     environment.sessionVariables = lib.mkIf cfg.enableClipboardManager {
       COSMIC_DATA_CONTROL_ENABLED = "1";
