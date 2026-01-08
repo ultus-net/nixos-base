@@ -96,3 +96,26 @@ nixos-install
 - Run from repository root for best results
 - Most scripts require sudo/root privileges
 - Check script comments for detailed usage information
+
+## Exporting COSMIC Settings (quick)
+
+You can export your current COSMIC/GShell settings for inspection or to
+make them reproducible. The repository's `exports/` directory is gitignored
+by default — store temporary archives there.
+
+Example (run in a terminal on your desktop session):
+
+```bash
+TS=$(date +%Y%m%d-%H%M%S)
+DEST="$HOME/exports/cosmic-settings-$TS"
+mkdir -p "$DEST"
+dconf dump / > "$DEST/dconf_dump_root.dconf" || true
+gsettings list-recursively > "$DEST/gsettings_all_list_recursively.txt" || true
+cp -r "$HOME/.config/gtk-4.0/cosmic" "$DEST/" 2>/dev/null || true
+cp -r "$HOME/.config/cosmic" "$DEST/" 2>/dev/null || true
+cp -r "$HOME/.config/monitors.xml" "$DEST/.config/" 2>/dev/null || true
+tar -C "$HOME" -czf "$HOME/exports/cosmic-settings-$TS.tar.gz" "exports/cosmic-settings-$TS"
+```
+
+Tip: Use the generated dumps to map settings into your `home/*` Nix configs
+or to create a `dconf` preload for exact reproduction.

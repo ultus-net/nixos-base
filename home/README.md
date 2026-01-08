@@ -209,3 +209,13 @@ nix profile install nixpkgs#home-manager
 - [Home Manager Options Search](https://mipmip.github.io/home-manager-option-search/)
 - [Example Configurations](https://github.com/nix-community/home-manager/tree/master/tests)
 
+## Compatibility Note
+
+Some older Home Manager releases use `programs.*.initExtra` for shell
+initialization content while newer releases prefer `programs.*.initContent`.
+This repository aims for broad compatibility; if you target a specific
+Home Manager version, prefer `initContent` for newer versions and
+`initExtra` for older ones. When running into evaluation errors referencing
+`initContent`/`initExtra`, align the attribute in your `home/*.nix` to the
+Home Manager release you're using.
+
