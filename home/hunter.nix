@@ -264,6 +264,21 @@
       force = true;
     };
 
+    # Wallpaper configuration - single image spanning multiple screens
+    "cosmic/com.system76.CosmicBackground/v1/all" = {
+      text = ''
+        (
+            output: "all",
+            source: Image("/home/hunter/Documents/nixos-base/wallpapers/nebula.jpg"),
+            filter_by_theme: false,
+            rotation_frequency: 300,
+            filter_method: Lanczos,
+            scaling_mode: Zoom,
+            sampling_method: Alphanumeric,
+        )
+      '';
+      force = true;
+    };
 
   };
 }
