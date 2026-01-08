@@ -87,7 +87,9 @@
             # networking & ops
             curl wget
             httpie
-            iproute2
+            # iproute2 is Linux-specific; include only on linux systems
+            # (avoid evaluating this package on unsupported host platforms)
+          ] ++ pkgs.lib.optionals (builtins.match ".*-linux" system != null) [ iproute2 ] ++ [
 
             # editors
             neovim
