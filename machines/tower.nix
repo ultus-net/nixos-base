@@ -25,6 +25,17 @@
   # Set timezone to New Zealand
   time.timeZone = "Pacific/Auckland";
 
+  # Automatically mount the dedicated games drive
+  fileSystems."/games" = {
+    device = "/dev/disk/by-uuid/23fa1b43-1a18-48d6-ad19-6ce94dce6333";
+    fsType = "ext4";
+    # Make the volume show up clearly in GUI file managers
+    options = [
+      "x-gvfs-show"        # show as a drive in GVFS-based file managers
+      "x-gvfs-name=Games" # display name "Games" in the sidebar
+    ];
+  };
+
   # Kernel modules (uinput and I2C/SMBus for OpenRGB)
   boot.kernelModules = [
     "uinput"
