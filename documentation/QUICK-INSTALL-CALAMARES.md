@@ -183,7 +183,7 @@ Same as the manual method:
 - Full gaming setup (Steam, Lutris, Heroic, MangoHud)
 - Multimedia tools (OBS, Kdenlive, Audacity, GIMP)
 - Virtualization (VirtualBox, virt-manager)
-- Container support (Docker, Podman)
+- Container support (Docker)
 - Development tools
 
 ---

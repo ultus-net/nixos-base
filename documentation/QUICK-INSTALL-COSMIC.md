@@ -59,7 +59,7 @@ passwd hunter
 - Full gaming setup (Steam, Lutris, Heroic, MangoHud)
 - Multimedia tools (OBS, Kdenlive, Audacity, GIMP, etc.)
 - Virtualization (VirtualBox, virt-manager)
-- Container support (Docker, Podman)
+- Container support (Docker)
 - User "hunter" with sudo access
 
 ---
@@ -479,7 +479,7 @@ sudo nix-collect-garbage -d
 
 ### Development
 - Git, VS Code
-- Docker, Podman
+- Docker
 - VirtualBox, virt-manager
 
 ### System Tools

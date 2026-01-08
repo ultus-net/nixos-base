@@ -205,8 +205,7 @@ development.enable = true;
 Full container and Kubernetes development stack.
 
 **What's Included:**
-- **Runtime:** Podman, podman-compose (Docker-compatible)
-- **UI:** Podman Desktop
+- **Runtime:** Docker, docker-compose
 - **Tools:** distrobox (run any Linux distro)
 - **Kubernetes:** kubectl, k9s (TUI), helm
 - **Building:** buildah, skopeo

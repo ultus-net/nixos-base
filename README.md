@@ -187,7 +187,7 @@ Enable additional functionality as needed:
 - **Multimedia** - VLC, GIMP, OBS, video editing
 - **Gaming** - Steam, Lutris, MangoHUD, Proton
 - **Development** - Languages, build tools, formatters
-- **Containers** - Podman, distrobox, Kubernetes tools
+- **Containers** - Docker, distrobox, Kubernetes tools
 - **Virtualization** - QEMU, libvirt, virt-manager
 - **Sysadmin** - Backups, monitoring, diagnostics
 - **Laptop** - Battery optimization, touchpad config

@@ -103,8 +103,8 @@
             rustup
 
             # containers
-            podman
-            podman-compose
+            docker
+            docker-compose
 
             # formatters/linters
             shfmt shellcheck
@@ -151,7 +151,7 @@
           name = "cosmic-workstation";
           copyToRoot = pkgs.buildEnv {
             name = "cosmic-workstation-root";
-            paths = with pkgs; [
+              paths = with pkgs; [
               bashInteractive
               git
               gh
@@ -171,8 +171,8 @@
               pnpm
               go
               rustup
-              podman
-              podman-compose
+              docker
+              docker-compose
               cmake
               pkg-config
               just

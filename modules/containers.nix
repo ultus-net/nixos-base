@@ -17,10 +17,10 @@ in {
       description = "Install Kubernetes tools (kubectl, k9s, helm)";
     };
     
-    enableDockerCompat = lib.mkOption {
+    enableDockerCompose = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Enable Docker CLI compatibility for Podman";
+      description = "Install docker-compose for managing multi-container apps";
     };
     
     extraPackages = lib.mkOption {
@@ -31,11 +31,9 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    # Enable Podman (Docker alternative)
-    virtualisation.podman = {
+    # Enable Docker
+    virtualisation.docker = {
       enable = true;
-      dockerCompat = cfg.enableDockerCompat;
-      defaultNetwork.settings.dns_enabled = true;
     };
     
     # Enable container networking
@@ -43,11 +41,9 @@ in {
     
     environment.systemPackages = with pkgs; [
       # Core container tools
-      podman
-      podman-compose
-      buildah      # Container image builder
-      skopeo       # Container image inspector
-      
+      docker
+    ] ++ lib.optionals cfg.enableDockerCompose [
+      docker-compose
     ] ++ lib.optionals cfg.enableDistrobox [
       distrobox
       boxbuddy     # Distrobox GUI

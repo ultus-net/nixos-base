@@ -22,7 +22,7 @@ This directory contains modular NixOS configuration fragments. Each module is op
 - **`virtualization.nix`** - VM support (libvirt, QEMU, virt-manager)
 - **`laptop.nix`** - Laptop-specific settings (power management, TLP)
 - **`multimedia.nix`** - Media tools (VLC, GIMP, ffmpeg, OBS)
-- **`containers.nix`** - Container tools (Podman, distrobox, Kubernetes)
+- **`containers.nix`** - Container tools (Docker, distrobox, Kubernetes)
 - **`sysadmin.nix`** - System administration tools (backups, network diagnostics, hardware monitoring)
 
 ### Desktop Environments
@@ -90,7 +90,7 @@ This directory contains modular NixOS configuration fragments. Each module is op
   containers = {
     enable = true;
     enableDistrobox = true;
-    enableDockerCompat = false;
+    enableDockerCompose = false;
   };
 }
 ```
@@ -122,14 +122,13 @@ containers = {
   enable = true;
   enableDistrobox = true;       # Run other distros in containers
   enableKubernetes = true;      # kubectl, k9s, helm
-  enableDockerCompat = true;    # Docker CLI → Podman
+  enableDockerCompose = true;   # Install docker-compose
   extraPackages = [ pkgs.docker-compose ];
 };
 ```
 
 **Includes:**
-- Podman with compose support
-- Buildah, Skopeo
+- Docker with compose support
 - Distrobox + BoxBuddy GUI
 - Optional: Kubernetes tools
 

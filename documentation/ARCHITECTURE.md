@@ -284,7 +284,7 @@ Includes:
 - Nix formatters and linters
 - Development tools (git, gh, direnv)
 - Language toolchains (Python, Node.js, Go, Rust)
-- Container tools (podman)
+- Container tools (docker)
 - Build tools (cmake, pkg-config, just)
 
 ## Testing Strategy

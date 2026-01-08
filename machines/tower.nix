@@ -38,7 +38,6 @@
         "video"           # access to video devices
         "audio"           # access to audio devices
         "docker"          # docker access
-        "podman"          # podman access
         "libvirtd"        # VM management
         "kvm"             # KVM access
       ];
