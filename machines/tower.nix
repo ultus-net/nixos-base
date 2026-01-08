@@ -30,6 +30,7 @@
     hunter = {
       isNormalUser = true;
       description = "Cameron Hunter";
+      shell = pkgs.zsh;
       group = "hunter";  # Primary group
       extraGroups = [
         "wheel"           # sudo access
@@ -86,6 +87,10 @@
 
   # Better desktop responsiveness
   services.system76-scheduler.enable = true;
+
+  # System-wide zsh shell support
+  programs.zsh.enable = true;
+  users.defaultUserShell = pkgs.zsh;
 
   # Additional system packages for tower workstation
   environment.systemPackages = with pkgs; [

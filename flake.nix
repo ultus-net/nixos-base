@@ -299,7 +299,6 @@
 
                 # cosmic-friendly apps (installed via nix when possible)
                 # Note: COSMIC is Wayland-first; these are Wayland-friendly.
-                foot
               ];
 
               fonts.fontconfig.enable = true;

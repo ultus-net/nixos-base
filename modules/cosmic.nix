@@ -64,7 +64,6 @@ in {
 
       # Additional Wayland apps if enabled
     ] ++ lib.optionals cfg.enableWaylandApps [
-      foot              # Wayland terminal
       nautilus          # File manager (works great on Wayland)
       loupe             # Image viewer
       papers            # PDF viewer

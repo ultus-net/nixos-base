@@ -30,13 +30,42 @@
     initExtra = ''
       # Custom bash configuration
       export EDITOR="nvim"
-      eval "$(starship init bash)"
       eval "$(zoxide init bash)"
+
+      # Run fastfetch with default logo on interactive shells if available
+      if command -v fastfetch >/dev/null 2>&1; then
+        fastfetch
+      fi
+    '';
+  };
+
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+
+    shellAliases = {
+      ls = "eza";
+      ll = "eza -la";
+      cat = "bat";
+      grep = "rg";
+      find = "fd";
+    };
+
+    initExtra = ''
+      export EDITOR="nvim"
+      eval "$(zoxide init zsh)"
+
+      # Run fastfetch on interactive shells if available
+      if command -v fastfetch >/dev/null 2>&1; then
+        fastfetch
+      fi
     '';
   };
 
   programs.starship = {
     enable = true;
+    enableBashIntegration = true;
+    enableZshIntegration = true;
     settings = {
       add_newline = false;
       command_timeout = 1200;
@@ -173,7 +202,6 @@
     # Add user-specific tools here
 
     # Terminal emulators
-    foot           # Wayland terminal (default for COSMIC)
     kitty          # Alternative terminal
 
     # COSMIC-friendly GUI apps
