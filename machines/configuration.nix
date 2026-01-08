@@ -61,19 +61,21 @@
   system.activationScripts.set-account-icons.text = ''
   mkdir -p /var/lib/AccountsService/icons
   mkdir -p /var/lib/AccountsService/users
-  for u in $(awk -F: '$3 >= 1000 {print $1}' /etc/passwd); do
-    ln -sf /etc/nixos-logo.png /var/lib/AccountsService/icons/$u
-    userfile="/var/lib/AccountsService/users/$u"
-    if [ -f "$userfile" ]; then
-      if grep -q '^Icon=' "$userfile"; then
-        sed -i 's|^Icon=.*|Icon=/etc/nixos-logo.png|' "$userfile"
+  while IFS=: read -r uname _ uid _; do
+    if [ "$uid" -ge 1000 ]; then
+      ln -sf /etc/nixos-logo.png /var/lib/AccountsService/icons/$uname
+      userfile="/var/lib/AccountsService/users/$uname"
+      if [ -f "$userfile" ]; then
+        if grep -q '^Icon=' "$userfile"; then
+          sed -i 's|^Icon=.*|Icon=/etc/nixos-logo.png|' "$userfile"
+        else
+          echo "Icon=/etc/nixos-logo.png" >> "$userfile"
+        fi
       else
-        echo "Icon=/etc/nixos-logo.png" >> "$userfile"
+        printf "[User]\nIcon=/etc/nixos-logo.png\n" > "$userfile"
       fi
-    else
-      printf "[User]\nIcon=/etc/nixos-logo.png\n" > "$userfile"
     fi
-  done
+  done < /etc/passwd
   '';
 
   # Networking defaults: prefer NetworkManager and DHCP for desktop-style
