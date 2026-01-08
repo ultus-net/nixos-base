@@ -264,12 +264,12 @@
       force = true;
     };
 
-    # Wallpaper configuration - single image spanning multiple screens
-    "cosmic/com.system76.CosmicBackground/v1/all" = {
+    # Wallpaper configuration for HDMI-A-4 output (per-output wallpaper)
+    "cosmic/com.system76.CosmicBackground/v1/output.HDMI-A-4" = {
       text = ''
         (
-            output: "all",
-            source: Image("/home/hunter/Documents/nixos-base/wallpapers/nebula.jpg"),
+            output: "HDMI-A-4",
+            source: Path("${config.home.homeDirectory}/Pictures/Wallpapers/nebula.jpg"),
             filter_by_theme: false,
             rotation_frequency: 300,
             filter_method: Lanczos,
@@ -281,4 +281,15 @@
     };
 
   };
+
+  # Copy wallpaper to Pictures directory
+  home.file."Pictures/Wallpapers/nebula.jpg".source = ../wallpapers/nebula.jpg;
+
+  # Activation script to ensure COSMIC picks up the wallpaper
+  home.activation.cosmicWallpaper = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    # Restart COSMIC background process to pick up new wallpaper
+    if pgrep -x cosmic-bg > /dev/null; then
+      $DRY_RUN_CMD pkill -x cosmic-bg || true
+    fi
+  '';
 }
