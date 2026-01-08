@@ -19,6 +19,12 @@ in {
       description = "Enable COSMIC clipboard manager (requires zwlr_data_control_manager_v1 protocol)";
     };
 
+    enableMediaControls = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable media controls in the COSMIC top panel";
+    };
+
 
 
     extraPackages = lib.mkOption {
@@ -75,7 +81,11 @@ in {
       gnome-contacts
       gnome-weather
       gnome-clocks
-    ] ++ cfg.extraPackages;
+    ] ++ cfg.extraPackages ++ lib.optionals cfg.enableMediaControls [
+      pkgs.cosmic-panel
+      pkgs.cosmic-applets
+      pkgs.cosmic-player
+    ];
 
     # Font configuration for better rendering
     fonts.fontconfig = {

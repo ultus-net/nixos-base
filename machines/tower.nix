@@ -73,6 +73,7 @@
   # COSMIC desktop personalization
   cosmic.enableClipboardManager = true;
   cosmic.enableWaylandApps = true;
+  cosmic.enableMediaControls = true;
 
   # Workstation optimizations
   services.fstrim.enable = true;  # SSD TRIM support
