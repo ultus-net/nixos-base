@@ -89,6 +89,23 @@ imports = [ ../modules/laptop.nix ];
 laptop.enable = true;
 ```
 
+### Wallpapers
+Complete collection of official NixOS wallpapers from `nixos-artwork` with automatic rotation support for all desktop environments.
+
+**Enable:**
+```nix
+imports = [ ../modules/wallpapers.nix ];
+machines.wallpapers.enable = true;
+machines.wallpapers.rotationInterval = 300;  # seconds
+```
+
+**Includes:**
+- 40+ official wallpapers (binary series, Catppuccin themes, nineish retro, 3D renders)
+- Automatic rotation configured per desktop environment
+- System-wide installation accessible to all users
+
+**Note:** Enabled by default in all desktop profiles. Home Manager automatically symlinks wallpapers to `~/.wallpapers`.
+
 See `modules/README.md` for complete module documentation.
 
 ## 🛠️ Quality of Life

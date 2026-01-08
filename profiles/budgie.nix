@@ -6,6 +6,7 @@
     ../modules/common-packages.nix
     ../modules/budgie.nix
     ../modules/home-manager.nix
+    ../modules/wallpapers.nix
   ];
 
   # CRITICAL: Placeholder filesystem configuration for flake evaluation.
@@ -25,4 +26,7 @@
   commonPackages.packages = [ pkgs.git pkgs.curl ];
 
   budgie.enable = true;
+  
+  # Enable NixOS wallpaper collection by default
+  machines.wallpapers.enable = lib.mkDefault true;
 }

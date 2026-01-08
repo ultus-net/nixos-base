@@ -49,6 +49,12 @@ in {
     environment.plasma6.excludePackages = cfg.excludePackages;
 
     # Install extra user-provided packages plus the conservative KDE list.
-    environment.systemPackages = (cfg.extraPackages or []) ++ available;
+    environment.systemPackages = (cfg.extraPackages or []) ++ available ++ (with pkgs; [
+      # Official NixOS wallpapers
+      nixos-artwork.wallpapers.nineish-dark-gray
+      nixos-artwork.wallpapers.simple-blue
+      nixos-artwork.wallpapers.stripes-logo
+      nixos-artwork.wallpapers.mosaic-blue
+    ]);
   };
 }

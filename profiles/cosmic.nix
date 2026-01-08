@@ -14,6 +14,7 @@
     ../modules/cosmic.nix
     ../modules/home-manager.nix
     ../modules/development.nix
+    ../modules/wallpapers.nix
   ];
 
   # CRITICAL: Placeholder filesystem configuration for flake evaluation.
@@ -43,4 +44,7 @@
   commonPackages.packages = [ pkgs.git pkgs.curl ];
 
   cosmic.enable = true;
+  
+  # Enable NixOS wallpaper collection by default
+  machines.wallpapers.enable = lib.mkDefault true;
 }

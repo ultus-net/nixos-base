@@ -107,6 +107,7 @@ Enable additional functionality as needed:
 - **Virtualization** - QEMU, libvirt, virt-manager
 - **Sysadmin** - Backups, monitoring, diagnostics
 - **Laptop** - Battery optimization, touchpad config
+- **Wallpapers** - Official NixOS wallpaper collection with auto-rotation (enabled by default)
 
 See [FEATURES.md](FEATURES.md) for module details.
 

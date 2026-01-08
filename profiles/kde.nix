@@ -6,6 +6,7 @@
     ../modules/common-packages.nix
     ../modules/kde.nix
     ../modules/home-manager.nix
+    ../modules/wallpapers.nix
   ];
 
   # CRITICAL: Placeholder filesystem configuration for flake evaluation.
@@ -26,4 +27,7 @@
 
   kde.enable = true;
   kde.enableWayland = true;
+  
+  # Enable NixOS wallpaper collection by default
+  machines.wallpapers.enable = lib.mkDefault true;
 }

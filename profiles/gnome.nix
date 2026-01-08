@@ -7,6 +7,7 @@
     ../modules/common-packages.nix
     ../modules/gnome.nix
     ../modules/home-manager.nix
+    ../modules/wallpapers.nix
   ];
 
   # CRITICAL: Placeholder filesystem configuration for flake evaluation.
@@ -26,4 +27,7 @@
   commonPackages.packages = [ pkgs.git pkgs.curl ];
 
   gnome.enable = true;
+  
+  # Enable NixOS wallpaper collection by default
+  machines.wallpapers.enable = lib.mkDefault true;
 }

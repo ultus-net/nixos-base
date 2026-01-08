@@ -89,6 +89,12 @@ in {
       # Apps
       google-chrome
       spotify
+      
+      # Official NixOS wallpapers from nixos-artwork
+      nixos-artwork.wallpapers.nineish-dark-gray
+      nixos-artwork.wallpapers.simple-blue
+      nixos-artwork.wallpapers.stripes-logo
+      nixos-artwork.wallpapers.mosaic-blue
     ];
   };
 }

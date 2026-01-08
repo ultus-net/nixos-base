@@ -11,6 +11,7 @@ This directory contains modular NixOS configuration fragments. Each module is op
 - **`audio.nix`** - PipeWire audio stack
 - **`fonts.nix`** - Font packages (Nerd Fonts, emoji)
 - **`zram.nix`** - ZRAM compressed swap
+- **`wallpapers.nix`** - NixOS official wallpaper collection with automatic rotation
 
 ### Package Collections
 - **`common-packages.nix`** - Essential CLI tools and modern replacements (htop, btop, ripgrep, fzf, eza, bat, git, etc.)
@@ -187,6 +188,33 @@ laptop = {
 - Bluetooth support
 - Backlight control
 - Battery optimization
+
+---
+
+## wallpapers.nix
+
+Installs the complete collection of official NixOS wallpapers from `nixos-artwork` and makes them available system-wide for automatic rotation by desktop environments.
+
+**Enable:**
+```nix
+machines.wallpapers.enable = true;
+machines.wallpapers.rotationInterval = 300;  # seconds (5 minutes)
+```
+
+**Features:**
+- 40+ official NixOS wallpapers including:
+  - Binary series (black, blue, red, white)
+  - Catppuccin color schemes (frappe, latte, macchiato, mocha)
+  - Nineish retro series with Catppuccin variants
+  - Classic NixOS wallpapers (simple-blue, mosaic-blue, stripes)
+  - 3D renders (gear, moonscape, recursive, waterfall)
+- System-wide installation accessible to all desktop environments
+- Home Manager integration for automatic wallpaper symlinks
+- Rotation configured via COSMIC, GNOME, KDE, etc.
+
+**Note:** This module is enabled by default in all desktop profiles. The Home Manager configuration ([home/hunter.nix](../home/hunter.nix)) automatically symlinks all wallpapers to `~/.wallpapers` for rotation.
+
+---
 
 ## Creating New Modules
 

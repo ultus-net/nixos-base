@@ -66,6 +66,10 @@
   virtualization.enable = true;
   machines.containers.enable = true;
 
+  # Enable NixOS official wallpaper collection with rotation
+  machines.wallpapers.enable = true;
+  machines.wallpapers.rotationInterval = 300;  # 5 minutes
+
   # COSMIC desktop personalization
   cosmic.enableClipboardManager = true;
   cosmic.enableWaylandApps = true;
