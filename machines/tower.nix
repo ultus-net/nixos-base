@@ -37,7 +37,7 @@
   machines.users = {
     hunter = {
       isNormalUser = true;
-      description = "Cameron Hunter";
+      description = "Hunter";
       shell = pkgs.zsh;
       group = "hunter";  # Primary group
       extraGroups = [
@@ -167,7 +167,7 @@
 ; Auto-start OpenRGB for desktop sessions
 Type=Application
 Name=OpenRGB
-Exec=${pkgs.openrgb}/bin/OpenRGB
+Exec=${pkgs.openrgb}/bin/OpenRGB -p tower-openrgb.orp
 X-GNOME-Autostart-enabled=true
 NoDisplay=false
 '';
