@@ -25,6 +25,14 @@
   # Set timezone to New Zealand
   time.timeZone = "Pacific/Auckland";
 
+  # Kernel modules (uinput and I2C/SMBus for OpenRGB)
+  boot.kernelModules = [
+    "uinput"
+    "i2c-dev"
+    "i2c-piix4"  # common on AMD chipsets
+    "i2c-i801"   # common on Intel chipsets
+  ];
+
   # Primary user configuration
   machines.users = {
     hunter = {
@@ -40,6 +48,7 @@
         "docker"          # docker access
         "libvirtd"        # VM management
         "kvm"             # KVM access
+        "i2c"             # access to /dev/i2c-* devices
       ];
 
       # IMPORTANT: Set a real password hash before deploying!
@@ -144,8 +153,27 @@
     usbutils
     lm_sensors
 
+    # RGB managers
+    openrgb
+
     # Disk management
     gparted
     gnome-disk-utility
   ];
+
+  # Autostart OpenRGB for graphical sessions (system-wide)
+  environment.etc."xdg/autostart/openrgb.desktop".text = ''
+[Desktop Entry]
+; Auto-start OpenRGB for desktop sessions
+Type=Application
+Name=OpenRGB
+Exec=${pkgs.openrgb}/bin/OpenRGB
+X-GNOME-Autostart-enabled=true
+NoDisplay=false
+'';
+
+  # Let NixOS install OpenRGB's udev rules properly
+  services.udev.packages = [ pkgs.openrgb ];
+
+  # ckb-next removed for unsupported Lighting Node CORE; use OpenRGB instead
 }
