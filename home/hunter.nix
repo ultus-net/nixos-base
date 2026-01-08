@@ -27,20 +27,11 @@
       find = "fd";
     };
 
-    initContent = ''
+    initExtra = ''
       # Custom bash configuration
       export EDITOR="nvim"
       eval "$(zoxide init bash)"
 
-      # Run fastfetch with default logo on interactive shells if available
-      if command -v fastfetch >/dev/null 2>&1; then
-        fastfetch
-      fi
-    '';
-    initExtra = ''
-      # Custom bash configuration (compat for older home-manager)
-      export EDITOR="nvim"
-      eval "$(zoxide init bash)"
       # Run fastfetch with default logo on interactive shells if available
       if command -v fastfetch >/dev/null 2>&1; then
         fastfetch
@@ -63,15 +54,6 @@
       find = "fd";
     };
 
-    initContent = ''
-      export EDITOR="nvim"
-      eval "$(zoxide init zsh)"
-
-      # Run fastfetch on interactive shells if available
-      if command -v fastfetch >/dev/null 2>&1; then
-        fastfetch
-      fi
-    '';
     initExtra = ''
       export EDITOR="nvim"
       eval "$(zoxide init zsh)"
