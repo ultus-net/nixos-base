@@ -2,6 +2,14 @@
 
 This is the **easiest** way to install your COSMIC workstation. Use the GUI installer first, then apply your configuration.
 
+## ⚠️ Important Warnings
+
+**BEFORE YOU START:**
+1. **Your Calamares settings will be replaced** - Don't spend too much time customizing the Calamares installation, we'll replace it with the flake configuration
+2. **Password required after install** - This flake uses empty passwords by default. After rebooting, you'll need to set your password with `sudo passwd username`
+3. **Username flexibility** - You can use "hunter" during Calamares or your own name, but you'll need to update the flake configs either way
+4. **Don't reboot immediately** - After Calamares finishes, stay in the live environment to apply the flake
+
 ## Why This Method?
 
 ✅ **No space issues** - Calamares installs a minimal base first  

@@ -3,6 +3,19 @@
 This is a copy-paste friendly guide for installing NixOS with the COSMIC desktop
 using the tower.nix configuration.
 
+## ⚠️ Important Notes
+
+**BEFORE YOU START:**
+1. **This installs the "tower" machine config** - A pre-configured COSMIC system with gaming, multimedia, and development tools
+2. **Password required after install** - You'll need to set the "hunter" user password: `passwd hunter`
+3. **Not the generic profile** - This uses `tower.nix` not `cosmic-workstation` profile
+4. **Hardware config is generic** - You may need to adjust hardware-configuration.nix for your specific hardware
+
+**Want the generic COSMIC profile instead?** Use:
+```bash
+sudo nixos-install --root /mnt --flake github:ultus-net/nixos-base#cosmic-workstation
+```
+
 ## TL;DR - The Fast Track
 
 If you know what you're doing and just want the commands:

@@ -4,6 +4,56 @@
 
 A **modular NixOS flake** for building desktop workstations with 9 popular desktop environments plus a minimal headless base profile. Designed for easy installation, testing, and customization.
 
+## 📋 Prerequisites
+
+Before installing:
+- **NixOS installation media** - Download the latest [NixOS ISO](https://nixos.org/download.html)
+- **Basic Linux knowledge** - Comfortable with terminal commands and disk partitioning
+- **Hardware requirements** - 20GB+ disk space, 4GB+ RAM (varies by desktop)
+- **Internet connection** - Required for downloading packages
+- **UEFI firmware** - Most modern systems (BIOS installation requires manual adaptation)
+
+**⚠️ IMPORTANT:** After installation, you MUST set user passwords manually:
+```bash
+sudo passwd username  # Replace 'username' with your actual username
+```
+This flake uses empty passwords by default for security reasons.
+
+## 🗺️ Installation Path Decision Tree
+
+Choose your installation method based on your experience level:
+
+```
+┌─ Are you NEW to NixOS or want the EASIEST method?
+│
+├─ YES → Use Calamares GUI Installer
+│         └─ See: QUICK-INSTALL-CALAMARES.md
+│         └─ ✅ Graphical, point-and-click
+│         └─ ✅ No manual partitioning needed
+│         └─ ⏱️  ~20 minutes total
+│
+└─ NO  → Are you comfortable with manual partitioning?
+          │
+          ├─ YES → Manual Installation
+          │        └─ See: INSTALL.md
+          │        └─ 🎯 Full control over disk layout
+          │        └─ 🔒 Can use LUKS encryption
+          │        └─ ⏱️  ~15 minutes (if experienced)
+          │
+          └─ NO  → Quick Script Installation (Coming Soon)
+                   └─ Use: scripts/partition-drive.sh
+                   └─ ⚡ Automatic partitioning
+                   └─ 🔧 Still manual but guided
+
+Already installed? Want to switch desktops?
+└─ See: USAGE.md (Desktop Switching section)
+```
+
+**Still unsure?** 
+- **Never used Linux before?** → Calamares method
+- **Used Ubuntu/Fedora before?** → Manual installation
+- **NixOS expert?** → Create custom machine config
+
 ## ⚡ Quick Start
 
 **🎯 EASIEST METHOD: Use Calamares GUI installer first, then apply your config!**
@@ -27,13 +77,13 @@ nixos-install --flake /mnt/nixos-base#gnome-workstation
 |----------|-------------|
 | **[QUICK-INSTALL-CALAMARES.md](documentation/QUICK-INSTALL-CALAMARES.md)** | ⭐ EASIEST: GUI install first, apply config after |
 | **[QUICK-INSTALL-COSMIC.md](documentation/QUICK-INSTALL-COSMIC.md)** | Quick tower.nix COSMIC installation |
-| **[INSTALL.md](INSTALL.md)** | Complete installation guide from scratch |
-| **[USAGE.md](USAGE.md)** | Day-to-day usage, switching desktops, creating machines |
-| **[FEATURES.md](FEATURES.md)** | Available desktop environments and optional modules |
-| **[ARCHITECTURE.md](ARCHITECTURE.md)** | Repository structure and design philosophy |
-| **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** | Common issues and solutions |
-| **[CONTRIBUTING.md](CONTRIBUTING.md)** | How to contribute new features |
-| **[SECRETS.md](SECRETS.md)** | Secrets management guide |
+| **[FEATURES.md](documentation/FEATURES.md)** | Available desktop environments and optional modules |
+| **[INSTALL.md](documentation/INSTALL.md)** | Complete installation guide from scratch |
+| **[USAGE.md](documentation/USAGE.md)** | Day-to-day usage, switching desktops, creating machines |
+| **[ARCHITECTURE.md](documentation/ARCHITECTURE.md)** | Repository structure and design philosophy |
+| **[TROUBLESHOOTING.md](documentation/TROUBLESHOOTING.md)** | Common issues and solutions |
+| **[CONTRIBUTING.md](documentation/CONTRIBUTING.md)** | How to contribute new features |
+| **[SECRETS.md](documentation/SECRETS.md)** | Secrets management guide |
 
 ### Module Documentation
 
@@ -45,20 +95,22 @@ nixos-install --flake /mnt/nixos-base#gnome-workstation
 
 ## 🎨 Desktop Environments
 
-| Desktop | Profile | Description |
-|---------|---------|-------------|
-| COSMIC | `cosmic-workstation` | System76's Rust/Wayland desktop |
-| GNOME | `gnome-workstation` | Modern GNOME Shell |
-| KDE | `kde-workstation` | Feature-rich Plasma 6 |
-| Cinnamon | `cinnamon-workstation` | Linux Mint flagship |
-| XFCE | `xfce-workstation` | Lightweight & traditional |
-| MATE | `mate-workstation` | Classic GNOME 2 fork |
-| Budgie | `budgie-workstation` | Modern & elegant |
-| Pantheon | `pantheon-workstation` | elementary OS desktop |
-| LXQt | `lxqt-workstation` | Lightweight Qt desktop |
-| Base | `base-server` | Minimal headless (no desktop) |
+| Desktop | Profile | Display | Weight | Description |
+|---------|---------|---------|--------|-------------|
+| COSMIC | `cosmic-workstation` | Wayland | Medium | System76's Rust-based modern desktop |
+| GNOME | `gnome-workstation` | Wayland | Medium | Modern GNOME Shell with extensions |
+| KDE | `kde-workstation` | Wayland/X11 | Heavy | Feature-rich Plasma 6 with all apps |
+| Cinnamon | `cinnamon-workstation` | X11 | Medium | Linux Mint's flagship, traditional UI |
+| XFCE | `xfce-workstation` | X11 | Light | Lightweight & highly customizable |
+| MATE | `mate-workstation` | X11 | Light | Classic GNOME 2 fork, stable & fast |
+| Budgie | `budgie-workstation` | X11 | Light | Modern & elegant, Solus-originated |
+| Pantheon | `pantheon-workstation` | X11 | Medium | elementary OS desktop, macOS-like |
+| LXQt | `lxqt-workstation` | X11 | Light | Lightweight Qt desktop, very minimal |
+| Base | `base-server` | None | Minimal | Headless server (no GUI) |
 
-See [FEATURES.md](FEATURES.md) for detailed information.
+**Weight:** Light (<2GB RAM), Medium (2-4GB), Heavy (4GB+)
+
+See [FEATURES.md](documentation/FEATURES.md) for detailed information.
 
 ## ✨ Key Features
 
@@ -94,7 +146,39 @@ nix flake update
 sudo nixos-rebuild switch --flake .#your-config
 ```
 
-See [USAGE.md](USAGE.md) for complete usage guide.
+See [USAGE.md](documentation/USAGE.md) for complete usage guide.
+
+## 🎯 First 5 Minutes After Install
+
+After rebooting into your new system:
+
+1. **Set your password** (REQUIRED):
+   ```bash
+   sudo passwd hunter  # Replace 'hunter' with your username
+   ```
+
+2. **Verify system**:
+   ```bash
+   nixos-version
+   ```
+
+3. **Connect to WiFi** (if needed):
+   ```bash
+   nmtui  # Text UI for NetworkManager
+   ```
+
+4. **Update your system**:
+   ```bash
+   cd /etc/nixos  # Or wherever you cloned nixos-base
+   nix flake update
+   sudo nixos-rebuild switch --flake .#your-desktop-workstation
+   ```
+
+5. **Customize your username** (Optional):
+   - Edit `machines/example-machine.nix` or your machine config
+   - Replace "hunter" with your username throughout
+   - Update `home/hunter.nix` → `home/yourusername.nix`
+   - Rebuild with: `sudo nixos-rebuild switch --flake .#your-config`
 
 ## 📦 Optional Modules
 
@@ -109,7 +193,7 @@ Enable additional functionality as needed:
 - **Laptop** - Battery optimization, touchpad config
 - **Wallpapers** - Official NixOS wallpaper collection with auto-rotation (enabled by default)
 
-See [FEATURES.md](FEATURES.md) for module details.
+See [FEATURES.md](documentation/FEATURES.md) for module details.
 
 ## 🏗️ Repository Structure
 
@@ -124,7 +208,7 @@ nixos-base/
 └── .github/               # CI/CD workflows
 ```
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for design details.
+See [ARCHITECTURE.md](documentation/ARCHITECTURE.md) for design details.
 
 ## 🧪 CI/CD Pipeline
 
@@ -140,7 +224,7 @@ See [.github/CI-CD-GUIDE.md](.github/CI-CD-GUIDE.md) for pipeline documentation.
 
 ## 🤝 Contributing
 
-Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions welcome! See [CONTRIBUTING.md](documentation/CONTRIBUTING.md) for guidelines.
 
 ## 📝 License
 
@@ -148,8 +232,9 @@ This project is open source. See individual files for licensing information.
 
 ## 🆘 Need Help?
 
-- Check [TROUBLESHOOTING.md](TROUBLESHOOTING.md) for common issues
-- Review [USAGE.md](USAGE.md) for detailed examples
+- Check [TROUBLESHOOTING.md](documentation/TROUBLESHOOTING.md) for common issues
+- Review [USAGE.md](documentation/USAGE.md) for detailed examples
+- Read [FAQ.md](documentation/FAQ.md) for common questions
 - Open an issue for bugs or questions
 - Join the NixOS community channels
 

@@ -1,5 +1,23 @@
 # Usage Guide
 
+## 🚀 TL;DR
+
+```bash
+# Switch desktops (already installed system)
+sudo nixos-rebuild switch --flake .#kde-workstation
+
+# Update packages
+nix flake update && sudo nixos-rebuild switch --flake .#your-config
+
+# Test in VM before deploying
+nix build .#nixosConfigurations.cosmic-workstation.config.system.build.vm
+./result/bin/run-*-vm
+
+# Create custom machine config (advanced)
+cp machines/example-machine.nix machines/my-machine.nix
+# Edit my-machine.nix, then reference it in flake.nix
+```
+
 ## Quick Start
 
 ### For New Installations
@@ -81,6 +99,17 @@ sudo ./scripts/switch-host.sh .#kde-workstation
 See `scripts/README.md` for complete script documentation.
 
 ## Creating Your Own Machine Configuration
+
+**When do you need this?** 
+- You want to customize beyond what profiles offer
+- You're setting up multiple machines with different hardware
+- You want machine-specific settings (hostname, users, hardware config)
+
+**Don't need this if:**
+- You just want to use a pre-built desktop (use profiles directly)
+- You're testing different desktops (just switch between profiles)
+
+### Steps:
 
 1. Copy the example machine template:
    ```bash
