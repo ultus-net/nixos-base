@@ -6,7 +6,7 @@ if ! command -v magick &> /dev/null; then
     exit 1
 fi
 
-LOGO="wallpapers/nixos-logo.png"
+LOGO="assets/wallpapers/nixos-logo.png"
 
 # Function to generate wallpaper
 generate_wallpaper() {

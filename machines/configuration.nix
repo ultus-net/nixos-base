@@ -51,6 +51,31 @@
   i18n.defaultLocale = lib.mkDefault "en_US.UTF-8";
   console.keyMap = lib.mkDefault "us";
 
+  # Default user/avatar image for all users.
+  # The avatar has been moved to `assets/avatar/nixos-logo.png`.
+
+  environment.etc."nixos-logo.png".source = ../assets/avatar/nixos-logo.png;
+  environment.etc."skel/.face".source = ../assets/avatar/nixos-logo.png;
+
+  # Activation script: ensure existing users get the AccountsService icon
+  system.activationScripts.set-account-icons.text = ''
+  mkdir -p /var/lib/AccountsService/icons
+  mkdir -p /var/lib/AccountsService/users
+  for u in $(awk -F: '$3 >= 1000 {print $1}' /etc/passwd); do
+    ln -sf /etc/nixos-logo.png /var/lib/AccountsService/icons/$u
+    userfile="/var/lib/AccountsService/users/$u"
+    if [ -f "$userfile" ]; then
+      if grep -q '^Icon=' "$userfile"; then
+        sed -i 's|^Icon=.*|Icon=/etc/nixos-logo.png|' "$userfile"
+      else
+        echo "Icon=/etc/nixos-logo.png" >> "$userfile"
+      fi
+    else
+      printf "[User]\nIcon=/etc/nixos-logo.png\n" > "$userfile"
+    fi
+  done
+  '';
+
   # Networking defaults: prefer NetworkManager and DHCP for desktop-style
   # machines. Per-machine configs may disable NetworkManager and provide
   # static settings when required.

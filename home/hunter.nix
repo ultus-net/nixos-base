@@ -330,9 +330,9 @@
       text = ''
         (
             output: "*",
-            source: Directory("${config.home.homeDirectory}/.wallpapers"),
+            source: Path("${config.home.homeDirectory}/.wallpapers/nixos-honeycomb-nixos-brand.png"),
             filter_by_theme: false,
-            rotation_frequency: 300,
+            rotation_frequency: 0,
             filter_method: Lanczos,
             scaling_mode: Zoom,
             sampling_method: Alphanumeric,
@@ -345,9 +345,9 @@
       text = ''
 (
     output: "HDMI-A-4",
-    source: Path("${config.home.homeDirectory}/.wallpapers/nix-d-nord-1080p.png"),
+    source: Path("${config.home.homeDirectory}/.wallpapers/nixos-honeycomb-nixos-brand.png"),
     filter_by_theme: false,
-    rotation_frequency: 300,
+    rotation_frequency: 0,
     filter_method: Lanczos,
     scaling_mode: Zoom,
     sampling_method: Alphanumeric,
@@ -402,54 +402,23 @@ Some((
 
   };
 
-  # Symlink official NixOS wallpapers for desktop environment rotation
-  # Complete collection of all official and community NixOS wallpapers
-  
-  # Binary series
-  home.file.".wallpapers/binary-black.png".source = "${pkgs.nixos-artwork.wallpapers.binary-black}/share/backgrounds/nixos/nix-wallpaper-binary-black.png";
-  home.file.".wallpapers/binary-blue.png".source = "${pkgs.nixos-artwork.wallpapers.binary-blue}/share/backgrounds/nixos/nix-wallpaper-binary-blue.png";
-  home.file.".wallpapers/binary-red.png".source = "${pkgs.nixos-artwork.wallpapers.binary-red}/share/backgrounds/nixos/nix-wallpaper-binary-red.png";
-  home.file.".wallpapers/binary-white.png".source = "${pkgs.nixos-artwork.wallpapers.binary-white}/share/backgrounds/nixos/nix-wallpaper-binary-white.png";
-  
-  # Catppuccin series
-  
-  # Nineish series (retro style)
-  home.file.".wallpapers/nineish.png".source = "${pkgs.nixos-artwork.wallpapers.nineish}/share/backgrounds/nixos/nix-wallpaper-nineish.png";
-  home.file.".wallpapers/nineish-dark-gray.png".source = "${pkgs.nixos-artwork.wallpapers.nineish-dark-gray}/share/backgrounds/nixos/nix-wallpaper-nineish-dark-gray.png";
-  home.file.".wallpapers/nineish-solarized-dark.png".source = "${pkgs.nixos-artwork.wallpapers.nineish-solarized-dark}/share/backgrounds/nixos/nix-wallpaper-nineish-solarized-dark.png";
-  home.file.".wallpapers/nineish-solarized-light.png".source = "${pkgs.nixos-artwork.wallpapers.nineish-solarized-light}/share/backgrounds/nixos/nix-wallpaper-nineish-solarized-light.png";
-  home.file.".wallpapers/nineish-catppuccin-frappe.png".source = "${pkgs.nixos-artwork.wallpapers.nineish-catppuccin-frappe}/share/backgrounds/nixos/nix-wallpaper-nineish-catppuccin-frappe.png";
-  home.file.".wallpapers/nineish-catppuccin-frappe-alt.png".source = "${pkgs.nixos-artwork.wallpapers.nineish-catppuccin-frappe-alt}/share/backgrounds/nixos/nix-wallpaper-nineish-catppuccin-frappe-alt.png";
-  home.file.".wallpapers/nineish-catppuccin-latte.png".source = "${pkgs.nixos-artwork.wallpapers.nineish-catppuccin-latte}/share/backgrounds/nixos/nix-wallpaper-nineish-catppuccin-latte.png";
-  home.file.".wallpapers/nineish-catppuccin-latte-alt.png".source = "${pkgs.nixos-artwork.wallpapers.nineish-catppuccin-latte-alt}/share/backgrounds/nixos/nix-wallpaper-nineish-catppuccin-latte-alt.png";
-  home.file.".wallpapers/nineish-catppuccin-macchiato.png".source = "${pkgs.nixos-artwork.wallpapers.nineish-catppuccin-macchiato}/share/backgrounds/nixos/nix-wallpaper-nineish-catppuccin-macchiato.png";
-  home.file.".wallpapers/nineish-catppuccin-macchiato-alt.png".source = "${pkgs.nixos-artwork.wallpapers.nineish-catppuccin-macchiato-alt}/share/backgrounds/nixos/nix-wallpaper-nineish-catppuccin-macchiato-alt.png";
-  home.file.".wallpapers/nineish-catppuccin-mocha.png".source = "${pkgs.nixos-artwork.wallpapers.nineish-catppuccin-mocha}/share/backgrounds/nixos/nix-wallpaper-nineish-catppuccin-mocha.png";
-  home.file.".wallpapers/nineish-catppuccin-mocha-alt.png".source = "${pkgs.nixos-artwork.wallpapers.nineish-catppuccin-mocha-alt}/share/backgrounds/nixos/nix-wallpaper-nineish-catppuccin-mocha-alt.png";
-  
-  # Classic NixOS wallpapers
-  home.file.".wallpapers/simple-blue.png".source = "${pkgs.nixos-artwork.wallpapers.simple-blue}/share/backgrounds/nixos/nix-wallpaper-simple-blue.png";
-  home.file.".wallpapers/simple-dark-gray.png".source = "${pkgs.nixos-artwork.wallpapers.simple-dark-gray}/share/backgrounds/nixos/nix-wallpaper-simple-dark-gray.png";
-  home.file.".wallpapers/simple-light-gray.png".source = "${pkgs.nixos-artwork.wallpapers.simple-light-gray}/share/backgrounds/nixos/nix-wallpaper-simple-light-gray.png";
-  home.file.".wallpapers/simple-red.png".source = "${pkgs.nixos-artwork.wallpapers.simple-red}/share/backgrounds/nixos/nix-wallpaper-simple-red.png";
-  home.file.".wallpapers/mosaic-blue.png".source = "${pkgs.nixos-artwork.wallpapers.mosaic-blue}/share/backgrounds/nixos/nix-wallpaper-mosaic-blue.png";
-  home.file.".wallpapers/stripes.png".source = "${pkgs.nixos-artwork.wallpapers.stripes}/share/backgrounds/nixos/nix-wallpaper-stripes.png";
-  home.file.".wallpapers/stripes-logo.png".source = "${pkgs.nixos-artwork.wallpapers.stripes-logo}/share/backgrounds/nixos/nix-wallpaper-stripes-logo.png";
-  
-  # 3D renders
-  home.file.".wallpapers/dracula.png".source = "${pkgs.nixos-artwork.wallpapers.dracula}/share/backgrounds/nixos/nix-wallpaper-dracula.png";
-  home.file.".wallpapers/gear.png".source = "${pkgs.nixos-artwork.wallpapers.gear}/share/backgrounds/nixos/nix-wallpaper-gear.png";
-  home.file.".wallpapers/moonscape.png".source = "${pkgs.nixos-artwork.wallpapers.moonscape}/share/backgrounds/nixos/nix-wallpaper-moonscape.png";
-  home.file.".wallpapers/recursive.png".source = "${pkgs.nixos-artwork.wallpapers.recursive}/share/backgrounds/nixos/nix-wallpaper-recursive.png";
-  home.file.".wallpapers/waterfall.png".source = "${pkgs.nixos-artwork.wallpapers.waterfall}/share/backgrounds/nixos/nix-wallpaper-waterfall.png";
-  home.file.".wallpapers/watersplash.png".source = "${pkgs.nixos-artwork.wallpapers.watersplash}/share/backgrounds/nixos/nix-wallpaper-watersplash.png";
-  
-  # Other wallpapers
-  home.file.".wallpapers/gnome-dark.png".source = "${pkgs.nixos-artwork.wallpapers.gnome-dark}/share/backgrounds/nixos/nix-wallpaper-simple-dark-gray.png";
-  home.file.".wallpapers/gradient-grey.png".source = "${pkgs.nixos-artwork.wallpapers.gradient-grey}/share/backgrounds/nixos/nix-wallpaper-gradient-grey.png";
+  # Use local wallpapers from the repo `assets/wallpapers` instead of
+  # the nixos-artwork package collection. Add files here as needed.
+
+  home.file.".wallpapers/nix-d-nord.png".source = ../assets/wallpapers/nix-d-nord-1080p.png;
+  home.file.".wallpapers/nixos-honeycomb-nord-dark.png".source = ../assets/wallpapers/nixos-honeycomb-nord-dark.png;
+  home.file.".wallpapers/nixos-honeycomb-nord-light.png".source = ../assets/wallpapers/nixos-honeycomb-nord-light.png;
+  home.file.".wallpapers/nixos-honeycomb-dracula.png".source = ../assets/wallpapers/nixos-honeycomb-dracula.png;
+  home.file.".wallpapers/nixos-honeycomb-gruvbox-dark.png".source = ../assets/wallpapers/nixos-honeycomb-gruvbox-dark.png;
+  home.file.".wallpapers/nixos-honeycomb-nixos-brand.png".source = ../assets/wallpapers/nixos-honeycomb-nixos-brand.png;
+  home.file.".wallpapers/nixos-honeycomb-nord-dark-zoomed.png".source = ../assets/wallpapers/nixos-honeycomb-nord-dark-zoomed.png;
+  home.file.".wallpapers/nixos-honeycomb-nord-red.png".source = ../assets/wallpapers/nixos-honeycomb-nord-red.png;
+  home.file.".wallpapers/nixos-honeycomb-nord-frost.png".source = ../assets/wallpapers/nixos-honeycomb-nord-frost.png;
+  home.file.".wallpapers/nix-d-nord.svg".source = ../assets/wallpapers/nix-d-nord.svg;
+  home.file.".wallpapers/nixos-logo.png".source = ../assets/wallpapers/nixos-logo.png;
 
   # Custom repo wallpaper (zoomed-out tiled variant)
-  home.file.".wallpapers/nix-d-nord-1080p.png".source = "${./../wallpapers/nix-d-nord-1080p.png}";
+  home.file.".wallpapers/nix-d-nord-1080p.png".source = ../assets/wallpapers/nix-d-nord-1080p.png;
 
   # Preserve monitor layout from current setup
   home.file.".config/monitors.xml".text = ''

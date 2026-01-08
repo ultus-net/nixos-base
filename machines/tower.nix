@@ -167,6 +167,9 @@
     # RGB managers
     openrgb
 
+    # AccountsService package (provides accounts-daemon)
+    accountsservice
+
     # Disk management
     gparted
     gnome-disk-utility

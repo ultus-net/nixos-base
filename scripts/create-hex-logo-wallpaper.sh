@@ -6,7 +6,7 @@ if ! command -v magick &> /dev/null; then
     exit 1
 fi
 
-LOGO="wallpapers/nixos-logo.png"
+LOGO="assets/wallpapers/nixos-logo.png"
 RESIZED_LOGO="temp_logo_resized.png"
 TILE_IMG="temp_hex_tile.png"
 
