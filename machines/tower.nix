@@ -117,42 +117,10 @@
   users.defaultUserShell = pkgs.zsh;
 
   # Additional system packages for tower workstation
+  # (wallpapers are now provided via assets/wallpapers and the
+  #  machines.wallpapers module, so we no longer install the
+  #  nixos-artwork wallpaper packages here.)
   environment.systemPackages = with pkgs; [
-    nixos-artwork.wallpapers.binary-black
-    nixos-artwork.wallpapers.binary-blue
-    nixos-artwork.wallpapers.binary-red
-    nixos-artwork.wallpapers.binary-white
-    nixos-artwork.wallpapers.catppuccin-frappe
-    nixos-artwork.wallpapers.catppuccin-latte
-    nixos-artwork.wallpapers.catppuccin-macchiato
-    nixos-artwork.wallpapers.catppuccin-mocha
-    nixos-artwork.wallpapers.nineish
-    nixos-artwork.wallpapers.nineish-dark-gray
-    nixos-artwork.wallpapers.nineish-solarized-dark
-    nixos-artwork.wallpapers.nineish-solarized-light
-    nixos-artwork.wallpapers.nineish-catppuccin-frappe
-    nixos-artwork.wallpapers.nineish-catppuccin-frappe-alt
-    nixos-artwork.wallpapers.nineish-catppuccin-latte
-    nixos-artwork.wallpapers.nineish-catppuccin-latte-alt
-    nixos-artwork.wallpapers.nineish-catppuccin-macchiato
-    nixos-artwork.wallpapers.nineish-catppuccin-macchiato-alt
-    nixos-artwork.wallpapers.nineish-catppuccin-mocha
-    nixos-artwork.wallpapers.nineish-catppuccin-mocha-alt
-    nixos-artwork.wallpapers.simple-blue
-    nixos-artwork.wallpapers.simple-dark-gray
-    nixos-artwork.wallpapers.simple-light-gray
-    nixos-artwork.wallpapers.simple-red
-    nixos-artwork.wallpapers.mosaic-blue
-    nixos-artwork.wallpapers.stripes
-    nixos-artwork.wallpapers.stripes-logo
-    nixos-artwork.wallpapers.dracula
-    nixos-artwork.wallpapers.gear
-    nixos-artwork.wallpapers.moonscape
-    nixos-artwork.wallpapers.recursive
-    nixos-artwork.wallpapers.waterfall
-    nixos-artwork.wallpapers.watersplash
-    nixos-artwork.wallpapers.gnome-dark
-    nixos-artwork.wallpapers.gradient-grey
     # System monitoring and management
     htop
     btop

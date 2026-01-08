@@ -477,5 +477,10 @@ Some((
     if pgrep -x cosmic-bg > /dev/null; then
       $DRY_RUN_CMD pkill -x cosmic-bg || true
     fi
+
+    # Ensure cosmic-bg is running with the latest config
+    if command -v cosmic-bg >/dev/null 2>&1; then
+      $DRY_RUN_CMD cosmic-bg >/dev/null 2>&1 &
+    fi
   '';
 }
