@@ -52,6 +52,15 @@ let
     gnome-dark
     gradient-grey
   ];
+  # Local wallpapers shipped in this repo (installed to /share/backgrounds)
+  localWallpapers = pkgs.stdenv.mkDerivation {
+    name = "nixos-base-local-wallpapers";
+    src = ./../wallpapers/nix-d-nord-1080p.png;
+    buildCommand = ''
+      mkdir -p $out/share/backgrounds/nixos
+      cp "$src" $out/share/backgrounds/nixos/nix-d-nord-1080p.png
+    '';
+  };
   
 in
 {
@@ -67,7 +76,7 @@ in
   
   config = lib.mkIf cfg.enable {
     # Install all nixos-artwork wallpaper packages system-wide
-    environment.systemPackages = wallpaperPackages;
+    environment.systemPackages = wallpaperPackages ++ [ localWallpapers ];
     
     # Make wallpapers easily accessible via symlink
     environment.pathsToLink = [ "/share/backgrounds" ];

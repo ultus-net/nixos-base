@@ -386,6 +386,9 @@
   home.file.".wallpapers/gnome-dark.png".source = "${pkgs.nixos-artwork.wallpapers.gnome-dark}/share/backgrounds/nixos/nix-wallpaper-simple-dark-gray.png";
   home.file.".wallpapers/gradient-grey.png".source = "${pkgs.nixos-artwork.wallpapers.gradient-grey}/share/backgrounds/nixos/nix-wallpaper-gradient-grey.png";
 
+  # Custom repo wallpaper (zoomed-out tiled variant)
+  home.file.".wallpapers/nix-d-nord-1080p.png".source = "${./../wallpapers/nix-d-nord-1080p.png}";
+
   # Activation script to ensure COSMIC picks up configuration changes
   home.activation.cosmicReload = lib.hm.dag.entryAfter ["writeBoundary"] ''
     # Restart COSMIC compositor to pick up super key and other compositor settings
