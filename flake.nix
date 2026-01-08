@@ -2,15 +2,19 @@
   description = "Full NixOS COSMIC developer workstation with QoL, Home Manager, and devshells";
 
   inputs = {
-  # Pin nixpkgs to nixpkgs-unstable for the latest packages and fixes
-  nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # Pin nixpkgs to nixpkgs-unstable for the latest packages and fixes
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+
+    # Stable channel used for a few specific packages (e.g. google-chrome)
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-24.05";
+
     flake-utils.url = "github:numtide/flake-utils";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     devshell.url = "github:numtide/devshell";
   };
 
-  outputs = { self, nixpkgs, flake-utils, home-manager, devshell }:
+  outputs = { self, nixpkgs, nixpkgs-stable, flake-utils, home-manager, devshell }:
     let
       # Standalone home-manager configurations (not tied to NixOS)
       mkHomeConfiguration = system: username: homeDirectory: home-manager.lib.homeManagerConfiguration {
@@ -32,6 +36,12 @@
     in
     (flake-utils.lib.eachDefaultSystem (system:
       let
+        # Stable package set for a few hand-picked packages
+        stablePkgs = import nixpkgs-stable {
+          inherit system;
+          config.allowUnfree = true;
+        };
+
         pkgs = import nixpkgs {
           inherit system;
           config = {
@@ -47,6 +57,11 @@
                   sed -i '/if \[ -d \/etc\/apt \]; then/,/fi/d' Makefile
                 '';
               });
+            })
+
+            # Prefer a stable google-chrome build from nixos-24.05
+            (final: prev: {
+              google-chrome = stablePkgs.google-chrome;
             })
           ];
         };
