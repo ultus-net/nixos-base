@@ -104,6 +104,7 @@
         "wheel"           # sudo access
         "networkmanager"  # network configuration
         "video"           # access to video devices
+        "bluetooth"       # bluetooth device management
       ];
 
       # IMPORTANT: Set a real password after first boot!
@@ -126,6 +127,18 @@
   # Laptop Power Management & Optimizations
   # ============================================================================
   
+  # Configure logind for proper suspend/resume handling
+  # Helps COSMIC greeter restore displays properly after sleep
+  services.logind = {
+    lidSwitch = "suspend";
+    lidSwitchDocked = "ignore";
+    lidSwitchExternalPower = "suspend";
+    extraConfig = ''
+      HandlePowerKey=suspend
+      IdleAction=ignore
+    '';
+  };
+
   # SSD TRIM support
   services.fstrim.enable = true;
   
@@ -172,6 +185,12 @@
   # Bluetooth support - enabled by default on laptop
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
+  hardware.bluetooth.settings = {
+    General = {
+      Enable = "Source,Sink,Media,Socket";
+      Experimental = true;
+    };
+  };
   services.blueman.enable = true;
 
   # ============================================================================
@@ -223,6 +242,10 @@
 
     # DisplayLink support - temporarily disabled (requires manual driver download)
     # displaylink
+
+    # Bluetooth utilities
+    bluez
+    bluez-tools
 
     # Disk management
     gnome-disk-utility
