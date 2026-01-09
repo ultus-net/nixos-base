@@ -133,10 +133,12 @@
     lidSwitch = "suspend";
     lidSwitchDocked = "ignore";
     lidSwitchExternalPower = "suspend";
-    extraConfig = ''
-      HandlePowerKey=suspend
-      IdleAction=ignore
-    '';
+    settings = {
+      Login = {
+        HandlePowerKey = "suspend";
+        IdleAction = "ignore";
+      };
+    };
   };
 
   # SSD TRIM support
