@@ -368,6 +368,9 @@
           
           # XFCE - Lightweight, traditional desktop
           xfce-workstation = mkSystem ./profiles/xfce.nix;
+
+          # Hyprland - Omarchy-style Wayland desktop
+          hyprland-workstation = mkSystem ./profiles/hyprland.nix;
         };
 
       # Out-of-system content like templates

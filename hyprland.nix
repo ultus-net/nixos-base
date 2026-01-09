@@ -6,19 +6,19 @@
 
   config = lib.mkIf config.hyprland.enable {
     environment.systemPackages = with pkgs; [
-      hyprland alacritty brave nautilus yazi lazygit lazydocker neovim feh libva-utils zsh btop powertop bluetui nmtui waybar swww
+      hyprland alacritty brave nautilus yazi lazygit lazydocker neovim feh libva-utils zsh btop powertop bluetui networkmanager waybar swww
     ];
     users.defaultUserShell = pkgs.zsh;
-    xdg.configFile = {
-      "hypr/hyprland.conf".text = ''
-        source = ~/.config/hypr/autostart.conf
-        source = ~/.config/hypr/bindings.conf
-        source = ~/.config/hypr/looknfeel.conf
-        source = ~/.config/hypr/windows.conf
-        source = ~/.config/hypr/monitors.conf
-        source = ~/.config/hypr/input.conf
+    environment.etc = {
+      "xdg/hypr/hyprland.conf".text = ''
+        source = /etc/xdg/hypr/autostart.conf
+        source = /etc/xdg/hypr/bindings.conf
+        source = /etc/xdg/hypr/looknfeel.conf
+        source = /etc/xdg/hypr/windows.conf
+        source = /etc/xdg/hypr/monitors.conf
+        source = /etc/xdg/hypr/input.conf
       '';
-      "hypr/looknfeel.conf".text = ''
+      "xdg/hypr/looknfeel.conf".text = ''
         general {
           gaps_in = 5
           gaps_out = 10
@@ -71,7 +71,7 @@
           focus_on_activate = true
         }
       '';
-      "hypr/input.conf".text = ''
+      "xdg/hypr/input.conf".text = ''
         input {
           kb_layout = us
           kb_variant =
@@ -90,7 +90,7 @@
         }
         windowrule = scrolltouchpad 1.5, class:Alacritty
       '';
-      "hypr/bindings.conf".text = ''
+      "xdg/hypr/bindings.conf".text = ''
         $terminal = alacritty
         $browser = brave
         bind = SUPER, Return, exec, $terminal
@@ -101,16 +101,16 @@
         bind = SUPER, L, exec, $terminal -e lazygit
         bind = SUPER, C, exec, $terminal -e lazydocker
       '';
-      "hypr/autostart.conf".text = ''
+      "xdg/hypr/autostart.conf".text = ''
         exec-once = waybar &
         exec-once = swww-daemon &
         exec-once = bluetui &
       '';
-      "hypr/windows.conf".text = ''
+      "xdg/hypr/windows.conf".text = ''
         windowrule = float, class:^(pavucontrol|blueman-manager|nm-connection-editor)$
         windowrule = size 1200 800, class:^(firefox|brave)$
       '';
-      "hypr/monitors.conf".text = ''
+      "xdg/hypr/monitors.conf".text = ''
         monitor=,preferred,auto,1
       '';
     };

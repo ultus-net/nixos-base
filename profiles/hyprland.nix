@@ -27,8 +27,12 @@
     fsType = "vfat";
   };
 
+
   # Enable Hyprland desktop
   hyprland.enable = true;
+
+  # Ensure zsh is enabled if set as default shell
+  programs.zsh.enable = true;
 
   # Enable NixOS wallpaper collection by default
   machines.wallpapers.enable = lib.mkDefault true;
