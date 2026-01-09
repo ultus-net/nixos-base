@@ -90,6 +90,14 @@
   machines.wallpapers.rotationInterval = 300;  # 5 minutes
 
   # COSMIC desktop personalization
+
+  # Swap file configuration (32GB, suitable for hibernation)
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 32768; # Size in MB (32GB)
+    }
+  ];
   cosmic.enableClipboardManager = true;
   cosmic.enableWaylandApps = true;
   cosmic.enableMediaControls = true;
