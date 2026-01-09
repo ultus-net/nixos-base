@@ -353,6 +353,7 @@
           
           # Real machine configurations
           tower = mkSystem ./machines/tower.nix;
+          work-laptop = mkSystem ./machines/work-laptop.nix;
           
           # Real COSMIC desktop (System76) - Wayland, Rust-based
           cosmic-workstation = mkSystem ./profiles/cosmic.nix;

@@ -1,22 +1,24 @@
 { config, pkgs, lib, ... }:
 {
-  # Work Laptop - Portable workstation configuration
-  # Generated from nixos-generate-config hardware scan
+  # Work Laptop - Portable workstation with COSMIC desktop and DisplayLink support
+  # Hardware configuration generated from nixos-generate-config
 
   imports = [
     ./configuration.nix
-    ./work-laptop-hardware.nix  # Hardware configuration from nixos-generate-config
-
-    # Desktop environment (you can change this to your preferred DE)
-    ../profiles/gnome.nix
-
-    # User management
+    ../profiles/cosmic.nix
     ../modules/common-users.nix
   ];
 
-  # Machine identity
+  # ============================================================================
+  # Machine Identity
+  # ============================================================================
+  
   networking.hostName = "work-laptop";
 
+  # ============================================================================
+  # Regional Settings
+  # ============================================================================
+  
   # Set timezone to New Zealand
   time.timeZone = "Pacific/Auckland";
 
@@ -34,21 +36,72 @@
     LC_TIME = "en_NZ.UTF-8";
   };
 
+  # ============================================================================
+  # Hardware Configuration (from nixos-generate-config)
+  # ============================================================================
+  
+  boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "vmd" "nvme" "uas" "sd_mod" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-intel" "evdi" ];  # evdi for DisplayLink
+  boot.extraModulePackages = with config.boot.kernelPackages; [ evdi ];
+
   # Use latest kernel for better hardware support
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # Primary user configuration
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/6d493940-1d4d-42d7-ba99-841432e67da2";
+    fsType = "ext4";
+  };
+
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/5ABD-49CC";
+    fsType = "vfat";
+    options = [ "fmask=0077" "dmask=0077" ];
+  };
+
+  swapDevices = [
+    { device = "/dev/disk/by-uuid/54112536-45a4-4494-9371-585008192b2b"; }
+  ];
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  # ============================================================================
+  # COSMIC Desktop Configuration
+  # ============================================================================
+  
+  cosmic.enableClipboardManager = true;
+  cosmic.enableWaylandApps = true;
+  cosmic.enableMediaControls = true;
+
+  # ============================================================================
+  # DisplayLink & Docking Station Support
+  # ============================================================================
+  
+  # DisplayLink drivers for docking stations
+  services.xserver.videoDrivers = [ "displaylink" "modesetting" ];
+  
+  # Add DisplayLink to session packages
+  services.xserver.displayManager.sessionPackages = [ pkgs.displaylink ];
+
+  # Enable Thunderbolt support
+  services.hardware.bolt.enable = true;
+
+  # ============================================================================
+  # User Configuration
+  # ============================================================================
+  
+  # Primary user configuration - reuse existing hunter user with home-manager
   machines.users = {
     hunter = {
       isNormalUser = true;
       description = "Hunter";
-      shell = pkgs.bash;  # Can change to zsh if preferred
+      shell = pkgs.bash;
       group = "hunter";
       extraGroups = [
         "wheel"           # sudo access
         "networkmanager"  # network configuration
         "video"           # access to video devices
-        "audio"           # access to audio devices
       ];
 
       # IMPORTANT: Set a real password after first boot!
@@ -67,41 +120,91 @@
   # Create user group
   users.groups.hunter = {};
 
-  # Laptop-specific optimizations
-  services.fstrim.enable = true;  # SSD TRIM support
-  services.fwupd.enable = true;   # Firmware updates
+  # ============================================================================
+  # Laptop Power Management & Optimizations
+  # ============================================================================
+  
+  # SSD TRIM support
+  services.fstrim.enable = true;
+  
+  # Firmware updates
+  services.fwupd.enable = true;
 
-  # Enable power management for laptops
-  services.power-profiles-daemon.enable = true;
-  services.upower.enable = true;
-
-  # Better battery life with TLP (alternative to power-profiles-daemon)
-  # Uncomment if you prefer TLP over power-profiles-daemon:
-  # services.power-profiles-daemon.enable = false;
-  # services.tlp.enable = true;
-  # services.tlp.settings = {
-  #   CPU_SCALING_GOVERNOR_ON_AC = "performance";
-  #   CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
-  # };
-
-  # Enable thermald for Intel CPUs
-  services.thermald.enable = true;
-
-  # Bluetooth support
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = false;  # Save battery
-
-  # Printer support (CUPS)
-  services.printing.enable = true;
-  services.avahi = {
+  # TLP for advanced battery management
+  services.tlp = {
     enable = true;
-    nssmdns4 = true;  # Network printer discovery
+    settings = {
+      # Battery charge thresholds (if supported by hardware)
+      START_CHARGE_THRESH_BAT0 = 75;
+      STOP_CHARGE_THRESH_BAT0 = 80;
+
+      # CPU scaling governors
+      CPU_SCALING_GOVERNOR_ON_AC = "performance";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+
+      # Intel CPU energy performance policy
+      CPU_ENERGY_PERF_POLICY_ON_AC = "performance";
+      CPU_ENERGY_PERF_POLICY_ON_BAT = "power";
+
+      # Disable USB autosuspend for docking station reliability
+      USB_AUTOSUSPEND = 0;
+
+      # Disable Wake-on-LAN
+      WOL_DISABLE = "Y";
+    };
   };
+
+  # Intel thermal management
+  services.thermald.enable = true;
 
   # Better desktop responsiveness
   services.system76-scheduler.enable = true;
 
-  # Laptop-specific packages
+  # ============================================================================
+  # Connectivity
+  # ============================================================================
+  
+  # Bluetooth support - enabled by default on laptop
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
+
+  # NetworkManager (already enabled in configuration.nix)
+  networking.networkmanager.enable = true;
+
+  # ============================================================================
+  # Input Devices
+  # ============================================================================
+  
+  # Touchpad configuration with libinput
+  services.libinput = {
+    enable = true;
+    touchpad = {
+      tapping = true;
+      naturalScrolling = true;
+      middleEmulation = true;
+      disableWhileTyping = true;
+    };
+  };
+
+  # ============================================================================
+  # Services
+  # ============================================================================
+  
+  # Printer support with CUPS
+  services.printing.enable = true;
+  
+  # Avahi for network printer discovery
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  # ============================================================================
+  # System Packages
+  # ============================================================================
+  
   environment.systemPackages = with pkgs; [
     # System monitoring
     htop
@@ -113,11 +216,22 @@
     usbutils
     lm_sensors
 
-    # Laptop utilities
-    brightnessctl  # Screen brightness control
-    acpi           # Battery status
+    # Thunderbolt tools
+    thunderbolt
+
+    # DisplayLink support
+    displaylink
+
+    # Disk management
+    gnome-disk-utility
+
+    # Network tools
+    networkmanagerapplet
   ];
 
-  # System state version
+  # ============================================================================
+  # System State Version
+  # ============================================================================
+  
   system.stateVersion = "25.11";
 }
