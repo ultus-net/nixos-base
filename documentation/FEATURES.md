@@ -61,47 +61,21 @@ This flake provides **9 popular desktop environments** plus a **headless base pr
 **Best For:** Traditional desktop users, Windows-like interface
 
 **What's Included:**
-- Cinnamon desktop from Linux Mint
-- Nemo file manager
-- GNOME Terminal
-- Firefox, VS Code
-- Traditional menu and panel layout
-
-#### XFCE (`xfce-workstation`)
 **Display Server:** X11  
 **Resource Usage:** Light (~1.5GB RAM)  
 **Best For:** Older hardware, stability, lightweight performance
 
 **What's Included:**
-- XFCE 4 desktop
-- Thunar file manager
-- XFCE Terminal
-- Firefox, lightweight text editor
-- Minimal system requirements
-
-#### MATE (`mate-workstation`)
 **Display Server:** X11  
 **Resource Usage:** Light (~1.5GB RAM)  
 **Best For:** Classic GNOME 2 lovers, traditional workflow
 
 **What's Included:**
-- MATE desktop (GNOME 2 fork)
-- Caja file manager
-- MATE Terminal
-- Classic menu system
-- Firefox, Pluma text editor
-
-#### Budgie (`budgie-workstation`)
 **Display Server:** X11  
 **Resource Usage:** Light (~2GB RAM)  
 **Best For:** Clean modern look with light resource usage
 
 **What's Included:**
-- Budgie desktop from Solus
-- Nemo or Nautilus file manager
-- GNOME Terminal
-- Raven notification center
-- Firefox, VS Code
 
 #### Pantheon (`pantheon-workstation`)
 **Display Server:** X11  
@@ -137,10 +111,6 @@ This flake provides **9 popular desktop environments** plus a **headless base pr
 | **KDE** | Both | Heavy | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Power users |
 | **Cinnamon** | X11 | Medium | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Windows users |
 | **XFCE** | X11 | Light | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Old hardware |
-| **MATE** | X11 | Light | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Classics |
-| **Budgie** | X11 | Light | ⭐⭐⭐ | ⭐⭐⭐⭐ | Balance |
-| **Pantheon** | X11 | Medium | ⭐⭐ | ⭐⭐⭐⭐ | macOS fans |
-| **LXQt** | X11 | Light | ⭐⭐ | ⭐⭐⭐⭐ | Minimal |
 
 Install any desktop with:
 ```bash

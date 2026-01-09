@@ -75,7 +75,7 @@ jobs:
           # Check for base-server
           jq -e '.nixosConfigurations | has("base-server")' flake.json
           # Check for all desktop environments
-          for desktop in cosmic gnome kde cinnamon xfce mate budgie pantheon lxqt; do
+          for desktop in cosmic gnome kde cinnamon xfce hyprland; do
             jq -e ".nixosConfigurations | has(\"${desktop}-workstation\")" flake.json
           done
 
@@ -104,10 +104,7 @@ jobs:
           - kde-workstation
           - cinnamon-workstation
           - xfce-workstation
-          - mate-workstation
-          - budgie-workstation
-          - pantheon-workstation
-          - lxqt-workstation
+          - hyprland-workstation
     steps:
       - name: Checkout
         uses: actions/checkout@v4

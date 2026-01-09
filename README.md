@@ -69,7 +69,7 @@ cd /mnt && git clone https://github.com/ultus-net/nixos-base
 nixos-install --flake /mnt/nixos-base#gnome-workstation
 ```
 
-**Available desktops:** COSMIC, GNOME, KDE Plasma, Cinnamon, XFCE, MATE, Budgie, Pantheon, LXQt, or base-server (headless)
+**Available desktops:** COSMIC, GNOME, KDE Plasma, Cinnamon, XFCE, or base-server (headless)
 
 ## 📚 Documentation
 
@@ -102,10 +102,6 @@ nixos-install --flake /mnt/nixos-base#gnome-workstation
 | KDE | `kde-workstation` | Wayland/X11 | Heavy | Feature-rich Plasma 6 with all apps |
 | Cinnamon | `cinnamon-workstation` | X11 | Medium | Linux Mint's flagship, traditional UI |
 | XFCE | `xfce-workstation` | X11 | Light | Lightweight & highly customizable |
-| MATE | `mate-workstation` | X11 | Light | Classic GNOME 2 fork, stable & fast |
-| Budgie | `budgie-workstation` | X11 | Light | Modern & elegant, Solus-originated |
-| Pantheon | `pantheon-workstation` | X11 | Medium | elementary OS desktop, macOS-like |
-| LXQt | `lxqt-workstation` | X11 | Light | Lightweight Qt desktop, very minimal |
 | Base | `base-server` | None | Minimal | Headless server (no GUI) |
 
 **Weight:** Light (<2GB RAM), Medium (2-4GB), Heavy (4GB+)

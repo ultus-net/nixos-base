@@ -31,10 +31,6 @@ This directory contains modular NixOS configuration fragments. Each module is op
 - **`kde.nix`** - KDE Plasma 6
 - **`cinnamon.nix`** - Cinnamon (Linux Mint)
 - **`xfce.nix`** - XFCE
-- **`mate.nix`** - MATE
-- **`budgie.nix`** - Budgie
-- **`pantheon.nix`** - Pantheon (elementary OS)
-- **`lxqt.nix`** - LXQt
 
 ### User Configuration
 - **`common-users.nix`** - User account management

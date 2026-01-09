@@ -21,7 +21,7 @@ Switch between desktop environments without manual configuration editing.
 ./scripts/switch-desktop.sh cosmic
 ```
 
-**Available desktops:** cosmic, gnome, kde, cinnamon, xfce, mate, budgie, pantheon, lxqt
+**Available desktops:** cosmic, gnome, kde, cinnamon, xfce
 
 ### `switch-host.sh`
 Switch the hostname of your system.

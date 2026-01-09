@@ -57,23 +57,6 @@ Available Profiles
   - Traditional desktop paradigm
   - Optional Wayland session available
   
-- **mate.nix** — MATE (GNOME 2 fork)
-  - Classic desktop experience
-  - Lightweight and stable
-  - Optional Wayland session via Wayfire
-
-- **budgie.nix** — Budgie (Solus Linux desktop)
-  - Modern and elegant
-  - GNOME-based but unique experience
-  
-- **pantheon.nix** — Pantheon (elementary OS)
-  - Beautiful, macOS-inspired design
-  - Focused on simplicity and elegance
-  - Wayland support
-  
-- **lxqt.nix** — LXQt (lightweight Qt desktop)
-  - Very low resource usage
-  - Fast and responsive
 
 Usage
 -----
