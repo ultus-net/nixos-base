@@ -133,6 +133,9 @@
   # Firmware updates
   services.fwupd.enable = true;
 
+  # Disable power-profiles-daemon since we're using TLP for advanced battery management
+  services.power-profiles-daemon.enable = false;
+
   # TLP for advanced battery management
   services.tlp = {
     enable = true;
