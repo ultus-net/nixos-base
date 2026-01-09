@@ -79,12 +79,15 @@
   # ============================================================================
   
   # DisplayLink drivers for docking stations
+  # Note: DisplayLink traditionally uses X11. For Wayland/COSMIC support, the evdi
+  # kernel module is loaded, and XWayland provides compatibility for DisplayLink
+  # displays. Future Wayland-native DisplayLink support may improve this.
   services.xserver.videoDrivers = [ "displaylink" "modesetting" ];
   
   # Add DisplayLink to session packages
   services.xserver.displayManager.sessionPackages = [ pkgs.displaylink ];
 
-  # Enable Thunderbolt support
+  # Enable Thunderbolt support for Thunderbolt docking stations
   services.hardware.bolt.enable = true;
 
   # ============================================================================
@@ -168,9 +171,6 @@
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
-
-  # NetworkManager (already enabled in configuration.nix)
-  networking.networkmanager.enable = true;
 
   # ============================================================================
   # Input Devices
