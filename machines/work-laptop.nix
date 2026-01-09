@@ -233,5 +233,5 @@
   # System State Version
   # ============================================================================
   
-  system.stateVersion = "25.11";
+  # Inherited from configuration.nix (24.11)
 }
