@@ -42,8 +42,9 @@
   
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "vmd" "nvme" "uas" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" "evdi" ];  # evdi for DisplayLink
-  boot.extraModulePackages = with config.boot.kernelPackages; [ evdi ];
+  # Temporarily disabled DisplayLink support - requires manual driver download
+  boot.kernelModules = [ "kvm-intel" ];  # "evdi" removed for DisplayLink troubleshooting
+  boot.extraModulePackages = [ ];  # evdi kernel module disabled
 
   # Use latest kernel for better hardware support
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -82,7 +83,8 @@
   # Note: DisplayLink traditionally uses X11. For Wayland/COSMIC support, the evdi
   # kernel module is loaded, and XWayland provides compatibility for DisplayLink
   # displays. Future Wayland-native DisplayLink support may improve this.
-  services.xserver.videoDrivers = [ "displaylink" "modesetting" ];
+  # Temporarily disabled DisplayLink - requires manual driver download from Synaptics
+  services.xserver.videoDrivers = [ "modesetting" ];  # "displaylink" removed for troubleshooting
 
   # Enable Thunderbolt support for Thunderbolt docking stations
   services.hardware.bolt.enable = true;
@@ -219,8 +221,8 @@
     # Thunderbolt tools
     thunderbolt
 
-    # DisplayLink support
-    displaylink
+    # DisplayLink support - temporarily disabled (requires manual driver download)
+    # displaylink
 
     # Disk management
     gnome-disk-utility
