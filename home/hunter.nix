@@ -325,36 +325,36 @@
       force = true;
     };
     # Wallpaper configuration for all outputs (global default)
-    # Rotates through official NixOS wallpapers from nixos-artwork collection
-    "cosmic/com.system76.CosmicBackground/v1/default" = {
-      text = ''
-        (
-            output: "*",
-            source: Path("${config.home.homeDirectory}/.wallpapers/nixos-honeycomb-nixos-brand.png"),
-            filter_by_theme: false,
-            rotation_frequency: 0,
-            filter_method: Lanczos,
-            scaling_mode: Zoom,
-            sampling_method: Alphanumeric,
-        )
-      '';
-      force = true;
-    };
+    # (DISABLED: not working in COSMIC)
+    # "cosmic/com.system76.CosmicBackground/v1/default" = {
+    #   text = ''
+    #     (
+    #         output: "*",
+    #         source: Path("${config.home.homeDirectory}/.wallpapers/nixos-honeycomb-nixos-brand.png"),
+    #         filter_by_theme: false,
+    #         rotation_frequency: 0,
+    #         filter_method: Lanczos,
+    #         scaling_mode: Zoom,
+    #         sampling_method: Alphanumeric,
+    #     )
+    #   '';
+    #   force = true;
+    # };
 
-    "cosmic/com.system76.CosmicBackground/v1/output.HDMI-A-4" = {
-      text = ''
-(
-    output: "HDMI-A-4",
-    source: Path("${config.home.homeDirectory}/.wallpapers/nixos-honeycomb-nixos-brand.png"),
-    filter_by_theme: false,
-    rotation_frequency: 0,
-    filter_method: Lanczos,
-    scaling_mode: Zoom,
-    sampling_method: Alphanumeric,
-)
-      '';
-      force = true;
-    };
+    # "cosmic/com.system76.CosmicBackground/v1/output.HDMI-A-4" = {
+    #   text = ''
+    # (
+    #     output: "HDMI-A-4",
+    #     source: Path("${config.home.homeDirectory}/.wallpapers/nixos-honeycomb-nixos-brand.png"),
+    #     filter_by_theme: false,
+    #     rotation_frequency: 0,
+    #     filter_method: Lanczos,
+    #     scaling_mode: Zoom,
+    #     sampling_method: Alphanumeric,
+    # )
+    #   '';
+    #   force = true;
+    # };
 
     # Panel dock specifics (sourced from current desktop)
     "cosmic/com.system76.CosmicPanel.Dock/v1/size" = {
