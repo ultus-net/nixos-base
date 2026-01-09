@@ -83,9 +83,6 @@
   # kernel module is loaded, and XWayland provides compatibility for DisplayLink
   # displays. Future Wayland-native DisplayLink support may improve this.
   services.xserver.videoDrivers = [ "displaylink" "modesetting" ];
-  
-  # Add DisplayLink to session packages
-  services.xserver.displayManager.sessionPackages = [ pkgs.displaylink ];
 
   # Enable Thunderbolt support for Thunderbolt docking stations
   services.hardware.bolt.enable = true;
