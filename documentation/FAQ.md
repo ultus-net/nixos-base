@@ -14,7 +14,6 @@
 - **KDE** - Highly customizable, feature-rich
 
 **For older hardware:**
-- **MATE** or **LXQt** - Very lightweight
 
 See the desktop comparison table in [README.md](../README.md) for details.
 

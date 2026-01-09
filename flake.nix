@@ -373,14 +373,7 @@
           mate-workstation = mkSystem ./profiles/mate.nix;
           
           # Budgie - Solus Linux desktop, modern & elegant
-          budgie-workstation = mkSystem ./profiles/budgie.nix;
-          
-          # Pantheon - elementary OS desktop
-          pantheon-workstation = mkSystem ./profiles/pantheon.nix;
-          
-          # LXQt - Lightweight Qt desktop
-          lxqt-workstation = mkSystem ./profiles/lxqt.nix;
-        };
+              # Removed desktop environments
 
         # Out-of-system content like templates
         templates = {

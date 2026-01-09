@@ -14,10 +14,6 @@ DESKTOPS=(
   "kde"
   "cinnamon"
   "xfce"
-  "mate"
-  "budgie"
-  "pantheon"
-  "lxqt"
 )
 
 show_usage() {

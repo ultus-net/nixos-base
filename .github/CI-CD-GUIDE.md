@@ -141,10 +141,6 @@ The workflow cancels in-progress runs for the same branch, preventing wasted res
 | kde-workstation | ✅ | ⏭️ | Full KDE Plasma 6 - build tested only |
 | cinnamon-workstation | ✅ | ⏭️ | Cinnamon desktop |
 | xfce-workstation | ✅ | ✅ | Lightweight desktop - always VM tested |
-| mate-workstation | ✅ | ⏭️ | MATE desktop |
-| budgie-workstation | ✅ | ⏭️ | Budgie desktop |
-| pantheon-workstation | ✅ | ⏭️ | Pantheon desktop |
-| lxqt-workstation | ✅ | ⏭️ | LXQt desktop |
 
 ✅ = Always tested  
 ⏭️ = Build/evaluation tested only (not VM booted)

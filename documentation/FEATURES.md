@@ -77,29 +77,6 @@ This flake provides **9 popular desktop environments** plus a **headless base pr
 
 **What's Included:**
 
-#### Pantheon (`pantheon-workstation`)
-**Display Server:** X11  
-**Resource Usage:** Medium (~2.5GB RAM)  
-**Best For:** macOS-like experience, clean aesthetics
-
-**What's Included:**
-- Pantheon desktop from elementary OS
-- elementary Files manager
-- elementary Terminal
-- Application menu and dock
-- Firefox
-
-#### LXQt (`lxqt-workstation`)
-**Display Server:** X11  
-**Resource Usage:** Light (~800MB RAM)  
-**Best For:** Very old hardware, minimal resource usage
-
-**What's Included:**
-- LXQt desktop (Qt-based)
-- PCManFM-Qt file manager
-- QTerminal
-- Minimal Qt applications
-- Firefox
 
 ### Quick Comparison
 
