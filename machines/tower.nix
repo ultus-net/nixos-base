@@ -165,5 +165,10 @@ NoDisplay=false
   # Let NixOS install OpenRGB's udev rules properly
   services.udev.packages = [ pkgs.openrgb ];
 
+  # Enable USB device wakeup for all devices that support it
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="usb", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
+  '';
+
   # ckb-next removed for unsupported Lighting Node CORE; use OpenRGB instead
 }

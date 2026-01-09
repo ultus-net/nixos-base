@@ -44,6 +44,8 @@
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = "yes";
+        # Add required tools to PATH
+        Path = lib.makeBinPath [ pkgs.kmod pkgs.util-linux pkgs.coreutils pkgs.gawk ];
         Environment = [
           "ZRAM_AUTO=${toString auto}"
           "ZRAM_MAX=${toString maxSize}"
