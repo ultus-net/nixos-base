@@ -368,30 +368,25 @@
           
           # XFCE - Lightweight, traditional desktop
           xfce-workstation = mkSystem ./profiles/xfce.nix;
-          
-          # MATE - GNOME 2 fork, classic desktop
-          mate-workstation = mkSystem ./profiles/mate.nix;
-          
-          # Budgie - Solus Linux desktop, modern & elegant
-              # Removed desktop environments
-
-        # Out-of-system content like templates
-        templates = {
-          homeManager = {
-            path = ./templates/home;
-            description = "Example Home Manager config enabling COSMIC developer QoL";
-          };
         };
-        
-        # Standalone Home Manager configurations (for non-NixOS systems)
-        homeConfigurations = {
-          # Example: hunter@x86_64-linux
-          "hunter@x86_64-linux" = mkHomeConfiguration "x86_64-linux" "hunter" "/home/hunter";
-          
-          # Add more users as needed:
-          # "youruser@x86_64-linux" = mkHomeConfiguration "x86_64-linux" "youruser" "/home/youruser";
-          # "youruser@aarch64-linux" = mkHomeConfiguration "aarch64-linux" "youruser" "/home/youruser";
-          # "youruser@x86_64-darwin" = mkHomeConfiguration "x86_64-darwin" "youruser" "/Users/youruser";
+
+      # Out-of-system content like templates
+      templates = {
+        homeManager = {
+          path = ./templates/home;
+          description = "Example Home Manager config enabling COSMIC developer QoL";
         };
       };
-}
+
+      # Standalone Home Manager configurations (for non-NixOS systems)
+      homeConfigurations = {
+        # Example: hunter@x86_64-linux
+        "hunter@x86_64-linux" = mkHomeConfiguration "x86_64-linux" "hunter" "/home/hunter";
+
+        # Add more users as needed:
+        # "youruser@x86_64-linux" = mkHomeConfiguration "x86_64-linux" "youruser" "/home/youruser";
+        # "youruser@aarch64-linux" = mkHomeConfiguration "aarch64-linux" "youruser" "/home/youruser";
+        # "youruser@x86_64-darwin" = mkHomeConfiguration "x86_64-darwin" "youruser" "/Users/youruser";
+      };
+    };
+  }
