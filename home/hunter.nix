@@ -128,19 +128,25 @@
   };
 
   # COSMIC-specific environment variables
-  # Temporarily disabled to allow manual COSMIC configuration
-  # These will be re-enabled after extracting your custom settings
-  # home.sessionVariables = {
-  #   # Use Wayland for applications that support it
-  #   MOZ_ENABLE_WAYLAND = "1";
-  #   NIXOS_OZONE_WL = "1";  # Chromium/Electron apps
-  #   QT_QPA_PLATFORM = "wayland";
-  #   SDL_VIDEODRIVER = "wayland";
-  #   _JAVA_AWT_WM_NONREPARENTING = "1";  # Java app tiling fix
-  #
-  #   # COSMIC-specific
-  #   XDG_CURRENT_DESKTOP = "COSMIC";
-  # };
+  home.sessionVariables = {
+    # Use Wayland for applications that support it
+    MOZ_ENABLE_WAYLAND = "1";
+    NIXOS_OZONE_WL = "1";  # Chromium/Electron apps
+    QT_QPA_PLATFORM = "wayland";
+    SDL_VIDEODRIVER = "wayland";
+    _JAVA_AWT_WM_NONREPARENTING = "1";  # Java app tiling fix
+
+    # COSMIC-specific
+    XDG_CURRENT_DESKTOP = "COSMIC";
+    
+    # Gaming optimizations
+    # Steam shader cache on tmpfs for faster loading
+    STEAM_EXTRA_COMPAT_TOOLS_PATHS = "$HOME/.steam/root/compatibilitytools.d";
+    # Enable ntsync for Wine/Proton (futex2 support)
+    WINEFSYNC = "1";
+    # Vulkan ICD selection (prefer NVIDIA on hybrid systems)
+    VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json";
+  };
 
   programs.neovim = {
     enable = true;

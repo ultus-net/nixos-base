@@ -72,6 +72,32 @@ Validate Home Manager configurations.
 ./scripts/validate-hosts-home-manager.sh
 ```
 
+### `verify-performance.sh`
+Verify that all performance optimizations are active and working correctly.
+
+**Usage:**
+```bash
+./scripts/verify-performance.sh
+```
+
+**What it checks:**
+- CPU governor settings
+- zram compression swap status
+- I/O scheduler configuration (kyber/mq-deadline)
+- TCP BBR congestion control
+- Kernel boot parameters (mitigations, ntsync, C-states)
+- Memory tuning (swappiness, VFS cache pressure)
+- tmpfs configuration
+- Gamemode service status
+- Boot time analysis
+
+**When to run:**
+- After rebuilding with performance optimizations
+- To troubleshoot performance issues
+- Periodically to ensure settings persist
+
+See [PERFORMANCE.md](../documentation/PERFORMANCE.md) for details on each optimization.
+
 ### `partition-drive.sh`
 Automatically partition a drive for NixOS installation. This script handles all partitioning automatically - you just specify which drive to use.
 
