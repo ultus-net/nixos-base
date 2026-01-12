@@ -411,20 +411,20 @@ Some((
   # Use local wallpapers from the repo `assets/wallpapers` instead of
   # the nixos-artwork package collection. Add files here as needed.
 
-  home.file.".wallpapers/nix-d-nord.png".source = ../assets/wallpapers/nix-d-nord-1080p.png;
-  home.file.".wallpapers/nixos-honeycomb-nord-dark.png".source = ../assets/wallpapers/nixos-honeycomb-nord-dark.png;
-  home.file.".wallpapers/nixos-honeycomb-nord-light.png".source = ../assets/wallpapers/nixos-honeycomb-nord-light.png;
-  home.file.".wallpapers/nixos-honeycomb-dracula.png".source = ../assets/wallpapers/nixos-honeycomb-dracula.png;
-  home.file.".wallpapers/nixos-honeycomb-gruvbox-dark.png".source = ../assets/wallpapers/nixos-honeycomb-gruvbox-dark.png;
-  home.file.".wallpapers/nixos-honeycomb-nixos-brand.png".source = ../assets/wallpapers/nixos-honeycomb-nixos-brand.png;
-  home.file.".wallpapers/nixos-honeycomb-nord-dark-zoomed.png".source = ../assets/wallpapers/nixos-honeycomb-nord-dark-zoomed.png;
-  home.file.".wallpapers/nixos-honeycomb-nord-red.png".source = ../assets/wallpapers/nixos-honeycomb-nord-red.png;
-  home.file.".wallpapers/nixos-honeycomb-nord-frost.png".source = ../assets/wallpapers/nixos-honeycomb-nord-frost.png;
-  home.file.".wallpapers/nix-d-nord.svg".source = ../assets/wallpapers/nix-d-nord.svg;
-  home.file.".wallpapers/nixos-logo.png".source = ../assets/wallpapers/nixos-logo.png;
+  # home.file.".wallpapers/nix-d-nord.png".source = ../assets/wallpapers/nix-d-nord-1080p.png;
+  # home.file.".wallpapers/nixos-honeycomb-nord-dark.png".source = ../assets/wallpapers/nixos-honeycomb-nord-dark.png;
+  # home.file.".wallpapers/nixos-honeycomb-nord-light.png".source = ../assets/wallpapers/nixos-honeycomb-nord-light.png;
+  # home.file.".wallpapers/nixos-honeycomb-dracula.png".source = ../assets/wallpapers/nixos-honeycomb-dracula.png;
+  # home.file.".wallpapers/nixos-honeycomb-gruvbox-dark.png".source = ../assets/wallpapers/nixos-honeycomb-gruvbox-dark.png;
+  # home.file.".wallpapers/nixos-honeycomb-nixos-brand.png".source = ../assets/wallpapers/nixos-honeycomb-nixos-brand.png;
+  # home.file.".wallpapers/nixos-honeycomb-nord-dark-zoomed.png".source = ../assets/wallpapers/nixos-honeycomb-nord-dark-zoomed.png;
+  # home.file.".wallpapers/nixos-honeycomb-nord-red.png".source = ../assets/wallpapers/nixos-honeycomb-nord-red.png;
+  # home.file.".wallpapers/nixos-honeycomb-nord-frost.png".source = ../assets/wallpapers/nixos-honeycomb-nord-frost.png;
+  # home.file.".wallpapers/nix-d-nord.svg".source = ../assets/wallpapers/nix-d-nord.svg;
+  # home.file.".wallpapers/nixos-logo.png".source = ../assets/wallpapers/nixos-logo.png;
 
   # Custom repo wallpaper (zoomed-out tiled variant)
-  home.file.".wallpapers/nix-d-nord-1080p.png".source = ../assets/wallpapers/nix-d-nord-1080p.png;
+  # home.file.".wallpapers/nix-d-nord-1080p.png".source = ../assets/wallpapers/nix-d-nord-1080p.png;
 
   # Preserve monitor layout from current setup
   home.file.".config/monitors.xml".text = ''
@@ -473,20 +473,20 @@ Some((
 '';
 
   # Activation script to ensure COSMIC picks up configuration changes
-  home.activation.cosmicReload = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    # Restart COSMIC compositor to pick up super key and other compositor settings
-    if pgrep -x cosmic-comp > /dev/null; then
-      $DRY_RUN_CMD pkill -x cosmic-comp || true
-    fi
-    
-    # Restart COSMIC background process to pick up new wallpaper
-    if pgrep -x cosmic-bg > /dev/null; then
-      $DRY_RUN_CMD pkill -x cosmic-bg || true
-    fi
-
-    # Ensure cosmic-bg is running with the latest config
-    if command -v cosmic-bg >/dev/null 2>&1; then
-      $DRY_RUN_CMD cosmic-bg >/dev/null 2>&1 &
-    fi
-  '';
+  # home.activation.cosmicReload = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  #   # Restart COSMIC compositor to pick up super key and other compositor settings
+  #   if pgrep -x cosmic-comp > /dev/null; then
+  #     $DRY_RUN_CMD pkill -x cosmic-comp || true
+  #   fi
+  #   
+  #   # Restart COSMIC background process to pick up new wallpaper
+  #   if pgrep -x cosmic-bg > /dev/null; then
+  #     $DRY_RUN_CMD pkill -x cosmic-bg || true
+  #   fi
+  #
+  #   # Ensure cosmic-bg is running with the latest config
+  #   if command -v cosmic-bg >/dev/null 2>&1; then
+  #     $DRY_RUN_CMD cosmic-bg >/dev/null 2>&1 &
+  #   fi
+  # '';
 }
