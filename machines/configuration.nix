@@ -108,4 +108,20 @@
   };
 
   boot.loader.systemd-boot.configurationLimit = lib.mkDefault 3;
+
+  # Automatic system updates:
+  # - Update flake inputs weekly
+  # - Rebuild and switch to new configuration
+  # - Keep system up-to-date with latest packages
+  system.autoUpgrade = {
+    enable = lib.mkDefault true;
+    dates = "weekly";
+    flake = "/home/hunter/Documents/nixos-base";
+    flags = [
+      "--update-input" "nixpkgs"
+      "--update-input" "home-manager"
+      "--commit-lock-file"
+    ];
+    allowReboot = lib.mkDefault false;
+  };
 }
