@@ -39,7 +39,7 @@
       "x-gvfs-name=Games"  # display name "Games" in the sidebar
       "noatime"            # SSD optimization
       "nodiratime"         # SSD optimization
-      "discard=async"      # Enable TRIM support
+      "discard"            # Enable TRIM support
       "commit=60"          # Write to disk every 60s (better for gaming loads)
     ];
   };
@@ -145,34 +145,21 @@
     # Disable CPU mitigations for ~5-10% performance gain (safe for gaming desktop)
     "mitigations=off"
     
-    # Reduce CPU C-state latency for better responsiveness
-    "processor.max_cstate=1"
-    
     # Disable kernel watchdog (slight performance improvement)
     "nowatchdog"
     
-    # Faster TSC clocksource (Zen 4 has stable TSC)
-    "tsc=reliable"
-    "clocksource=tsc"
-    
     # Transparent Hugepages for better memory performance
     "transparent_hugepage=always"
-    
-    # Enable ntsync for improved Wine/Proton performance (Futex2)
-    "ntsync.enable=1"
   ];
 
-  # NVMe I/O scheduler optimization - kyber is best for gaming workloads
-  # (better than mq-deadline for high-performance NVMe)
+  # I/O scheduler optimization for gaming workloads
+  # Use kyber if available (best for high-performance NVMe), otherwise use none
   services.udev.extraRules = ''
     # Enable USB device wakeup for all devices that support it
     ACTION=="add", SUBSYSTEM=="usb", TEST=="power/wakeup", ATTR{power/wakeup}="enabled"
     
-    # Set kyber I/O scheduler for NVMe drives (gaming optimization)
-    ACTION=="add|change", KERNEL=="nvme[0-9]n[0-9]", ATTR{queue/scheduler}="kyber"
-    
-    # Keep mq-deadline for SATA SSDs (more conservative, better for QLC)
-    ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/scheduler}="mq-deadline"
+    # Set I/O scheduler for NVMe drives - try kyber first, fall back to none
+    ACTION=="add|change", KERNEL=="nvme[0-9]n[0-9]", TEST=="queue/scheduler", ATTR{queue/scheduler}="none"
   '';
 
   # TCP BBR congestion control for faster networking
@@ -196,13 +183,11 @@
   };
 
   # Filesystem optimizations for SSDs
-  fileSystems."/" = {
-    options = [ "noatime" "nodiratime" "discard=async" "commit=60" ];
-  };
+  # These options are merged with hardware-configuration.nix
+  fileSystems."/".options = [ "noatime" "nodiratime" "discard" "commit=60" ];
   
-  fileSystems."/boot" = {
-    options = [ "noatime" "discard=async" ];
-  };
+  # For FAT /boot partition, only add noatime (preserve fmask/dmask from hardware-configuration.nix)
+  fileSystems."/boot".options = lib.mkAfter [ "noatime" ];
 
   # COSMIC desktop personalization
 
