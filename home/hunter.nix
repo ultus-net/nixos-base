@@ -27,7 +27,7 @@
       find = "fd";
     };
 
-    initContent = ''
+    initExtra = ''
       # Custom bash configuration
       export EDITOR="nvim"
       eval "$(zoxide init bash)"
@@ -54,7 +54,7 @@
       find = "fd";
     };
 
-    initContent = ''
+    initExtra = ''
       export EDITOR="nvim"
       eval "$(zoxide init zsh)"
 
