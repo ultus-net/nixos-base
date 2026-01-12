@@ -15,12 +15,15 @@
     # Hardware modules
     ../modules/nvidia.nix
 
+    # Security hardening
+    ../modules/security.nix
+
     # All optional feature modules
     ../modules/gaming.nix
     ../modules/multimedia.nix
     ../modules/virtualization.nix
     ../modules/containers.nix
-    ../modules/zram.nix
+    # NOTE: zram.nix is already imported via configuration.nix
   ];
 
   # Machine identity
@@ -85,8 +88,9 @@
         "bluetooth"       # bluetooth device management
       ];
 
-      # IMPORTANT: Set a real password hash before deploying!
-      # Generate with: `mkpasswd -m sha-512` or `openssl passwd -6`
+      # CRITICAL: Set a real password hash before deploying to production!
+      # Generate with: nix-shell -p mkpasswd --run 'mkpasswd -m sha-512'
+      # An empty hash allows passwordless login - INSECURE for production!
       initialHashedPassword = lib.mkDefault "";
 
       openssh.authorizedKeys.keys = [
@@ -132,17 +136,23 @@
   # ========================================================================
   
   # Enable zram for better swap performance and reduced SSD wear
-  # With 30GB RAM, this will use ~15GB zram (half of RAM, up to 4GB max default)
-  machines.zram.enableAutoSize = true;
-  machines.zram.maxSize = 8589934592; # 8GB max zram size
-  machines.zram.compAlgorithm = "zstd"; # Better compression than lz4
+  # Uses official NixOS zramSwap module instead of custom implementation
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";       # Better compression ratio than lz4
+    memoryPercent = 25;       # Use 25% of RAM (~7.5GB on 30GB system)
+    priority = 100;           # Higher priority than disk swap
+  };
 
   # CPU frequency governor for maximum performance
   powerManagement.cpuFreqGovernor = "performance";
 
   # Gaming & low-latency kernel optimizations
   boot.kernelParams = [
-    # Disable CPU mitigations for ~5-10% performance gain (safe for gaming desktop)
+    # WARNING: Disabling CPU mitigations improves performance by ~5-10% but
+    # exposes the system to Spectre/Meltdown attacks. Only use on isolated
+    # gaming desktops that don't run untrusted code. For security, use:
+    # "mitigations=auto"
     "mitigations=off"
     
     # Disable kernel watchdog (slight performance improvement)
@@ -191,12 +201,14 @@
 
   # COSMIC desktop personalization
 
-  # Swap file configuration (reduced to 16GB since zram handles most swap needs)
-  # Still useful as backup swap for hibernation if needed
+  # Swap file as fallback (zram handles primary swap needs)
+  # For hibernation: swap size should equal RAM (30GB). Without hibernation,
+  # 4-8GB is sufficient as emergency overflow. Set to 0 to disable if not needed.
   swapDevices = [
     {
       device = "/swapfile";
-      size = 16384; # Size in MB (16GB)
+      size = 8192; # Size in MB (8GB) - increase to RAM size for hibernation
+      priority = 10; # Lower priority than zram (higher number = lower priority)
     }
   ];
   cosmic.enableClipboardManager = true;
@@ -215,9 +227,10 @@
   };
 
   # Bluetooth support
+  # COSMIC desktop includes built-in Bluetooth settings, so blueman is not needed
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
-  services.blueman.enable = true;
+  # services.blueman.enable = true; # Uncomment if you prefer blueman over COSMIC's Bluetooth UI
 
   # Better desktop responsiveness
   services.system76-scheduler.enable = true;
