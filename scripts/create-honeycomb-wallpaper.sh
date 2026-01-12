@@ -30,7 +30,7 @@ generate_wallpaper() {
     local TEMP_RESIZED="temp_logo_${NAME}_resized.png"
     local TEMP_COLORED="temp_logo_${NAME}_colored.png"
     local TEMP_TILE="temp_tile_${NAME}.png"
-    local OUTPUT="wallpapers/nixos-honeycomb-${NAME}.png"
+    local OUTPUT="assets/wallpapers/nixos-honeycomb-${NAME}.png"
 
     echo "Generating $NAME: Size ${LOGO_WIDTH}x${HEIGHT}, Padding $PAD (Canvas ${CANVAS_W}x${CANVAS_H})..."
 
@@ -93,5 +93,9 @@ generate_wallpaper "gruvbox-dark" "#282828" "#af3a03" "#fbf1c7" 24 5
 # Use official NixOS logo gradient colors from the Branding site
 # dark tone -> light tone derived from the SVG gradients
 generate_wallpaper "nixos-brand" "#07263b" "#3e5993" "#77b6e1" 24 5
+
+# 9. NixOS Brand Dark (Monochrome / Low Contrast)
+# Matches the aesthetic of the provided reference (dark background, subtle geometric details)
+generate_wallpaper "nixos-brand-dark" "#07263b" "#1b3a55" "#2f4d6a" 24 5
 
 echo "Done!"
