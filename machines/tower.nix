@@ -63,6 +63,7 @@
         "libvirtd"        # VM management
         "kvm"             # KVM access
         "i2c"             # access to /dev/i2c-* devices
+        "bluetooth"       # bluetooth device management
       ];
 
       # IMPORTANT: Set a real password hash before deploying!
@@ -119,6 +120,7 @@
   # Bluetooth support
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
 
   # Better desktop responsiveness
   services.system76-scheduler.enable = true;

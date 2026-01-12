@@ -43,8 +43,8 @@
   boot.initrd.availableKernelModules = [ "xhci_pci" "thunderbolt" "vmd" "nvme" "uas" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   # Temporarily disabled DisplayLink support - requires manual driver download
-  boot.kernelModules = [ "kvm-intel" ];  # "evdi" removed for DisplayLink troubleshooting
-  boot.extraModulePackages = [ ];  # evdi kernel module disabled
+  boot.kernelModules = [ "kvm-intel" ];  # DisplayLink's evdi module is managed by the NixOS displaylink hardware module
+  boot.extraModulePackages = [ ];
 
   # Use latest kernel for better hardware support
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -84,7 +84,9 @@
   # kernel module is loaded, and XWayland provides compatibility for DisplayLink
   # displays. Future Wayland-native DisplayLink support may improve this.
   # Temporarily disabled DisplayLink - requires manual driver download from Synaptics
-  services.xserver.videoDrivers = [ "modesetting" ];  # "displaylink" removed for troubleshooting
+  # Enable DisplayLink support via the upstream NixOS hardware.video.displaylink module
+  # (triggered when "displaylink" is present in services.xserver.videoDrivers).
+  # services.xserver.videoDrivers = [ "modesetting" "displaylink" ];
 
   # Enable Thunderbolt support for Thunderbolt docking stations
   services.hardware.bolt.enable = true;
@@ -242,7 +244,7 @@
     # Thunderbolt tools
     thunderbolt
 
-    # DisplayLink support - temporarily disabled (requires manual driver download)
+    # DisplayLink support - requires manual driver download (see nixpkgs displaylink package message)
     # displaylink
 
     # Bluetooth utilities

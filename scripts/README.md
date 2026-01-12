@@ -46,6 +46,24 @@ This collects:
 - Active desktop environment
 - System logs
 
+### `setup-displaylink.sh`
+Prepare the proprietary DisplayLink driver blob for NixOS so the `displaylink`
+package can build without manual fiddling.
+
+**Usage (from repo root):**
+```bash
+./scripts/setup-displaylink.sh
+```
+
+What it does:
+- Downloads the official Ubuntu DisplayLink driver ZIP via `nix-prefetch-url`
+	under the name expected by the nixpkgs `displaylink` package.
+- After it succeeds, you can rebuild (for example):
+
+```bash
+sudo nixos-rebuild switch --flake .#work-laptop
+```
+
 ### `validate-hosts-home-manager.sh`
 Validate Home Manager configurations.
 
