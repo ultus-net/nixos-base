@@ -25,13 +25,17 @@
 
     # Power management options (can help with stability)
     powerManagement = {
-      enable = lib.mkDefault false;
-      # Enable this for laptop or hybrid systems:
-      # finegrained = false;
+      # Enabling this can help with graphical corruption or GPU
+      # crashes after suspend/resume (per NixOS NVIDIA docs).
+      enable = true;
+      # Enable this for laptop or hybrid systems if you want
+      # fine-grained power management of PRIME offload:
+      # finegrained = true;
     };
 
-    # Open-source kernel modules (experimental, not recommended for gaming)
-    open = false;
+    # Use the open-source NVIDIA kernel module (recommended for
+    # Turing and newer GPUs, like your RTX 3070).
+    open = true;
   };
 
   # Ensure OpenGL/graphics support is enabled
