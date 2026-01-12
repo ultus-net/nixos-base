@@ -15,8 +15,9 @@
     # Hardware modules
     ../modules/nvidia.nix
 
-    # Security hardening
-    ../modules/security.nix
+    # NOTE: security.nix is NOT imported here because COSMIC enables
+    # gcr-ssh-agent which conflicts with programs.ssh.startAgent.
+    # Firewall and Avahi are configured directly in this file instead.
 
     # All optional feature modules
     ../modules/gaming.nix
