@@ -11,6 +11,7 @@ This directory contains modular NixOS configuration fragments. Each module is op
 - **`audio.nix`** - PipeWire audio stack
 - **`fonts.nix`** - Font packages (Nerd Fonts, emoji)
 - **`zram.nix`** - ZRAM compressed swap
+- **`nvidia.nix`** - NVIDIA proprietary driver configuration
 - **`wallpapers.nix`** - NixOS official wallpaper collection with automatic rotation
 
 ### Package Collections

@@ -12,6 +12,9 @@
     # User management
     ../modules/common-users.nix
 
+    # Hardware modules
+    ../modules/nvidia.nix
+
     # All optional feature modules
     ../modules/gaming.nix
     ../modules/multimedia.nix
