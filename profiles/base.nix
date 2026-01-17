@@ -15,7 +15,7 @@
   imports = [
     ../machines/configuration.nix  # Base machine config (boot, locale, SSH, etc.)
     ../modules/common-packages.nix # Essential CLI tools
-    ../modules/pince.nix          # PINCE AppImage installer
+    ../modules/pince.nix          # PINCE debugger (built from source)
     ../modules/security.nix        # Security hardening
     ../modules/networking.nix      # Network management
     ../modules/zram.nix            # Compressed swap (useful on all systems)
@@ -45,7 +45,7 @@
     tmux
   ];
 
-  # Enable PINCE (AppImage). Change `version` if you want a different release.
+  # Enable PINCE (built from source package)
   pince.enable = true;
   # pince.version = "v0.4.4"; # optional: override if needed
 

@@ -11,7 +11,7 @@
   imports = [
     ../machines/configuration.nix
     ../modules/common-packages.nix
-    ../modules/pince.nix
+    ../modules/pince.nix          # PINCE debugger (built from source)
     ../modules/cosmic.nix
     ../modules/home-manager.nix
     ../modules/development.nix
@@ -44,7 +44,7 @@
   commonPackages.enable = true;
   commonPackages.packages = [ pkgs.git pkgs.curl ];
 
-  # Install PINCE AppImage wrapper
+  # Install PINCE package
   pince.enable = true;
 
   cosmic.enable = true;
