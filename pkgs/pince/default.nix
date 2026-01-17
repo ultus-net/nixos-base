@@ -60,6 +60,7 @@ pkgs.stdenv.mkDerivation rec {
     pkgs.gobject-introspection
     pkgs.cairo
     pkgs.gtk3
+    pkgs.gdb
   ];
 
   dontWrapQtApps = false;
@@ -183,6 +184,43 @@ hex_block = [
 
 hex_lines[start:end] = hex_block
 hexview.write_text("\n".join(hex_lines) + "\n")
+
+dbg = Path("libpince/debugcore.py")
+dbg_text = dbg.read_text()
+start = dbg_text.find("    libpince_dir = utils.get_libpince_directory()")
+end = dbg_text.find("    child.setecho(")
+if start == -1 or end == -1:
+  raise SystemExit("spawn block not found in debugcore.py")
+spawn_block = (
+  "    libpince_dir = utils.get_libpince_directory()\n"
+  "    is_appimage = os.environ.get(\"APPDIR\")\n"
+  "    import shutil\n"
+  "    gdb_cmd = gdb_path\n"
+  "    if not (os.path.isfile(gdb_cmd) and os.access(gdb_cmd, os.X_OK)):\n"
+  "        found = shutil.which(\"gdb\")\n"
+  "        if found:\n"
+  "            gdb_cmd = found\n"
+  "    env = os.environ.copy()\n"
+  "    env[\"LC_NUMERIC\"] = \"C\"\n"
+  "    if is_appimage and os.environ.get(\"PYTHONHOME\"):\n"
+  "        env[\"PYTHONHOME\"] = os.environ.get(\"PYTHONHOME\")\n"
+  "    use_sudo = os.environ.get(\"PINCE_USE_SUDO\", \"\").lower() in (\"1\", \"true\", \"yes\")\n"
+  "    if use_sudo and os.geteuid() != 0:\n"
+  "        command = \"sudo\"\n"
+  "        args = [\"-E\", \"--preserve-env=PATH\", gdb_cmd, \"--nx\", \"--interpreter=mi\"]\n"
+  "    else:\n"
+  "        command = gdb_cmd\n"
+  "        args = [\"--nx\", \"--interpreter=mi\"]\n"
+  "    child = pexpect.spawn(\n"
+  "        command,\n"
+  "        args=args,\n"
+  "        cwd=libpince_dir,\n"
+  "        env=env,\n"
+  "        encoding=\"utf-8\",\n"
+  "    )\n"
+)
+dbg_text = dbg_text[:start] + spawn_block + dbg_text[end:]
+dbg.write_text(dbg_text)
 PY
   '';
 
@@ -216,18 +254,20 @@ PY
       $out/share/icons/hicolor/256x256/apps/pince.png
     install -Dm644 media/logo/ozgurozbek/pince_small_orange.png \
       $out/share/icons/hicolor/128x128/apps/pince.png
-    install -Dm644 /dev/stdin $out/share/applications/pince.desktop <<EOF
-[Desktop Entry]
-Name=PINCE
-GenericName=Debugger GUI
-Comment=Reverse engineering debugger front-end for GDB
-Exec=pince %f
-Icon=pince
-Type=Application
-Categories=Development;Debugger;
-Terminal=false
-StartupNotify=true
-EOF
+    mkdir -p $out/share/applications
+    cat > $out/share/applications/pince.desktop <<EOF
+  [Desktop Entry]
+  Name=PINCE
+  GenericName=Debugger GUI
+  Comment=Reverse engineering debugger front-end for GDB
+  Exec=$out/bin/pince %f
+  TryExec=$out/bin/pince
+  Icon=pince
+  Type=Application
+  Categories=Development;Debugger;
+  Terminal=false
+  StartupNotify=true
+  EOF
 
     # Install libscanmem artifacts
     install -Dm644 libscanmem-PINCE/build/libscanmem.so $out/share/pince/libpince/libscanmem/libscanmem.so
@@ -247,6 +287,7 @@ EOF
       --set LD_LIBRARY_PATH ${lib.makeLibraryPath [ pkgs.qt6.qtbase pkgs.gtk3 pkgs.cairo ]}:$out/share/pince/libpince/libscanmem:$out/share/pince/libpince/libptrscan \
       --set PYTHONPATH "$out/share/pince:${pythonEnv}/${python3.sitePackages}" \
       --set PYTHON_KEYBOARD_SUPPRESS 1 \
+      --prefix PATH : ${pkgs.gdb}/bin \
       --add-flags PINCE.py
 
     runHook postInstall
