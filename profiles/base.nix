@@ -15,6 +15,7 @@
   imports = [
     ../machines/configuration.nix  # Base machine config (boot, locale, SSH, etc.)
     ../modules/common-packages.nix # Essential CLI tools
+    ../modules/pince.nix          # PINCE AppImage installer
     ../modules/security.nix        # Security hardening
     ../modules/networking.nix      # Network management
     ../modules/zram.nix            # Compressed swap (useful on all systems)
@@ -43,6 +44,10 @@
     vim
     tmux
   ];
+
+  # Enable PINCE (AppImage). Change `version` if you want a different release.
+  pince.enable = true;
+  # pince.version = "v0.4.4"; # optional: override if needed
 
   # Security hardening is applied via modules/security.nix import above
   # (firewall, SSH agent, avahi, etc.)
