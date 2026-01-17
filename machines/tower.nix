@@ -54,6 +54,7 @@
     "i2c-dev"
     "i2c-piix4"  # common on AMD chipsets
     "i2c-i801"   # common on Intel chipsets
+    "fuse"       # FUSE for AppImage mounting
   ];
 
   # Boot optimizations
@@ -258,6 +259,10 @@
 
     # RGB managers
     openrgb
+
+    # FUSE runtime for AppImages
+    fuse
+    fuse3
 
     # AccountsService package (provides accounts-daemon)
     accountsservice
