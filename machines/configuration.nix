@@ -92,6 +92,12 @@
 
   # Enable Flatpak support system-wide (includes runtime and portal services).
   services.flatpak.enable = true;
+  services.flatpak.remotes = lib.mkDefault [
+    {
+      name = "flathub";
+      url = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+    }
+  ];
 
   # Enable polkit + udisks2 so GUI apps (e.g., Fedora Media Writer) can
   # obtain the privileges needed to write images to removable disks.
