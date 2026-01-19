@@ -6,8 +6,9 @@
     fontconfig.enable = true; # ensure fontconfig is enabled for font rendering
     packages = with pkgs; [
       # Nerd fonts provide icon glyphs useful in terminals and prompts
-      (nerdfonts.override { fonts = [ "JetBrainsMono" "FiraCode" ]; })
-      noto-fonts-emoji # emoji font for consistent emoji rendering
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.fira-code
+      noto-fonts-color-emoji # emoji font for consistent emoji rendering
     ];
   };
 }

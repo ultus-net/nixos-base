@@ -91,13 +91,15 @@
   boot.kernel.sysctl."kernel.yama.ptrace_scope" = 0;
 
   # Enable Flatpak support system-wide (includes runtime and portal services).
+  # To add Flathub: flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
   services.flatpak.enable = true;
-  services.flatpak.remotes = lib.mkDefault [
-    {
-      name = "flathub";
-      url = "https://dl.flathub.org/repo/flathub.flatpakrepo";
-    }
-  ];
+  
+  # XDG portals required for Flatpak (desktop environments will override with their specific portals)
+  xdg.portal = lib.mkDefault {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = [ "gtk" ];
+  };
 
   # Enable polkit + udisks2 so GUI apps (e.g., Fedora Media Writer) can
   # obtain the privileges needed to write images to removable disks.

@@ -127,7 +127,8 @@
     enableGitIntegration = true;
   };
 
-  # COSMIC-specific environment variables
+  # Desktop environment session variables
+  # COSMIC-specific settings commented out - configure for KDE after testing
   home.sessionVariables = {
     # Use Wayland for applications that support it
     MOZ_ENABLE_WAYLAND = "1";
@@ -136,8 +137,8 @@
     SDL_VIDEODRIVER = "wayland";
     _JAVA_AWT_WM_NONREPARENTING = "1";  # Java app tiling fix
 
-    # COSMIC-specific
-    XDG_CURRENT_DESKTOP = "COSMIC";
+    # Desktop environment - will be set by KDE automatically
+    # XDG_CURRENT_DESKTOP = "KDE";
     
     # Gaming optimizations
     # Steam shader cache on tmpfs for faster loading
@@ -213,8 +214,8 @@
     # Terminal emulators
     kitty          # Alternative terminal
 
-    # COSMIC-friendly GUI apps
-    firefox        # Firefox (Wayland by default on COSMIC)
+    # GUI applications
+    firefox        # Firefox (Wayland by default)
     vscode         # VS Code editor (manages own extensions/settings)
     nodePackages_latest.typescript-language-server
     nodePackages_latest.vscode-langservers-extracted
@@ -245,9 +246,10 @@
   xdg.mime.enable = true;
   xdg.mimeApps.enable = true;
 
-  # COSMIC Desktop Environment Configuration
-  # These settings match your customized COSMIC configuration
+  # Desktop Environment Configuration
+  # COSMIC settings commented out - will reconfigure for KDE after manual setup
   xdg.configFile = {
+    # === COSMIC CONFIGURATION (DISABLED) ===
     # Compositor settings
     "cosmic/com.system76.CosmicComp/v1/xkb_config" = {
       text = ''
@@ -405,7 +407,7 @@ Some((
       text = "false";
       force = true;
     };
-
+    */
   };
 
   # Use local wallpapers from the repo `assets/wallpapers` instead of

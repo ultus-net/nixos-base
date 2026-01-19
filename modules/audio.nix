@@ -7,9 +7,8 @@
   # rtkit provides realtime privileges for audio processes (low-latency).
   security.rtkit.enable = true;
 
-  # Disable legacy services to avoid conflicts with PipeWire.
-  sound.enable = false;            # disable legacy ALSA sound service
-  hardware.pulseaudio.enable = false; # disable legacy PulseAudio service
+  # Disable legacy PulseAudio service to avoid conflicts with PipeWire.
+  hardware.pulseaudio.enable = false;
 
   # Enable PipeWire and related backends. Each attribute toggles support
   # for a particular compatibility layer or backend.

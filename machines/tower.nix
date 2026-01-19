@@ -6,8 +6,8 @@
     ./configuration.nix
     ./hardware-configuration.nix
 
-    # Desktop environment
-    ../profiles/cosmic.nix
+    # Desktop environment - Switched to KDE for stability
+    ../profiles/kde.nix
 
     # User management
     ../modules/common-users.nix
@@ -15,9 +15,8 @@
     # Hardware modules
     ../modules/nvidia.nix
 
-    # NOTE: security.nix is NOT imported here because COSMIC enables
-    # gcr-ssh-agent which conflicts with programs.ssh.startAgent.
-    # Firewall and Avahi are configured directly in this file instead.
+    # Security module can now be safely imported with KDE
+    ../modules/security.nix
 
     # All optional feature modules
     ../modules/gaming.nix
@@ -101,8 +100,9 @@
     };
   };
 
-  # Home Manager configuration
-  home-manager.users.hunter = import ../home/hunter.nix;
+  # Home Manager configuration - DISABLED for manual KDE configuration
+  # Re-enable after configuring KDE to your liking
+  # home-manager.users.hunter = import ../home/hunter.nix;
 
   # Create user group
   users.groups.hunter = {};
@@ -113,6 +113,15 @@
   multimedia.enable = true;
   virtualization.enable = true;
   machines.containers.enable = true;
+
+  # KDE Plasma 6 configuration
+  kde.enable = true;
+  kde.enableWayland = true;
+  kde.enableKDEConnectFirewall = true;
+  kde.enableBluetoothManager = true;
+  kde.disableBaloo = false;  # Keep indexing for better file search
+  kde.enableKWalletPAM = true;
+  kde.optimizeFonts = true;
 
   # Gamemode for automatic performance boosting in games
   programs.gamemode = {
@@ -213,9 +222,6 @@
       priority = 10; # Lower priority than zram (higher number = lower priority)
     }
   ];
-  cosmic.enableClipboardManager = true;
-  cosmic.enableWaylandApps = true;
-  cosmic.enableMediaControls = true;
 
   # Workstation optimizations
   services.fstrim.enable = true;  # SSD TRIM support
