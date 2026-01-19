@@ -4,6 +4,30 @@ Helper scripts for managing your NixOS system.
 
 ## Available Scripts
 
+### `deploy-config.sh`
+Sync your local nixos-base repository to `/etc/nixos` (the system location).
+
+**Usage:**
+```bash
+deploy-config           # Interactive sync with confirmation
+# or use the shorter alias:
+deploy-cfg
+```
+
+**What it does:**
+1. Shows a preview of changes (dry-run)
+2. Asks for confirmation
+3. Creates a timestamped backup of `/etc/nixos`
+4. Syncs `~/Documents/nixos-base/` → `/etc/nixos/`
+5. Shows next steps for rebuilding
+
+**After deployment:**
+```bash
+sudo nixos-rebuild switch --flake /etc/nixos#tower
+```
+
+This script is automatically available system-wide after rebuilding.
+
 ### `switch-desktop.sh`
 Switch between desktop environments without manual configuration editing.
 

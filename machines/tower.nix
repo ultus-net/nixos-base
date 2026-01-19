@@ -24,6 +24,7 @@
     ../modules/virtualization.nix
     ../modules/containers.nix
     ../modules/auto-update.nix
+    ../modules/deploy-config.nix
     # NOTE: zram.nix is already imported via configuration.nix
   ];
 
@@ -114,6 +115,9 @@
   multimedia.enable = true;
   virtualization.enable = true;
   machines.containers.enable = true;
+
+  # Configuration deployment helper
+  deployConfig.enable = true;
 
   # Automatic flake updates (weekly by default)
   autoUpdate.enable = true;
