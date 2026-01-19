@@ -43,8 +43,8 @@
     enable = true;
     enableCompletion = true;
 
-    # Preserve legacy dotdir behavior to avoid stateVersion warnings
-    dotDir = config.home.homeDirectory;
+    # Use XDG config directory for zsh files (new behavior)
+    dotDir = "${config.xdg.configHome}/zsh";
 
     shellAliases = {
       ls = "eza";
@@ -54,7 +54,7 @@
       find = "fd";
     };
 
-    initExtra = ''
+    initContent = ''
       export EDITOR="nvim"
       eval "$(zoxide init zsh)"
 
