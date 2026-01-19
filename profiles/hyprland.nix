@@ -11,7 +11,7 @@
     ../modules/common-packages.nix
     ../modules/home-manager.nix
     ../modules/wallpapers.nix
-    ../hyprland.nix
+    ../modules/hyprland.nix
   ];
 
   # CRITICAL: Placeholder filesystem configuration for flake evaluation.
