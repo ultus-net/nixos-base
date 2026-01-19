@@ -249,6 +249,7 @@
   # Desktop Environment Configuration
   # COSMIC settings commented out - will reconfigure for KDE after manual setup
   xdg.configFile = {
+    /*
     # === COSMIC CONFIGURATION (DISABLED) ===
     # Compositor settings
     "cosmic/com.system76.CosmicComp/v1/xkb_config" = {

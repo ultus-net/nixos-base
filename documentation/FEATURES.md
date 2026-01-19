@@ -2,7 +2,7 @@
 
 ## 🎨 Desktop Environments
 
-This flake provides **9 popular desktop environments** plus a **headless base profile**:
+This flake provides **6 popular desktop environments** plus a **headless base profile**:
 
 ### Desktop Environment Details
 
@@ -61,21 +61,39 @@ This flake provides **9 popular desktop environments** plus a **headless base pr
 **Best For:** Traditional desktop users, Windows-like interface
 
 **What's Included:**
+- Cinnamon desktop environment
+- Nemo file manager
+- Core Cinnamon applications
+- Firefox, VS Code
+- Traditional menu and panel layout
+- PipeWire audio stack
+
+#### XFCE (`xfce-workstation`)
 **Display Server:** X11  
 **Resource Usage:** Light (~1.5GB RAM)  
 **Best For:** Older hardware, stability, lightweight performance
 
 **What's Included:**
-**Display Server:** X11  
-**Resource Usage:** Light (~1.5GB RAM)  
-**Best For:** Classic GNOME 2 lovers, traditional workflow
+- XFCE desktop environment
+- Thunar file manager
+- XFCE Terminal
+- Firefox, VS Code
+- Lightweight and fast
+- PipeWire audio stack
 
-**What's Included:**
-**Display Server:** X11  
+#### Hyprland (`hyprland-workstation`)
+**Display Server:** Wayland  
 **Resource Usage:** Light (~2GB RAM)  
-**Best For:** Clean modern look with light resource usage
+**Best For:** Power users, tiling workflow enthusiasts, modern aesthetics
 
 **What's Included:**
+- Hyprland dynamic tiling compositor
+- Waybar status bar
+- Wofi application launcher
+- Kitty terminal
+- Firefox, VS Code
+- Advanced tiling features
+- PipeWire audio stack
 
 
 ### Quick Comparison
@@ -88,6 +106,7 @@ This flake provides **9 popular desktop environments** plus a **headless base pr
 | **KDE** | Both | Heavy | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Power users |
 | **Cinnamon** | X11 | Medium | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Windows users |
 | **XFCE** | X11 | Light | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Old hardware |
+| **Hyprland** | Wayland | Light | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Tiling fans |
 
 Install any desktop with:
 ```bash

@@ -59,7 +59,7 @@ Available on all supported systems (x86_64-linux, aarch64-linux, x86_64-darwin, 
 #### System-Wide Outputs
 Available at the top level:
 
-- **nixosConfigurations** - All 10 system configurations (9 desktops + 1 headless)
+- **nixosConfigurations** - All 7 system configurations (6 desktops + 1 headless)
 - **homeConfigurations** - Standalone Home Manager configurations
 - **templates** - Project templates for new configurations
 
@@ -192,7 +192,7 @@ The GitHub Actions workflow validates:
 
 1. **Basic Validation** - Syntax checks, structure validation
 2. **Flake Structure** - Metadata and expected outputs
-3. **Build Configurations** - All 10 configurations evaluate correctly
+3. **Build Configurations** - All 7 configurations evaluate correctly
 4. **Module Validation** - All modules have valid syntax
 5. **Security Checks** - Scan for hardcoded secrets
 6. **Home Manager** - Standalone configurations validate

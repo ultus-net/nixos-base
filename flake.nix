@@ -1,5 +1,5 @@
 {
-  description = "Modular NixOS flake with 9 desktop environments, Home Manager, and developer tools";
+  description = "Modular NixOS flake with 6 desktop environments, Home Manager, and developer tools";
 
   inputs = {
     # Pin nixpkgs to nixpkgs-unstable for the latest packages and fixes
