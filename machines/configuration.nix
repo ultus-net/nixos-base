@@ -93,6 +93,11 @@
   # Enable Flatpak support system-wide (includes runtime and portal services).
   services.flatpak.enable = true;
 
+  # Enable polkit + udisks2 so GUI apps (e.g., Fedora Media Writer) can
+  # obtain the privileges needed to write images to removable disks.
+  security.polkit.enable = lib.mkDefault true;
+  services.udisks2.enable = lib.mkDefault true;
+
   # Desktop-friendly default for swap: enable zram-based swap. The zram
   # implementation and size are provided by the `modules/zram.nix` module;
   # import it here so the option is available and the service is installed.
