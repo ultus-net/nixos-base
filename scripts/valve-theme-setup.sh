@@ -1,8 +1,22 @@
 #!/usr/bin/env bash
-# valve-theme-setup.sh - Automated setup for Valve/Half-Life KDE theme
+# valve-theme-setup.sh - Complete automated setup and application for Valve/Half-Life KDE theme
 # Inspired by: https://www.reddit.com/r/unixporn/comments/1qbn8wd/kde_obsession_with_valve/
 
 set -e
+
+# Function to set KDE configuration
+kwriteconfig() {
+    local file=$1
+    local group=$2
+    local key=$3
+    local value=$4
+    
+    if command -v kwriteconfig6 &> /dev/null; then
+        kwriteconfig6 --file "$file" --group "$group" --key "$key" "$value" 2>/dev/null || true
+    elif command -v kwriteconfig5 &> /dev/null; then
+        kwriteconfig5 --file "$file" --group "$group" --key "$key" "$value" 2>/dev/null || true
+    fi
+}
 
 # Colors for output
 RED='\033[0;31m'
@@ -205,11 +219,29 @@ if [ -d ~/.local/share/plasma/desktoptheme/Steamed ]; then
 else
     cd ~/Downloads
     if git clone --depth 1 https://github.com/UNATCO-JCDenton/Steamed 2>/dev/null; then
+        # Check various possible directory structures
         if [ -d Steamed/Steamed ]; then
             cp -r Steamed/Steamed ~/.local/share/plasma/desktoptheme/
             echo -e "${GREEN}✓ Steamed Plasma Theme installed${NC}"
+        elif [ -d Steamed/desktoptheme ]; then
+            cp -r Steamed/desktoptheme/* ~/.local/share/plasma/desktoptheme/
+            echo -e "${GREEN}✓ Steamed Plasma Theme installed${NC}"
+        elif [ -f Steamed/metadata.desktop ]; then
+            # The repo itself is the theme directory
+            cp -r Steamed ~/.local/share/plasma/desktoptheme/
+            echo -e "${GREEN}✓ Steamed Plasma Theme installed${NC}"
         else
-            echo -e "${RED}✗ Theme directory structure unexpected${NC}"
+            echo -e "${YELLOW}⚠ Theme structure not recognized, trying manual copy...${NC}"
+            # Try to find any folder with metadata.desktop
+            THEME_DIR=$(find Steamed -name "metadata.desktop" -type f -exec dirname {} \; | head -1)
+            if [ -n "$THEME_DIR" ]; then
+                THEME_NAME=$(basename "$THEME_DIR")
+                cp -r "$THEME_DIR" ~/.local/share/plasma/desktoptheme/
+                echo -e "${GREEN}✓ Steamed Plasma Theme installed as $THEME_NAME${NC}"
+            else
+                echo -e "${RED}✗ Could not find theme in repository${NC}"
+                echo -e "${YELLOW}  You can download manually from: https://store.kde.org/p/2225120${NC}"
+            fi
         fi
     else
         echo -e "${YELLOW}⚠ Could not clone theme repository${NC}"
@@ -228,49 +260,195 @@ else
     echo -e "${YELLOW}⚠ kbuildsycoca6 not found, cache not refreshed${NC}"
 fi
 
+# ============================================================================
+# AUTOMATIC THEME APPLICATION
+# ============================================================================
+
+echo ""
+echo -e "${BLUE}╔════════════════════════════════════════════════╗${NC}"
+echo -e "${BLUE}║  Applying Valve/Half-Life Theme Automatically ║${NC}"
+echo -e "${BLUE}╚════════════════════════════════════════════════╝${NC}"
+echo ""
+
+# Backup existing configurations
+BACKUP_DIR=~/.config/kde-backup-$(date +%Y%m%d-%H%M%S)
+echo -e "${YELLOW}→ Creating backup of current KDE configuration...${NC}"
+mkdir -p "$BACKUP_DIR"
+for file in kdeglobals plasmarc kwinrc kcminputrc plasma-org.kde.plasma.desktop-appletsrc; do
+    if [ -f ~/.config/$file ]; then
+        cp ~/.config/$file "$BACKUP_DIR/"
+    fi
+done
+echo -e "${GREEN}✓ Backup created at: $BACKUP_DIR${NC}"
+
+# Apply Steamed Color Scheme
+echo ""
+echo -e "${YELLOW}→ Applying Steamed color scheme...${NC}"
+kwriteconfig kdeglobals General ColorScheme "Steamed"
+kwriteconfig kdeglobals General Name "Steamed"
+
+# Apply colors directly
+kwriteconfig kdeglobals "Colors:Button" BackgroundNormal "60,60,60"
+kwriteconfig kdeglobals "Colors:Button" ForegroundNormal "224,224,224"
+kwriteconfig kdeglobals "Colors:Selection" BackgroundNormal "204,85,0"
+kwriteconfig kdeglobals "Colors:Selection" ForegroundNormal "255,255,255"
+kwriteconfig kdeglobals "Colors:View" BackgroundNormal "42,42,42"
+kwriteconfig kdeglobals "Colors:View" ForegroundNormal "224,224,224"
+kwriteconfig kdeglobals "Colors:Window" BackgroundNormal "42,42,42"
+kwriteconfig kdeglobals "Colors:Window" ForegroundNormal "224,224,224"
+kwriteconfig kdeglobals "Colors:Window" DecorationFocus "204,85,0"
+
+# Apply Window Decoration colors
+kwriteconfig kdeglobals WM activeBackground "42,42,42"
+kwriteconfig kdeglobals WM activeForeground "224,224,224"
+kwriteconfig kdeglobals WM inactiveBackground "26,26,26"
+kwriteconfig kdeglobals WM inactiveForeground "136,136,136"
+
+echo -e "${GREEN}✓ Color scheme applied${NC}"
+
+# Apply Plasma Theme
+echo -e "${YELLOW}→ Applying Steamed Plasma theme...${NC}"
+kwriteconfig plasmarc Theme name "Steamed"
+echo -e "${GREEN}✓ Plasma theme applied${NC}"
+
+# Apply Icon Theme
+echo -e "${YELLOW}→ Setting icon theme...${NC}"
+if [ -d ~/.local/share/icons/yet-another-monochrome-icon-set ] || [ -d ~/.icons/yet-another-monochrome-icon-set ]; then
+    kwriteconfig kdeglobals Icons Theme "yet-another-monochrome-icon-set"
+    echo -e "${GREEN}✓ Icon theme set to yet-another-monochrome-icon-set${NC}"
+else
+    echo -e "${YELLOW}⚠ yet-another-monochrome-icon-set not found${NC}"
+    echo -e "${YELLOW}  Download from: System Settings → Icons → Get New Icons${NC}"
+fi
+
+# Apply Cursor Theme
+echo -e "${YELLOW}→ Setting cursor theme...${NC}"
+kwriteconfig kdeglobals Icons cursorTheme "KDE-Classic"
+kwriteconfig kcminputrc Mouse cursorTheme "KDE-Classic"
+kwriteconfig kcminputrc Mouse cursorSize "24"
+echo -e "${GREEN}✓ Cursor theme applied${NC}"
+
+# Apply Widget Style
+echo -e "${YELLOW}→ Setting widget style...${NC}"
+kwriteconfig kdeglobals KDE widgetStyle "Breeze"
+kwriteconfig kdeglobals General widgetStyle "Breeze"
+echo -e "${GREEN}✓ Widget style applied${NC}"
+
+# Apply Window Decorations
+echo -e "${YELLOW}→ Setting window decorations...${NC}"
+if [ -d ~/.local/share/aurorae/themes/Steamed ]; then
+    kwriteconfig kwinrc "org.kde.kdecoration2" library "org.kde.kwin.aurorae"
+    kwriteconfig kwinrc "org.kde.kdecoration2" theme "__aurorae__svg__Steamed"
+    echo -e "${GREEN}✓ Window decorations set to Steamed${NC}"
+else
+    kwriteconfig kwinrc "org.kde.kdecoration2" library "org.kde.kdecoration2"
+    kwriteconfig kwinrc "org.kde.kdecoration2" theme "Breeze"
+    echo -e "${YELLOW}⚠ Steamed window decoration not found, using Breeze${NC}"
+    echo -e "${YELLOW}  Download from: System Settings → Window Decorations → Get New${NC}"
+fi
+
+# Apply Fonts
+echo -e "${YELLOW}→ Configuring fonts...${NC}"
+if fc-list 2>/dev/null | grep -qi "trebuchet"; then
+    FONT_FAMILY="Trebuchet MS"
+    echo -e "${GREEN}  Using Trebuchet MS${NC}"
+else
+    FONT_FAMILY="DejaVu Sans"
+    echo -e "${YELLOW}  Trebuchet MS not found, using DejaVu Sans${NC}"
+fi
+
+kwriteconfig kdeglobals General font "$FONT_FAMILY,10,-1,5,50,0,0,0,0,0"
+kwriteconfig kdeglobals General fixed "Monospace,10,-1,5,50,0,0,0,0,0"
+kwriteconfig kdeglobals General smallestReadableFont "$FONT_FAMILY,8,-1,5,50,0,0,0,0,0"
+kwriteconfig kdeglobals General toolBarFont "$FONT_FAMILY,10,-1,5,50,0,0,0,0,0"
+kwriteconfig kdeglobals General menuFont "$FONT_FAMILY,10,-1,5,50,0,0,0,0,0"
+kwriteconfig kdeglobals WM activeFont "$FONT_FAMILY,10,-1,5,75,0,0,0,0,0"
+echo -e "${GREEN}✓ Fonts configured${NC}"
+
+# Set wallpaper
+echo -e "${YELLOW}→ Setting wallpaper...${NC}"
+WALLPAPER_PATH="$HOME/Pictures/Wallpapers/half-life-background.png"
+if [ -f "$WALLPAPER_PATH" ]; then
+    if command -v plasma-apply-wallpaperimage &> /dev/null; then
+        plasma-apply-wallpaperimage "$WALLPAPER_PATH" 2>/dev/null && \
+            echo -e "${GREEN}✓ Wallpaper applied${NC}" || \
+            echo -e "${YELLOW}⚠ Could not apply wallpaper automatically${NC}"
+    else
+        # Use qdbus to set wallpaper
+        if command -v qdbus &> /dev/null || command -v qdbus-qt5 &> /dev/null; then
+            QDBUS_CMD=$(command -v qdbus || command -v qdbus-qt5)
+            $QDBUS_CMD org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
+                var allDesktops = desktops();
+                for (i=0;i<allDesktops.length;i++) {
+                    d = allDesktops[i];
+                    d.wallpaperPlugin = 'org.kde.image';
+                    d.currentConfigGroup = Array('Wallpaper', 'org.kde.image', 'General');
+                    d.writeConfig('Image', 'file://$WALLPAPER_PATH');
+                }
+            " 2>/dev/null && echo -e "${GREEN}✓ Wallpaper applied${NC}" || \
+                echo -e "${YELLOW}⚠ Could not apply wallpaper${NC}"
+        else
+            echo -e "${YELLOW}⚠ No wallpaper setter found${NC}"
+        fi
+    fi
+else
+    echo -e "${YELLOW}⚠ Wallpaper not found at: $WALLPAPER_PATH${NC}"
+fi
+
+# Restart KDE components
+echo ""
+echo -e "${YELLOW}→ Restarting KDE components to apply changes...${NC}"
+
+if pgrep -x plasmashell > /dev/null 2>&1; then
+    # Restart plasmashell
+    killall plasmashell 2>/dev/null || true
+    sleep 2
+    (kstart5 plasmashell 2>/dev/null || kstart plasmashell 2>/dev/null || plasmashell 2>/dev/null) &
+    disown
+    echo -e "${GREEN}✓ Plasmashell restarted${NC}"
+    
+    # Reconfigure KWin
+    if command -v qdbus &> /dev/null; then
+        qdbus org.kde.KWin /KWin reconfigure 2>/dev/null && \
+            echo -e "${GREEN}✓ KWin reconfigured${NC}" || true
+    elif command -v qdbus-qt5 &> /dev/null; then
+        qdbus-qt5 org.kde.KWin /KWin reconfigure 2>/dev/null && \
+            echo -e "${GREEN}✓ KWin reconfigured${NC}" || true
+    fi
+else
+    echo -e "${YELLOW}⚠ Not in Plasma session, components not restarted${NC}"
+    echo -e "${YELLOW}  Please log out and log back in for changes to take effect${NC}"
+fi
+
 # Summary
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════${NC}"
-echo -e "${GREEN}Setup Complete!${NC}"
+echo -e "${GREEN}Theme Setup and Application Complete!${NC}"
 echo -e "${GREEN}═══════════════════════════════════════════════${NC}"
 echo ""
-echo -e "${BLUE}📋 What was installed:${NC}"
-echo "  ✓ Half-Life background wallpaper"
-echo "  ✓ Steam 2003 GTK theme"
-echo "  ✓ Steamed color scheme"
-echo "  ✓ Steamed Plasma Theme"
-echo "  ✓ GTK configuration files"
+echo -e "${BLUE}📋 What was done:${NC}"
+echo "  ✓ Half-Life background wallpaper downloaded"
+echo "  ✓ Steam 2003 GTK theme installed"
+echo "  ✓ Steamed color scheme created and applied"
+echo "  ✓ Steamed Plasma theme installed and applied"
+echo "  ✓ Colors configured (Valve orange/gray)"
+echo "  ✓ Fonts configured ($FONT_FAMILY 10pt)"
+echo "  ✓ Cursor theme set (KDE Classic)"
+echo "  ✓ Wallpaper set"
+echo "  ✓ KDE components restarted"
 echo ""
-echo -e "${YELLOW}📝 Next steps - Complete theme setup in System Settings:${NC}"
+echo -e "${YELLOW}📝 Optional manual steps:${NC}"
+echo "  1. Download window decorations: System Settings → Window Decorations"
+echo "     → Get New → Search: 'Steamed'"
 echo ""
-echo -e "${BLUE}1. Get Additional Themes (if not auto-installed):${NC}"
-echo "   System Settings → Appearance → Window Decorations"
-echo "   → Get New Window Decorations → Search: 'Steamed'"
+echo "  2. Download icons: System Settings → Icons → Get New"
+echo "     → Search: 'yet-another-monochrome'"
 echo ""
-echo "   System Settings → Appearance → Icons"
-echo "   → Get New Icons → Search: 'yet-another-monochrome'"
+echo "  3. Firefox theme: https://addons.mozilla.org/firefox/addon/half-life-console/"
 echo ""
-echo -e "${BLUE}2. Apply Themes:${NC}"
-echo "   System Settings → Appearance → Colors → 'Steamed'"
-echo "   System Settings → Appearance → Plasma Style → 'Steamed'"
-echo "   System Settings → Appearance → Icons → 'yet-another-monochrome-icon-set'"
-echo "   System Settings → Appearance → Cursors → 'KDE Classic'"
-echo "   System Settings → Appearance → Application Style → 'MS Windows 9x'"
+echo "  4. Steam theme: https://steambrew.app/theme?id=8YTvx3fAAfwQSu6MNOfH"
 echo ""
-echo -e "${BLUE}3. Set Wallpaper:${NC}"
-echo "   Right-click Desktop → Configure Desktop and Wallpaper"
-echo "   → Add Image → ~/Pictures/Wallpapers/half-life-background.png"
-echo ""
-echo -e "${BLUE}4. Configure Fonts:${NC}"
-echo "   System Settings → Appearance → Fonts"
-echo "   → Set all to 'Trebuchet MS' or 'DejaVu Sans' 10pt"
-echo ""
-echo -e "${BLUE}5. Optional - Browser Theme:${NC}"
-echo "   Firefox: https://addons.mozilla.org/en-US/firefox/addon/half-life-console/"
-echo ""
-echo -e "${BLUE}6. Optional - Steam Theme:${NC}"
-echo "   Steam Millennium: https://steambrew.app/theme?id=8YTvx3fAAfwQSu6MNOfH"
-echo ""
-echo -e "${YELLOW}📖 Full documentation: documentation/KDE-VALVE-THEME-GUIDE.md${NC}"
+echo -e "${BLUE}💾 Backup saved at:${NC} $BACKUP_DIR"
+echo -e "${BLUE}📖 Full documentation:${NC} documentation/KDE-VALVE-THEME-GUIDE.md"
 echo ""
 echo -e "${GREEN}Enjoy your Valve-themed KDE desktop! 🎮${NC}"

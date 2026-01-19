@@ -122,7 +122,12 @@
   kde.disableBaloo = false;  # Keep indexing for better file search
   kde.enableKWalletPAM = true;
   kde.optimizeFonts = true;
-  kde.valveTheme.enable = true;  # Valve/Half-Life theming support
+
+  # Fix SDDM display configuration to match user settings
+  # This copies the user's display configuration to SDDM so login screen matches desktop
+  systemd.tmpfiles.rules = [
+    "L+ /var/lib/sddm/.config/kscreen - - - - /home/hunter/.config/kscreen"
+  ];
 
   # Gamemode for automatic performance boosting in games
   programs.gamemode = {
