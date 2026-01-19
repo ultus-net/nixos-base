@@ -100,9 +100,8 @@
     };
   };
 
-  # Home Manager configuration - DISABLED for manual KDE configuration
-  # Re-enable after configuring KDE to your liking
-  # home-manager.users.hunter = import ../home/hunter.nix;
+  # Home Manager configuration
+  home-manager.users.hunter = import ../home/hunter.nix;
 
   # Create user group
   users.groups.hunter = {};
