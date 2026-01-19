@@ -90,6 +90,9 @@
   # without requiring sudo. Set ptrace_scope=0 persistently.
   boot.kernel.sysctl."kernel.yama.ptrace_scope" = 0;
 
+  # Enable Flatpak support system-wide (includes runtime and portal services).
+  services.flatpak.enable = true;
+
   # Desktop-friendly default for swap: enable zram-based swap. The zram
   # implementation and size are provided by the `modules/zram.nix` module;
   # import it here so the option is available and the service is installed.
