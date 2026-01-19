@@ -122,6 +122,7 @@
   kde.disableBaloo = false;  # Keep indexing for better file search
   kde.enableKWalletPAM = true;
   kde.optimizeFonts = true;
+  kde.valveTheme.enable = true;  # Valve/Half-Life theming support
 
   # Gamemode for automatic performance boosting in games
   programs.gamemode = {

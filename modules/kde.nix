@@ -98,6 +98,17 @@ in {
       default = true;
       description = "Enable font hinting and antialiasing for better text rendering.";
     };
+
+    # Valve/Steam theme options (inspired by r/unixporn KDE Valve themes)
+    valveTheme = {
+      enable = lib.mkEnableOption "Enable Valve/Half-Life themed KDE setup";
+      
+      installThemePackages = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Install theme-related packages (QGnomePlatform, GTK themes, etc.)";
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -142,6 +153,13 @@ in {
       ++ (lib.optionals cfg.enablePlasmaVault [
         pkgs.cryfs
         pkgs.gocryptfs
+      ])
+      # Valve theme packages
+      ++ (lib.optionals cfg.valveTheme.enable [
+        pkgs.qt5ct
+        pkgs.qt6ct
+        pkgs.libsForQt5.qtstyleplugin-kvantum
+        pkgs.kdePackages.qtstyleplugin-kvantum
       ])
     );
 
