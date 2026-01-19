@@ -270,7 +270,6 @@
     # Disk management
     gparted
     gnome-disk-utility
-    mediawriter
   ];
 
   # Autostart OpenRGB for graphical sessions (system-wide)
