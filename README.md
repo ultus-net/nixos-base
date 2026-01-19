@@ -31,6 +31,7 @@ See [INSTALL.md](documentation/INSTALL.md) for complete installation guide.
 | **KDE** | Wayland/X11 | Heavy | Feature-rich Plasma 6 |
 | **Cinnamon** | X11 | Medium | Linux Mint's traditional UI |
 | **XFCE** | X11 | Light | Lightweight & customizable |
+| **Hyprland** | Wayland | Light | Dynamic tiling Wayland compositor |
 | **Base** | None | Minimal | Headless server |
 
 Switch desktops anytime: `./scripts/switch-desktop.sh cosmic`
