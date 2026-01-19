@@ -6,7 +6,7 @@ This document explains the comprehensive CI/CD pipeline for this NixOS flake rep
 
 The CI/CD pipeline is designed to catch issues before they reach your production machines by:
 - ✅ Validating flake structure and metadata
-- ✅ Building all 10 configurations (9 desktops + 1 headless)
+- ✅ Building all 7 configurations (6 desktops + 1 headless)
 - ✅ Testing VM boots for critical configurations
 - ✅ Checking modules can be imported
 - ✅ Security scanning for hardcoded secrets
@@ -32,7 +32,7 @@ These lightweight checks fail fast if there are basic issues:
 These ensure all configurations can build:
 
 3. **Build Configurations** (~5-10 min per config, runs in parallel)
-   - Matrix build for all 10 configurations
+   - Matrix build for all 7 configurations
    - Dry-run builds (doesn't actually build, just evaluates)
    - Checks configurations evaluate without errors
    - Uses Cachix to speed up builds
