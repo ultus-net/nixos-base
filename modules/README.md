@@ -13,6 +13,7 @@ This directory contains modular NixOS configuration fragments. Each module is op
 - **`zram.nix`** - ZRAM compressed swap
 - **`nvidia.nix`** - NVIDIA proprietary driver configuration
 - **`wallpapers.nix`** - NixOS official wallpaper collection with automatic rotation
+- **`auto-update.nix`** - Automatic flake updates via systemd timer
 
 ### Package Collections
 - **`common-packages.nix`** - Essential CLI tools and modern replacements (htop, btop, ripgrep, fzf, eza, bat, git, etc.)
@@ -240,6 +241,30 @@ in {
   };
 }
 ```
+
+### auto-update.nix
+
+```nix
+autoUpdate = {
+  enable = true;
+  interval = "weekly";      # daily, weekly, or monthly
+  autoRebuild = false;      # Automatically rebuild after update
+  flakePath = "/home/hunter/Documents/nixos-base";
+  notifyUser = "hunter";    # Desktop notifications
+};
+```
+
+**Features:**
+- Automatic flake input updates via systemd timer
+- Configurable update intervals (daily, weekly, monthly)
+- Optional automatic system rebuild after updates
+- Desktop notifications when updates complete
+- Detailed logging to `/var/log/flake-updates.log`
+- Helpful shell aliases:
+  - `flake-update-now` - Trigger update immediately
+  - `flake-update-status` - Check service status
+  - `flake-update-log` - Watch live update log
+  - `flake-update-history` - View update history
 
 ## Best Practices
 

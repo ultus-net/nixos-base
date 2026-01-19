@@ -23,6 +23,7 @@
     ../modules/multimedia.nix
     ../modules/virtualization.nix
     ../modules/containers.nix
+    ../modules/auto-update.nix
     # NOTE: zram.nix is already imported via configuration.nix
   ];
 
@@ -113,6 +114,13 @@
   multimedia.enable = true;
   virtualization.enable = true;
   machines.containers.enable = true;
+
+  # Automatic flake updates (weekly by default)
+  autoUpdate.enable = true;
+  autoUpdate.interval = "weekly";  # Options: daily, weekly, monthly
+  autoUpdate.autoRebuild = true;  # Set to true to auto-rebuild after updates
+  # autoUpdate.flakePath defaults to "/etc/nixos" - override if needed
+  autoUpdate.notifyUser = "hunter";
 
   # KDE Plasma 6 configuration
   kde.enable = true;
