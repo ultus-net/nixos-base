@@ -62,10 +62,56 @@ in {
       enable = true;
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+      
+      # Add extra packages to the FHS environment for compatibility
+      extraCompatPackages = with pkgs; [
+        # Additional runtime libraries that games might need
+        curl
+        dbus
+        fontconfig
+        freetype
+        glib
+        pango
+        zenity
+        xdg-utils
+        zlib
+        libbsd
+        libcap
+        SDL2
+        openssl
+        udev
+        gtk3
+        cairo
+        pciutils
+        which
+        alsa-lib
+        at-spi2-atk
+        at-spi2-core
+        nspr
+        nss
+        cups
+        libdrm
+        expat
+        libxkbcommon
+        wayland
+      ];
+    };
+    
+    # Force Steam to use Wayland natively (fixes X11 BadValue errors on Wayland)
+    environment.sessionVariables = lib.mkIf cfg.enableSteam {
+      # Use Wayland for SDL2 with X11 fallback (Steam UI and many games)
+      SDL_VIDEODRIVER = "wayland,x11";
+      # Enable Wayland support in QT apps
+      QT_QPA_PLATFORM = "wayland;xcb";
+      # Disable XWayland fallback to force native Wayland
+      STEAM_FORCE_DESKTOPUI_SCALING = "1";
     };
     
     # Enable 32-bit graphics drivers for Steam/Proton compatibility
     hardware.graphics.enable32Bit = lib.mkIf cfg.enableSteam true;
+
+    # Enable Steam hardware support (udev rules for controllers and input devices)
+    hardware.steam-hardware.enable = lib.mkIf cfg.enableSteam true;
 
     # Optionally write Proton-related variables into the system environment
     # so they are available system-wide (use with care).

@@ -111,7 +111,7 @@
 
   # Enable all optional feature modules
   gaming.enable = true;
-  gaming.enableSteam = true;  # Use programs.steam for proper Steam integration
+  gaming.enableSteam = false;  # Disabled - using Flatpak Steam instead
   multimedia.enable = true;
   virtualization.enable = true;
   machines.containers.enable = true;

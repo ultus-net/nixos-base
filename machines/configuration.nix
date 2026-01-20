@@ -94,6 +94,25 @@
   # To add Flathub: flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
   services.flatpak.enable = true;
   
+  # Grant Flatpak apps filesystem access to additional directories
+  # This allows Steam (and other gaming apps) to access game libraries on multiple drives
+  system.activationScripts.flatpakOverrides = lib.mkIf config.services.flatpak.enable ''
+    mkdir -p /var/lib/flatpak/overrides
+    
+    # Global override: grant all Flatpaks access to /games and other common game locations
+    cat > /var/lib/flatpak/overrides/global << EOF
+[Context]
+filesystems=/games:rw;/mnt:rw;/run/media:rw;
+EOF
+    
+    # Steam-specific overrides for comprehensive drive access
+    # Note: Do NOT add 'home' as it conflicts with Steam's static permissions
+    cat > /var/lib/flatpak/overrides/com.valvesoftware.Steam << EOF
+[Context]
+filesystems=xdg-data/applications:create;xdg-data/icons:create;/games:rw;/mnt:rw;/run/media:rw;xdg-music;xdg-pictures;xdg-videos;
+EOF
+  '';
+  
   # XDG portals required for Flatpak (desktop environments will override with their specific portals)
   xdg.portal = lib.mkDefault {
     enable = true;

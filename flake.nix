@@ -49,16 +49,6 @@
           };
           overlays = [ 
             devshell.overlays.default 
-            # Fix for Steam apt installation bug in nixpkgs commit 16c7794d
-            (final: prev: {
-              steam-unwrapped = prev.steam-unwrapped.overrideAttrs (oldAttrs: {
-                postPatch = (oldAttrs.postPatch or "") + ''
-                  # Skip the apt source installation that fails in Nix sandbox
-                  sed -i '/if \[ -d \/etc\/apt \]; then/,/fi/d' Makefile
-                '';
-              });
-            })
-
             # Prefer a stable google-chrome build from nixos-24.05
             (final: prev: {
               google-chrome = stablePkgs.google-chrome;
