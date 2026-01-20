@@ -36,6 +36,19 @@
     # Use the open-source NVIDIA kernel module (recommended for
     # Turing and newer GPUs, like your RTX 3070).
     open = true;
+
+    # PRIME configuration for hybrid graphics (NVIDIA + AMD iGPU)
+    # Sync mode keeps NVIDIA as primary GPU for best performance
+    prime = {
+      sync.enable = true;
+      
+      # Bus IDs - MANDATORY for PRIME to work
+      # NVIDIA RTX 3070 is at 01:00.0 -> PCI:1:0:0
+      nvidiaBusId = "PCI:1:0:0";
+      
+      # AMD Raphael iGPU is at 13:00.0 -> PCI:19:0:0 (0x13 = 19 in decimal)
+      amdgpuBusId = "PCI:19:0:0";
+    };
   };
 
   # Ensure OpenGL/graphics support is enabled

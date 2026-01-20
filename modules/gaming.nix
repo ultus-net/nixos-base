@@ -29,6 +29,8 @@ in {
     
     enableSteam = lib.mkEnableOption "Enable Steam via the NixOS programs.steam module";
     
+    optimizeSteamIO = lib.mkEnableOption "Enable I/O optimizations for Steam (reduces cloud sync delays)";
+    
     packages = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = [];
@@ -97,21 +99,35 @@ in {
       ];
     };
     
-    # Force Steam to use Wayland natively (fixes X11 BadValue errors on Wayland)
-    environment.sessionVariables = lib.mkIf cfg.enableSteam {
-      # Use Wayland for SDL2 with X11 fallback (Steam UI and many games)
-      SDL_VIDEODRIVER = "wayland,x11";
-      # Enable Wayland support in QT apps
-      QT_QPA_PLATFORM = "wayland;xcb";
-      # Disable XWayland fallback to force native Wayland
-      STEAM_FORCE_DESKTOPUI_SCALING = "1";
-    };
-    
     # Enable 32-bit graphics drivers for Steam/Proton compatibility
     hardware.graphics.enable32Bit = lib.mkIf cfg.enableSteam true;
 
     # Enable Steam hardware support (udev rules for controllers and input devices)
     hardware.steam-hardware.enable = lib.mkIf cfg.enableSteam true;
+
+    # I/O scheduling optimizations for Steam (reduces cloud sync delays)
+    systemd.services.steam-io-optimize = lib.mkIf (cfg.enableSteam && cfg.optimizeSteamIO) {
+      description = "Optimize I/O scheduler for Steam directory";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = pkgs.writeShellScript "steam-io-optimize" ''
+          # Find the block device for home directory
+          HOME_DEV=$(df -P /home | tail -1 | awk '{print $1}' | sed 's/[0-9]*$//')
+          if [ -b "$HOME_DEV" ]; then
+            # Use none scheduler for NVMe/SSD, or mq-deadline for others
+            if [[ "$HOME_DEV" =~ nvme ]]; then
+              echo "none" > /sys/block/$(basename "$HOME_DEV")/queue/scheduler 2>/dev/null || true
+            else
+              echo "mq-deadline" > /sys/block/$(basename "$HOME_DEV")/queue/scheduler 2>/dev/null || true
+            fi
+            # Increase read-ahead for better sequential performance
+            echo 2048 > /sys/block/$(basename "$HOME_DEV")/queue/read_ahead_kb 2>/dev/null || true
+          fi
+        '';
+      };
+    };
 
     # Optionally write Proton-related variables into the system environment
     # so they are available system-wide (use with care).

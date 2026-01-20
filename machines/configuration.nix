@@ -105,11 +105,17 @@
 filesystems=/games:rw;/mnt:rw;/run/media:rw;
 EOF
     
-    # Steam-specific overrides for comprehensive drive access
+    # Steam-specific overrides for comprehensive drive access and NVIDIA GPU support
     # Note: Do NOT add 'home' as it conflicts with Steam's static permissions
     cat > /var/lib/flatpak/overrides/com.valvesoftware.Steam << EOF
 [Context]
 filesystems=xdg-data/applications:create;xdg-data/icons:create;/games:rw;/mnt:rw;/run/media:rw;xdg-music;xdg-pictures;xdg-videos;
+devices=all;
+
+[Environment]
+__NV_PRIME_RENDER_OFFLOAD=1
+__GLX_VENDOR_LIBRARY_NAME=nvidia
+__VK_LAYER_NV_optimus=NVIDIA_only
 EOF
   '';
   
