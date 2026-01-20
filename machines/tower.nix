@@ -111,7 +111,7 @@
 
   # Enable all optional feature modules
   gaming.enable = true;
-  gaming.enableSteam = false;  # Disabled - using Flatpak Steam instead
+  gaming.enableSteam = true;  # Use native Steam via NixOS module
   gaming.optimizeSteamIO = true;  # Enable I/O optimizations for Steam cloud sync
   multimedia.enable = true;
   virtualization.enable = true;
