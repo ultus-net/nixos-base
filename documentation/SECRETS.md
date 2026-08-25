@@ -2,12 +2,12 @@
 
 Managing secrets (API keys, passwords, certificates) in a declarative configuration system like NixOS requires special care. Here are several approaches.
 
-## ⚠️ What NOT to Do
+## What NOT to Do
 
 **NEVER** commit secrets directly in your Nix files:
 
 ```nix
-# ❌ BAD - secrets in plaintext
+# BAD - secrets in plaintext
 services.myservice = {
   enable = true;
   apiKey = "sk_live_abc123def456";  # NEVER DO THIS
@@ -186,7 +186,7 @@ For secrets that don't need encryption in the repo:
 ```nix
 system.activationScripts.setupSecrets = ''
   if [ ! -f /etc/secrets/api_key ]; then
-    echo "⚠️  Please create /etc/secrets/api_key"
+    echo "WARNING: Please create /etc/secrets/api_key"
     exit 1
   fi
 '';
@@ -205,20 +205,20 @@ systemd.services.myservice = {
 
 | Method | Encrypted | In Git | Complexity | Best For |
 |--------|-----------|--------|------------|----------|
-| Environment Files | ❌ | ❌ | Low | Development |
-| sops-nix | ✅ | ✅ | High | Production, teams |
-| agenix | ✅ | ✅ | Medium | Personal systems |
-| Manual Files | ❌ | ❌ | Low | Quick setups |
+| Environment Files | No | No | Low | Development |
+| sops-nix | Yes | Yes | High | Production, teams |
+| agenix | Yes | Yes | Medium | Personal systems |
+| Manual Files | No | No | Low | Quick setups |
 
 ## Best Practices
 
-1. **Never commit unencrypted secrets** — use `.gitignore`
-2. **Rotate secrets regularly** — especially after team changes
-3. **Use different secrets per environment** — dev/staging/prod
-4. **Limit secret permissions** — use `owner` and `mode` options
-5. **Document your approach** — in your README or this file
-6. **Backup encryption keys** — store securely offline
-7. **Use systemd credentials** — `LoadCredential` when possible
+1. **Never commit unencrypted secrets** - use `.gitignore`
+2. **Rotate secrets regularly** - especially after team changes
+3. **Use different secrets per environment** - dev/staging/prod
+4. **Limit secret permissions** - use `owner` and `mode` options
+5. **Document your approach** - in your README or this file
+6. **Backup encryption keys** - store securely offline
+7. **Use systemd credentials** - `LoadCredential` when possible
 
 ## Quick Start for This Repo
 

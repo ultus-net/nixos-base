@@ -28,30 +28,30 @@ echo ""
 
 # Check if source directory exists
 if [ ! -d "$SOURCE" ]; then
-    echo -e "${RED}✗ Error: Source directory not found: ${SOURCE}${NC}"
+    echo -e "${RED}Error: Source directory not found: ${SOURCE}${NC}"
     exit 1
 fi
 
 # Check if we're running as root (needed for /etc/nixos)
 if [ "$EUID" -ne 0 ]; then
-    echo -e "${YELLOW}⚠ This script requires root privileges to write to /etc/nixos${NC}"
-    echo -e "${YELLOW}→ Re-running with sudo...${NC}"
+    echo -e "${YELLOW}This script requires root privileges to write to /etc/nixos${NC}"
+    echo -e "${YELLOW}Re-running with sudo...${NC}"
     exec sudo bash "$0" "$@"
 fi
 
-echo -e "${YELLOW}→ Source: ${SOURCE}${NC}"
-echo -e "${YELLOW}→ Target: ${TARGET}${NC}"
+echo -e "${YELLOW}Source: ${SOURCE}${NC}"
+echo -e "${YELLOW}Target: ${TARGET}${NC}"
 echo ""
 
 # Show what would change (dry-run first)
-echo -e "${BLUE}→ Checking for changes...${NC}"
+echo -e "${BLUE}Checking for changes...${NC}"
 if ! rsync -ani --delete \
     --exclude='.git' \
     --exclude='result*' \
     --exclude='.direnv' \
     --exclude='.envrc' \
     "${SOURCE}/" "${TARGET}/" | head -20; then
-    echo -e "${RED}✗ Failed to check changes${NC}"
+    echo -e "${RED}Failed to check changes${NC}"
     exit 1
 fi
 
@@ -60,18 +60,18 @@ read -p "$(echo -e ${YELLOW}Continue with deployment? [y/N]:${NC} )" -n 1 -r
 echo ""
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-    echo -e "${YELLOW}✗ Deployment cancelled${NC}"
+    echo -e "${YELLOW}Deployment cancelled${NC}"
     exit 0
 fi
 
 # Backup existing /etc/nixos (just in case)
 BACKUP_DIR="/etc/nixos-backup-$(date +%Y%m%d-%H%M%S)"
 echo ""
-echo -e "${BLUE}→ Creating backup: ${BACKUP_DIR}${NC}"
+echo -e "${BLUE}Creating backup: ${BACKUP_DIR}${NC}"
 cp -a "${TARGET}" "${BACKUP_DIR}"
 
 # Perform the sync
-echo -e "${BLUE}→ Syncing configuration files...${NC}"
+echo -e "${BLUE}Syncing configuration files...${NC}"
 if rsync -av --delete \
     --exclude='.git' \
     --exclude='result*' \
@@ -79,14 +79,14 @@ if rsync -av --delete \
     --exclude='.envrc' \
     "${SOURCE}/" "${TARGET}/"; then
     echo ""
-    echo -e "${GREEN}✓ Configuration deployed successfully!${NC}"
+    echo -e "${GREEN}Configuration deployed successfully${NC}"
 else
     echo ""
-    echo -e "${RED}✗ Deployment failed!${NC}"
-    echo -e "${YELLOW}→ Restoring from backup...${NC}"
+    echo -e "${RED}Deployment failed${NC}"
+    echo -e "${YELLOW}Restoring from backup...${NC}"
     rm -rf "${TARGET}"
     cp -a "${BACKUP_DIR}" "${TARGET}"
-    echo -e "${YELLOW}✓ Backup restored${NC}"
+    echo -e "${YELLOW}Backup restored${NC}"
     exit 1
 fi
 

@@ -1,8 +1,8 @@
-# Quick Install Guide - COSMIC via Calamares (Easiest Method)
+# Quick Install Guide - COSMIC via Calamares
 
-This is the **easiest** way to install your COSMIC workstation. Use the GUI installer first, then apply your configuration.
+This method uses the GUI installer first, then applies the COSMIC workstation configuration.
 
-## ⚠️ Important Warnings
+## Important Warnings
 
 **BEFORE YOU START:**
 1. **Your Calamares settings will be replaced** - Don't spend too much time customizing the Calamares installation, we'll replace it with the flake configuration
@@ -12,10 +12,10 @@ This is the **easiest** way to install your COSMIC workstation. Use the GUI inst
 
 ## Why This Method?
 
-✅ **No space issues** - Calamares installs a minimal base first  
-✅ **GUI installer** - Easy partitioning, user setup, etc.  
-✅ **No manual partitioning** - Point and click  
-✅ **Works every time** - No RAM limitations  
+- **Minimal base install** - Calamares installs a minimal base first
+- **GUI installer** - Provides partitioning and user setup
+- **GUI partitioning** - Does not require manual partition commands
+- **Memory use** - Does not depend on a RAM-backed Nix store
 
 ---
 
@@ -196,4 +196,4 @@ Same as the manual method:
 
 ---
 
-**Enjoy your COSMIC NixOS system - the easy way!** 🚀
+**Installation steps complete.**

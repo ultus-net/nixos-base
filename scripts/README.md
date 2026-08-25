@@ -139,7 +139,7 @@ sudo ./scripts/partition-drive.sh /dev/sda
 sudo ./scripts/partition-drive.sh /dev/nvme0n1
 ```
 
-**⚠️ WARNING:** This script will **DESTROY ALL DATA** on the target device!
+**Warning:** This script will **destroy all data** on the target device.
 
 **What it does automatically:**
 1. Detects firmware type (UEFI or BIOS)

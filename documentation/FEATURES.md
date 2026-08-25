@@ -1,15 +1,15 @@
 # Features
 
-## 🎨 Desktop Environments
+## Desktop Environments
 
-This flake provides **6 popular desktop environments** plus a **headless base profile**:
+This flake provides **6 desktop environments** plus a **headless base profile**:
 
 ### Desktop Environment Details
 
 #### Base Server (`base-server`)
 **Display Server:** None (headless)  
 **Resource Usage:** Minimal (~500MB RAM)  
-**Best For:** Servers, containers, VMs, network appliances
+**Use Cases:** Servers, containers, VMs, network appliances
 
 **What's Included:**
 - Essential CLI tools (htop, btop, git, vim, tmux)
@@ -21,7 +21,7 @@ This flake provides **6 popular desktop environments** plus a **headless base pr
 #### COSMIC (`cosmic-workstation`)
 **Display Server:** Wayland  
 **Resource Usage:** Medium (~3GB RAM)  
-**Best For:** Modern workflows, Wayland enthusiasts, System76 hardware
+**Use Cases:** Wayland desktops, System76 hardware
 
 **What's Included:**
 - COSMIC compositor and shell (Rust-based)
@@ -33,7 +33,7 @@ This flake provides **6 popular desktop environments** plus a **headless base pr
 #### GNOME (`gnome-workstation`)
 **Display Server:** Wayland (X11 fallback)  
 **Resource Usage:** Medium (~3.5GB RAM)  
-**Best For:** Modern productivity, touchpad gestures, polished experience
+**Use Cases:** Wayland desktops, touchpad-oriented workflows
 
 **What's Included:**
 - GNOME Shell with essential extensions
@@ -45,7 +45,7 @@ This flake provides **6 popular desktop environments** plus a **headless base pr
 #### KDE Plasma (`kde-workstation`)
 **Display Server:** Wayland (X11 available)  
 **Resource Usage:** Heavy (~4GB RAM)  
-**Best For:** Customization lovers, power users, Windows refugees
+**Use Cases:** Configurable Qt-based desktops
 
 **What's Included:**
 - KDE Plasma 6 desktop
@@ -58,7 +58,7 @@ This flake provides **6 popular desktop environments** plus a **headless base pr
 #### Cinnamon (`cinnamon-workstation`)
 **Display Server:** X11  
 **Resource Usage:** Medium (~2.5GB RAM)  
-**Best For:** Traditional desktop users, Windows-like interface
+**Use Cases:** Traditional desktop layouts
 
 **What's Included:**
 - Cinnamon desktop environment
@@ -71,20 +71,20 @@ This flake provides **6 popular desktop environments** plus a **headless base pr
 #### XFCE (`xfce-workstation`)
 **Display Server:** X11  
 **Resource Usage:** Light (~1.5GB RAM)  
-**Best For:** Older hardware, stability, lightweight performance
+**Use Cases:** Lightweight desktop installations
 
 **What's Included:**
 - XFCE desktop environment
 - Thunar file manager
 - XFCE Terminal
 - Firefox, VS Code
-- Lightweight and fast
+- Lightweight desktop environment
 - PipeWire audio stack
 
 #### Hyprland (`hyprland-workstation`)
 **Display Server:** Wayland  
 **Resource Usage:** Light (~2GB RAM)  
-**Best For:** Power users, tiling workflow enthusiasts, modern aesthetics
+**Use Cases:** Dynamic tiling workflows
 
 **What's Included:**
 - Hyprland dynamic tiling compositor
@@ -98,15 +98,15 @@ This flake provides **6 popular desktop environments** plus a **headless base pr
 
 ### Quick Comparison
 
-| Desktop | Display | Weight | Customization | Stability | Best For |
-|---------|---------|--------|---------------|-----------|----------|
-| **Base** | None | Minimal | N/A | ⭐⭐⭐⭐⭐ | Servers |
-| **COSMIC** | Wayland | Medium | ⭐⭐⭐⭐ | ⭐⭐⭐ | Early adopters |
-| **GNOME** | Wayland | Medium | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Productivity |
-| **KDE** | Both | Heavy | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Power users |
-| **Cinnamon** | X11 | Medium | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Windows users |
-| **XFCE** | X11 | Light | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Old hardware |
-| **Hyprland** | Wayland | Light | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | Tiling fans |
+| Desktop | Display | Weight | Typical Use |
+|---------|---------|--------|-------------|
+| **Base** | None | Minimal | Servers and headless systems |
+| **COSMIC** | Wayland | Medium | Wayland desktop |
+| **GNOME** | Wayland | Medium | General-purpose desktop |
+| **KDE** | Both | Heavy | Configurable Qt desktop |
+| **Cinnamon** | X11 | Medium | Traditional desktop layout |
+| **XFCE** | X11 | Light | Lightweight desktop |
+| **Hyprland** | Wayland | Light | Dynamic tiling |
 
 Install any desktop with:
 ```bash
@@ -115,10 +115,10 @@ nixos-install --flake /mnt/nixos-base#<profile>
 
 See `profiles/README.md` for detailed desktop environment documentation.
 
-## 📦 Optional Modules
+## Optional Modules
 
 ### Multimedia (`multimedia.nix`)
-Complete media creation and editing suite.
+Media creation and editing tools.
 
 **What's Included:**
 - **Video:** VLC, MPV, OBS Studio, Kdenlive, Handbrake, FFmpeg
@@ -134,7 +134,7 @@ multimedia.enable = true;
 ```
 
 ### Gaming (`gaming.nix`)
-Complete gaming setup with compatibility layers and performance tools.
+Gaming compatibility layers and performance tools.
 
 **What's Included:**
 - **Platforms:** Steam (with Proton), Lutris, Heroic Games Launcher
@@ -150,7 +150,7 @@ gaming.enable = true;
 ```
 
 ### Development (`development.nix`)
-Comprehensive development environment with multiple language runtimes.
+Development tools and language runtimes.
 
 **What's Included:**
 - **Languages:** Python 3, Node.js 22, Go, Rust (rustup)
@@ -168,7 +168,7 @@ development.enable = true;
 ```
 
 ### Containers (`containers.nix`)
-Full container and Kubernetes development stack.
+Container and Kubernetes tools.
 
 **What's Included:**
 - **Runtime:** Docker, docker-compose
@@ -184,7 +184,7 @@ containers.enable = true;
 ```
 
 ### Virtualization (`virtualization.nix`)
-Full VM support with GUI management.
+Virtualization tools with GUI management.
 
 **What's Included:**
 - **Hypervisor:** QEMU/KVM with hardware acceleration
@@ -200,7 +200,7 @@ virtualization.enable = true;
 ```
 
 ### Sysadmin (`sysadmin.nix`)
-Complete system administration toolkit.
+System administration tools.
 
 **What's Included:**
 - **Backups:** restic, rclone, borgbackup, duplicity
@@ -228,14 +228,14 @@ Laptop-specific power and hardware management.
 - **Sleep:** Suspend/hibernate optimization
 - **Monitoring:** powerstat, powertop
 
-**Enable:****
+**Enable:**
 ```nix
 imports = [ ../modules/laptop.nix ];
 laptop.enable = true;
 ```
 
 ### Wallpapers
-Complete collection of official NixOS wallpapers from `nixos-artwork` with automatic rotation support for all desktop environments.
+NixOS wallpapers from `nixos-artwork` with automatic rotation support for desktop environments.
 
 **Enable:**
 ```nix
@@ -253,17 +253,16 @@ machines.wallpapers.rotationInterval = 300;  # seconds
 
 See `modules/README.md` for complete module documentation.
 
-## 🛠️ Quality of Life
+## Command-Line Tools
 
-### Modern CLI Tools
-All profiles include modern replacements for traditional Unix tools:
+All profiles include these command-line tools:
 
 - **fzf** - Fuzzy finder for command history and file search
-- **zoxide** - Smarter cd command that learns your habits
-- **eza** - Modern replacement for ls with colors and icons
-- **bat** - Cat with syntax highlighting and Git integration
-- **ripgrep** - Faster grep written in Rust
-- **fd** - Simpler, faster alternative to find
+- **zoxide** - Directory navigation based on usage history
+- **eza** - `ls` alternative with colors and icons
+- **bat** - File viewer with syntax highlighting and Git integration
+- **ripgrep** - Recursive text search
+- **fd** - `find` alternative
 - **lazygit** - Terminal UI for Git
 - **delta** - Syntax-highlighting pager for Git diffs
 - **starship** - Minimal, fast shell prompt
@@ -273,7 +272,7 @@ Pre-configured Home Manager setup for managing user dotfiles and configurations.
 
 See `home/README.md` for Home Manager documentation.
 
-## 🔒 Security Defaults
+## Security Defaults
 
 - SSH enabled with key-based authentication only
 - Firewall enabled by default
@@ -283,7 +282,7 @@ See `home/README.md` for Home Manager documentation.
 
 See `SECRETS.md` for secrets management options.
 
-## 🧹 Automatic Cleanup
+## Automatic Cleanup
 
 Systemd timers automatically:
 - Keep last 3 system generations
@@ -292,10 +291,8 @@ Systemd timers automatically:
 
 Override these defaults in your machine configuration if needed.
 
-## 📊 Snapshot Retention
+## Generation Retention
 
 The default configuration keeps:
 - **3 system generations** for rollback capability
 - **14 days** of store paths before garbage collection
-
-This balances rollback safety with disk space management.

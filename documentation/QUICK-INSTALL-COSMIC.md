@@ -3,7 +3,7 @@
 This is a copy-paste friendly guide for installing NixOS with the COSMIC desktop
 using the tower.nix configuration.
 
-## ⚠️ Important Notes
+## Important Notes
 
 **BEFORE YOU START:**
 1. **This installs the "tower" machine config** - A pre-configured COSMIC system with gaming, multimedia, and development tools
@@ -512,4 +512,4 @@ sudo nixos-rebuild switch --flake /etc/nixos#tower
 
 ---
 
-**That's it! Enjoy your new COSMIC NixOS system!** 🚀
+**Installation steps complete.**

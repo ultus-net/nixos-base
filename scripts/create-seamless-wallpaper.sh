@@ -24,7 +24,7 @@ HALF_W=$((WIDTH / 2))
 HALF_H=$((HEIGHT / 2))
 
 echo "Creating seamless tile (Crossfade/Overlap method)..."
-# This method blends the edges to create a seamless seamless tile.
+# This method blends the edges to create a seamless tile.
 # It is generally better for random or semi-random textures than mirroring.
 
 # 1. Resize to a tile base size (e.g., 1024x1024)

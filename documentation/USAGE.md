@@ -1,6 +1,6 @@
 # Usage Guide
 
-## 🚀 TL;DR
+## TL;DR
 
 ```bash
 # Switch desktops (already installed system)
