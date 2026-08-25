@@ -1,15 +1,13 @@
-README — profiles/
-===================
+# Profiles
 
-Purpose
--------
+## Purpose
 This directory holds desktop "profiles": small NixOS module fragments that
 describe a desktop environment, related packages, and profile-level features
 (QoL, developer packages, desktop services). Profiles do NOT include 
 machine-specific settings like `networking.hostName`, `fileSystems`, or 
 `boot.loader` configurations.
 
-**IMPORTANT:** These profiles are **incomplete system configurations**. They
+These profiles are **incomplete system configurations**. They
 cannot be installed directly without adding:
 1. `fileSystems` configuration (usually from `hardware-configuration.nix`)
 2. At least one user account
@@ -17,49 +15,46 @@ cannot be installed directly without adding:
 
 For a complete example, see `machines/example-machine.nix`.
 
-Available Profiles
-------------------
+## Available Profiles
 
 ### Headless/Server Profile
 
-- **base.nix** — Minimal headless base (no desktop environment)
+- **base.nix** - Minimal headless base (no desktop environment)
   - Essential CLI tools and modern replacements
   - Security hardening (firewall, fail2ban, SSH)
   - NetworkManager for network configuration
   - ZRAM compressed swap
-  - Perfect for servers, containers, VMs, and headless systems
-  - Optional modules can be easily enabled (development, containers, sysadmin, virtualization)
+  - Suitable for servers, containers, VMs, and headless systems
+  - Optional modules include development, containers, sysadmin, and virtualization
 
 ### Wayland-First Desktops
 
-- **cosmic.nix** — System76 COSMIC desktop (Rust-based, cutting-edge)
+- **cosmic.nix** - System76 COSMIC desktop
   - Requires nixos-cosmic flake input
   - Binary cache: https://cosmic.cachix.org/
-  - Modern Wayland compositor written in Rust
+  - Wayland compositor written in Rust
   
-- **gnome.nix** — GNOME Shell (modern, popular)
-  - GTK-based, excellent Wayland support
-  - Great for laptops with touchpad gestures
+- **gnome.nix** - GNOME Shell
+  - GTK-based with Wayland support
+  - Supports touchpad gestures
   
-- **kde.nix** — KDE Plasma 6 (feature-rich, Qt-based)
+- **kde.nix** - KDE Plasma 6 (Qt-based)
   - Highly customizable
-  - Excellent Wayland support
+  - Wayland support
   - Wide range of applications
 
 ### Traditional X11 Desktops (with Wayland options)
 
-- **cinnamon.nix** — Cinnamon (Linux Mint flagship)
+- **cinnamon.nix** - Cinnamon
   - Familiar Windows-like interface
-  - Stable and user-friendly
   
-- **xfce.nix** — XFCE (lightweight, fast)
+- **xfce.nix** - XFCE
   - Low resource usage
   - Traditional desktop paradigm
   - Optional Wayland session available
   
 
-Usage
------
+## Usage
 - To use a profile when deploying to hardware, import it from a `machines/`
   entry. For example:
 
@@ -71,8 +66,7 @@ Usage
 - Profiles are intentionally shareable: you can reuse the same profile across
   many machines.
 
-Notes
------
+## Notes
 - Keep profiles focused on desktop-level concerns: session managers,
   desktop packages, and per-user Home Manager defaults. Avoid embedding
   disk UUIDs, LUKS settings, or bootloader device paths here.

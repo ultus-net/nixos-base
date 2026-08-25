@@ -77,7 +77,7 @@ echo "Building configuration..."
 $SUDO nixos-rebuild switch --flake "$REPO_ROOT#${DESKTOP}-workstation"
 
 echo ""
-echo "✓ Successfully switched to $DESKTOP desktop!"
+echo "Switched to $DESKTOP desktop."
 echo ""
 echo "You may need to:"
 echo "  1. Log out and log back in"

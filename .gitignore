@@ -16,7 +16,7 @@ node_modules/
 
 # Nix build results
 /result
-/result-
+/result-*
 
 # Nix flake / nix commands can emit helper files when you redirect output
 flake.json

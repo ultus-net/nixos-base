@@ -1,28 +1,15 @@
-README — machines/
-===================
+# Machines
 
-Purpose
--------
+## Purpose
 This directory contains machine deployment entries and a master machine
 configuration (`machines/configuration.nix`). Machine files should compose the
 master defaults with a `profiles/<profile>.nix` entry and, when installing,
 an installer-generated `hardware-configuration.nix`.
 
-Note about moved modules
-------------------------
-Some helper modules that previously lived under `machines/` have been moved to
-`modules/` to make them reusable across profiles and machines. The removed
-files are:
+Shared modules are located under `modules/`. Machine files can import them with
+paths such as `../modules/common-users.nix` and `../modules/zram.nix`.
 
-- `machines/common-users.nix` (now `modules/common-users.nix`)
-- `machines/zram.nix` (now `modules/zram.nix`)
-
-See `modules/` for the canonical, reusable module implementations. Example
-machine files import them via `../modules/common-users.nix` and
-`../modules/zram.nix`.
-
-Quick template
---------------
+## Quick Template
 
 Example `machines/my-pc.nix`:
 
@@ -39,28 +26,24 @@ Example `machines/my-pc.nix`:
 }
 ```
 
-Zram tuning
------------
+## ZRAM Tuning
 The zram module is provided at `modules/zram.nix` and exposes `machines.zram.*`
 options. By default zram size is computed as min(total RAM / 2,
 `machines.zram.maxSize`). You can override explicitly with `machines.zram.size`
 or disable the heuristic with `machines.zram.enableAutoSize = false`.
 
-GC / generation retention
--------------------------
+## GC and Generation Retention
 The machine master config (`machines/configuration.nix`) includes a weekly
 systemd timer that:
 
-- keeps the last **3** system generations (so rollbacks are still possible)
+- keeps the last **3** system generations
 - runs `nix-collect-garbage --delete-older-than 14d` to remove older store paths
 
 This is the default retention policy for machines; you can override it per
-machine by replacing/disabled the unit.
+machine by replacing or disabling the unit.
 
-OpenSSH hardening
------------------
-OpenSSH is enabled by default to ease initial bring-up, but it’s configured
-with safe defaults:
+## OpenSSH Hardening
+OpenSSH is enabled by default with the following settings:
 
 - password authentication disabled
 - keyboard-interactive authentication disabled
@@ -68,8 +51,7 @@ with safe defaults:
 
 Override these per-machine if you need a different behavior.
 
-Override examples
------------------
+## Override Examples
 
 Temporarily allow SSH password login for an install session (not recommended
 long-term):
@@ -99,8 +81,7 @@ systemd.services.nixos-gc-keep-generations.serviceConfig.ExecStart = lib.mkForce
 '';
 ```
 
-Users
------
+## Users
 Centralized user creation lives in `modules/common-users.nix`. You can
 declare multiple users by setting `machines.users` in a machine file; the
 format matches the NixOS `users.users` attribute set.

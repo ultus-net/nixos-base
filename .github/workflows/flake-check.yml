@@ -1,4 +1,4 @@
-name: Comprehensive NixOS Validation
+name: NixOS validation
 
 on:
   push:
@@ -56,14 +56,6 @@ jobs:
             experimental-features = nix-command flakes
             accept-flake-config = true
 
-      # Cachix disabled - not needed for this repository
-      # - name: Setup Cachix (optional, speeds up builds)
-      #   uses: cachix/cachix-action@v14
-      #   with:
-      #     name: nixos-cosmic
-      #     authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      #   continue-on-error: true
-
       - name: Validate flake metadata
         run: |
           nix flake metadata
@@ -116,14 +108,6 @@ jobs:
             experimental-features = nix-command flakes
             accept-flake-config = true
 
-      # Cachix disabled - not needed for this repository
-      # - name: Setup Cachix
-      #   uses: cachix/cachix-action@v14
-      #   with:
-      #     name: nixos-cosmic
-      #     authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      #   continue-on-error: true
-
       - name: Build system configuration (dry-run)
         run: |
           nix build .#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel --dry-run --show-trace
@@ -167,14 +151,6 @@ jobs:
             # Required for VM tests
             system-features = nixos-test benchmark big-parallel kvm
 
-      # Cachix disabled - not needed for this repository
-      # - name: Setup Cachix
-      #   uses: cachix/cachix-action@v14
-      #   with:
-      #     name: nixos-cosmic
-      #     authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-      #   continue-on-error: true
-
       - name: Build VM for ${{ matrix.config }}
         run: |
           nix build .#nixosConfigurations.${{ matrix.config }}.config.system.build.vm -L
@@ -194,7 +170,7 @@ jobs:
           for i in $(seq 1 $BOOT_TIMEOUT); do
             # Check if VM process is still running
             if ! kill -0 $VM_PID 2>/dev/null; then
-              echo "✗ VM process died unexpectedly at iteration $i"
+              echo "VM process exited unexpectedly at iteration $i"
               echo "=== Last 100 lines of serial log ==="
               tail -100 vm-serial.log 2>/dev/null || cat vm-serial.log
               exit 1
@@ -202,7 +178,7 @@ jobs:
             
             # Check for successful boot - try multiple patterns
             if grep -qE "(Reached target.*Multi-User System|Reached target.*Graphical Interface|systemd.*Reached target.*multi-user\.target)" vm-serial.log 2>/dev/null; then
-              echo "✓ VM booted successfully! (iteration $i, ~$((i * 3)) seconds)"
+              echo "VM booted successfully (iteration $i, ~$((i * 3)) seconds)"
               echo "=== Last 50 lines of successful boot ==="
               tail -50 vm-serial.log
               kill $VM_PID 2>/dev/null || true
@@ -218,7 +194,7 @@ jobs:
             sleep 3
           done
           
-          echo "✗ Timeout waiting for VM to boot after $((BOOT_TIMEOUT * 3)) seconds"
+          echo "Timed out waiting for VM to boot after $((BOOT_TIMEOUT * 3)) seconds"
           echo "=== Full serial log ==="
           cat vm-serial.log
           kill $VM_PID 2>/dev/null || true
@@ -253,7 +229,7 @@ jobs:
             echo "Checking $module..."
             nix-instantiate --parse "$module" > /dev/null || exit 1
           done
-          echo "✓ All modules have valid syntax"
+          echo "All modules have valid syntax"
 
       - name: Verify modules are used in configurations
         run: |
@@ -347,7 +323,7 @@ jobs:
             echo "One or more required checks failed"
             exit 1
           fi
-          echo "✓ All required checks passed!"
+          echo "All required checks passed"
 
   # VM tests run separately and don't block the main pipeline
   vm-tests-summary:
@@ -360,10 +336,10 @@ jobs:
       - name: Report VM test results
         run: |
           if [ "${{ needs.vm-boot-tests.result }}" == "success" ]; then
-            echo "✓ All VM boot tests passed!"
+            echo "All VM boot tests passed"
           elif [ "${{ needs.vm-boot-tests.result }}" == "skipped" ]; then
-            echo "ℹ️  VM boot tests were skipped (no 'test-vm-boot' label)"
+            echo "VM boot tests were skipped (no 'test-vm-boot' label)"
           else
-            echo "⚠ Some VM boot tests failed - check the logs"
+            echo "Some VM boot tests failed; check the logs"
             exit 1
           fi

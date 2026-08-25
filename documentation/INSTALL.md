@@ -1,7 +1,7 @@
 <!-- Installation and deployment guide for the nixos-base flake -->
-# Installation guide — nixos-base
+# Installation guide - nixos-base
 
-## 🚀 TL;DR for Experienced Users
+## TL;DR for Experienced Users
 
 ```bash
 # Boot NixOS ISO, partition disk, mount to /mnt
@@ -24,7 +24,7 @@ reboot
 sudo passwd hunter  # Replace 'hunter' with your username
 ```
 
-**⚠️ CRITICAL:** This flake sets empty passwords by default. You MUST set passwords manually after first boot.
+**CRITICAL:** This flake sets empty passwords by default. You MUST set passwords manually after first boot.
 
 ---
 
@@ -50,10 +50,10 @@ Quick overview
 First install checklist (copy/paste)
 -----------------------------------
 
-If you just want a working machine quickly, here’s the minimal checklist:
+If you just want a working machine quickly, here's the minimal checklist:
 
 - [ ] Boot the NixOS live ISO
-- [ ] Connect networking (wired or Wi‑Fi)
+- [ ] Connect networking (wired or Wi-Fi)
 - [ ] Partition + mount your target disk at `/mnt`
 - [ ] Clone this repo into `/mnt/nixos-base`
 - [ ] Generate hardware config: `nixos-generate-config --root /mnt`
@@ -82,7 +82,7 @@ After the first boot:
 - [ ] Confirm SSH hardening defaults match what you want
 - [ ] Run `sudo nixos-rebuild switch --flake /etc/nixos#<your-config>` (optional)
 
-## ⚠️ Common Mistakes
+## Common Mistakes
 
 Avoid these frequent pitfalls:
 
@@ -226,7 +226,7 @@ sudo nixos-version
 sudo nix-env -q --profile /nix/var/nix/profiles/system
 ```
 
-## ✅ Verify Your Installation
+## Verify Your Installation
 
 Run through this checklist to ensure everything works:
 

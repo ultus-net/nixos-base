@@ -41,7 +41,7 @@
   # USER CONFIGURATION
   # ============================================================================
   # 
-  # ⚠️ CUSTOMIZE THIS: Replace "hunter" with YOUR username
+  # CUSTOMIZE THIS: Replace "hunter" with YOUR username
   #
   # Steps to customize:
   # 1. Change "hunter" below to your username (e.g., "alice", "bob", etc.)
@@ -52,12 +52,12 @@
   # Example: a single "primary" user managed by both NixOS (account) and
   # Home Manager (dotfiles, packages, user services).
   machines.users = {
-    hunter = {  # ☝ CHANGE THIS to your username
+    hunter = {  # CHANGE THIS to your username
       isNormalUser = true;
-      description = "Cameron Hunter";  # ☝ CHANGE THIS to your name
+      description = "Cameron Hunter";  # CHANGE THIS to your name
       extraGroups = [ "wheel" "networkmanager" ];
 
-      # ⚠️ PASSWORD WARNING: This is intentionally empty for security!
+      # PASSWORD WARNING: This is intentionally empty for security!
       # You MUST set a password after installation:
       #   sudo passwd hunter  # (or your username)
       #
@@ -66,7 +66,7 @@
       # Then: initialHashedPassword = "$6$rounds=...";
       initialHashedPassword = lib.mkDefault "";
 
-      # 🔑 SSH KEYS (Recommended): For password-less login via SSH
+      # SSH KEYS (Recommended): For password-less login via SSH
       # Generate with: ssh-keygen -t ed25519 -C "your_email@example.com"
       # Then add your public key (~/.ssh/id_ed25519.pub) here:
       openssh.authorizedKeys.keys = [
@@ -75,16 +75,16 @@
     };
   };
 
-  # 🏠 HOME MANAGER: Links your user config for dotfiles and user packages
-  # ⚠️ CHANGE THIS: Replace "hunter" with your username in BOTH places
+  # HOME MANAGER: Links your user config for dotfiles and user packages
+  # CHANGE THIS: Replace "hunter" with your username in BOTH places
 
-  home-manager.users.hunter = import ../home/hunter.nix;  # ☝ CHANGE "hunter" to match above
+  home-manager.users.hunter = import ../home/hunter.nix;  # CHANGE "hunter" to match above
 
   # ============================================================================
   # HARDWARE CONFIGURATION
   # ============================================================================
   #
-  # 🚨 CRITICAL: You MUST import your actual hardware configuration!
+  # CRITICAL: You MUST import your actual hardware configuration!
   #
   # Generate it with:
   #   nixos-generate-config --root /mnt
@@ -93,7 +93,7 @@
   # Copy it to your nixos-base directory and uncomment the line below:
   #
   # imports = [
-  #   ./hardware-configuration.nix  # ☝ UNCOMMENT THIS LINE
+  #   ./hardware-configuration.nix  # UNCOMMENT THIS LINE
   # ];
   #
   # Without this, your system may not boot properly!
